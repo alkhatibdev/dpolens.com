@@ -61,8 +61,8 @@ a call that carries both is taken as the token's.
 - A session ends after 30 minutes without a call (`DPOLENS_SESSION_IDLE_MINUTES`) and after
   8 hours however much it is used (`DPOLENS_SESSION_LIFETIME_HOURS`). Deactivating a person
   ends their sessions on their next call, and setting a new password ends them at once.
-- A wrong password and an unknown address get the same answer. Five failures for one
-  address in fifteen minutes make that address wait, counted inside each worker like the
+- A wrong password and an unknown email address get the same answer. Five failures for one
+  email address in fifteen minutes make that address wait, counted inside each worker like the
   rate limit.
 - `GET /v1/sessions/current` says who is signed in, with their roles and permissions.
   `DELETE /v1/sessions/current` signs out.
@@ -113,12 +113,12 @@ beside it.
 | `/problems/no-laws-selected`         | 409      | Nobody has chosen which laws apply yet, so nothing is searched                                                                                     |
 | `/problems/too-many-requests`        | 429      | The quota for the minute is spent. `Retry-After` says when                                                                                         |
 | `/problems/sign-in-refused`          | 401      | That email and password do not match an account                                                                                                    |
-| `/problems/too-many-attempts`        | 429      | Too many failed sign-ins for that address. `Retry-After` says when                                                                                 |
+| `/problems/too-many-attempts`        | 429      | Too many failed sign-ins for that email address. `Retry-After` says when                                                                           |
 | `/problems/session-ended`            | 401      | The session cookie no longer works. `reason` is `expired`, `idle`, `owner_inactive` or `unknown`                                                   |
 | `/problems/cross-site-request`       | 403      | A call made with the session cookie did not come from the dashboard's own pages                                                                    |
 | `/problems/session-required`         | 403      | Only a dashboard session may do this, such as making a token                                                                                       |
 | `/problems/wrong-password`           | 403      | The current password, given to change it, does not match                                                                                           |
-| `/problems/already-exists`           | 409      | That address or role name is taken                                                                                                                 |
+| `/problems/already-exists`           | 409      | That email address or role name is taken                                                                                                           |
 | `/problems/lockout-refused`          | 409      | The change would leave nobody able to manage roles                                                                                                 |
 | `/problems/role-in-use`              | 409      | Somebody holds the role. `holders` names them                                                                                                      |
 | `/problems/sign-in-link-unusable`    | 410      | The sign-in link was used, ran out, or never existed                                                                                               |
@@ -353,7 +353,7 @@ Everything here needs `users.manage`.
 are active, whether they have a password yet, when an unused sign-in link of theirs runs
 out, how many tokens of theirs still work, and whether they act for other people, as the
 MCP server's own account does. `POST /v1/users` adds a person with a name,
-an address and roles. `PATCH /v1/users/{id}` deactivates someone or brings them back, and
+an email address and roles. `PATCH /v1/users/{id}` deactivates someone or brings them back, and
 `PUT /v1/users/{id}/roles` sets exactly which roles they hold.
 
 `POST /v1/users/{id}/sign-in-links` makes a sign-in link and returns its secret, once. The
@@ -422,7 +422,7 @@ Each question comes as it was stored, with personal data replaced by placeholder
 `[redacted:email]`, how many items were taken out, when the instance deletes it (null while
 questions are kept), and every clause it returned, named as a citation names it.
 
-`identities=true` adds who asked, and `asked_by` then narrows by their name or address. It
+`identities=true` adds who asked, and `asked_by` then narrows by their name or email address. It
 needs `queries.read_identities`, and every such answer is written to the governance log
 first, as `query_log.identities_viewed`, with the filter and the questions it showed.
 
@@ -437,7 +437,7 @@ file is being written is not in it.
 `governance.read`. Each entry carries what the log stores, with the person and the token its
 ids stand for. It narrows by `actor`, `category` (`sign_ins`, `people`, `roles`, `tokens`,
 `laws`, `policies`, `questions`, `exports`), `since`, `until` and `q`, words in a name, an
-address, a token, a role or what changed. `GET /v1/governance/actors` lists everyone who has acted.
+email address, a token, a role or what changed. `GET /v1/governance/actors` lists everyone who has acted.
 
 `GET /v1/governance/verification` recomputes the chain and says whether it holds, as
 `dpolens governance verify` does. `POST /v1/governance/exports` returns the export as a zip of
@@ -474,14 +474,14 @@ not loaded gets `422` and `/problems/unknown-law`.
 
 ### The instance
 
-`GET /v1/instance` tells anyone signed in the version and the MCP server's address, which
-the dashboard shows next to a new token. The address is `DPOLENS_PUBLIC_MCP_URL`, by default
-`http://localhost:8765/mcp`: set it to the address AI assistants really use when the MCP server
-sits behind a proxy or on another host.
+`GET /v1/instance` tells anyone signed in the version and the MCP server's URL, which the
+dashboard shows next to a new token. The URL is `DPOLENS_PUBLIC_MCP_URL`, by default
+`http://localhost:8765/mcp`: set it to the URL AI assistants really use when the MCP server sits
+behind a proxy or on another host.
 
 `GET /v1/settings` says how the instance is set up, for `settings.manage`: how long a question
 is kept and what is taken out of it before it is stored, when a dashboard session ends and how
-many wrong passwords mean a wait, the MCP server's address and how many requests a token may
+many wrong passwords mean a wait, the MCP server's URL and how many requests a token may
 make, the AI provider in use, which is none, and the instance's version, id and when it was
 set up. Each setting is fixed when the instance starts, so none of them changes through the
 API. [configuration.md](/docs/configuration) lists them, with how to change each one.

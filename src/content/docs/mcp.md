@@ -109,7 +109,7 @@ uv run dpolens-mcp
 | ------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------- |
 | `DPOLENS_MCP_API_URL`                 | required                     | Where the DPOLens API is                                                              |
 | `DPOLENS_MCP_SURFACE_TOKEN_FILE`      | `/run/dpolens/surface-token` | The file holding the server's own credential                                          |
-| `DPOLENS_MCP_HOST`                    | `127.0.0.1`                  | Which address to listen on. A container sets `0.0.0.0`                                |
+| `DPOLENS_MCP_HOST`                    | `127.0.0.1`                  | Which IP address to listen on. A container sets `0.0.0.0`                             |
 | `DPOLENS_MCP_PORT`                    | `8765`                       | Which port to listen on                                                               |
 | `DPOLENS_MCP_ALLOWED_HOSTS`           | loopback                     | Host headers to answer, as a JSON list                                                |
 | `DPOLENS_MCP_REQUEST_TIMEOUT_SECONDS` | `30`                         | How long to wait for the API                                                          |
@@ -141,25 +141,25 @@ names a person, and revoking the account's token closes the community version. O
 instance, setup publishes no sample policy.
 
 The server holds every caller to three limits, kept in memory and never written down: one for
-each address, a larger one shared by each range that carries many people's calls, and one for
+each IP address, a larger one shared by each range that carries many people's calls, and one for
 everybody together. claude.ai, Claude Desktop and ChatGPT call from their platforms' own
-servers, so every person using one of them arrives from the same few addresses: name those
+servers, so every person using one of them arrives from the same few IP addresses: name those
 ranges in `DPOLENS_MCP_SHARED_RANGES`, from what each platform publishes. A refused call gets
 `429` and `Retry-After`. The AI assistant is told, in the server's instructions and the search
 tool's description, how long questions are kept.
 
-| Variable                             | Read by            | Default                  | What it does                                                                                             |
-| ------------------------------------ | ------------------ | ------------------------ | -------------------------------------------------------------------------------------------------------- |
-| `DPOLENS_COMMUNITY`                  | API and setup      | `false`                  | Make the Community account as the API starts, and publish no sample policy                               |
-| `DPOLENS_COMMUNITY_FILE`             | API                | `/run/dpolens/community` | Where the API writes the account's ids                                                                   |
-| `DPOLENS_MCP_COMMUNITY`              | MCP server         | `false`                  | Answer anyone without a token, as the Community account                                                  |
-| `DPOLENS_MCP_COMMUNITY_FILE`         | MCP server         | `/run/dpolens/community` | Where the server reads the account's ids                                                                 |
-| `DPOLENS_MCP_CLIENT_ADDRESS_HEADER`  | MCP server         | none                     | A header carrying the caller's address, such as `CF-Connecting-IP`, when a proxy in front always sets it |
-| `DPOLENS_MCP_SHARED_RANGES`          | MCP server         | `[]`                     | Address ranges that share one allowance, as a JSON list                                                  |
-| `DPOLENS_MCP_PER_ADDRESS_PER_MINUTE` | MCP server         | `30`                     | Calls one address may make a minute                                                                      |
-| `DPOLENS_MCP_PER_RANGE_PER_MINUTE`   | MCP server         | `120`                    | Calls one shared range may make a minute                                                                 |
-| `DPOLENS_MCP_OVERALL_PER_MINUTE`     | MCP server         | `300`                    | Calls everybody together may make a minute                                                               |
-| `DPOLENS_QUERY_LOG_RETENTION_DAYS`   | API and MCP server | none                     | How long questions are kept. The server reads the same variable, to tell the AI assistant                |
+| Variable                             | Read by            | Default                  | What it does                                                                                                |
+| ------------------------------------ | ------------------ | ------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `DPOLENS_COMMUNITY`                  | API and setup      | `false`                  | Make the Community account as the API starts, and publish no sample policy                                  |
+| `DPOLENS_COMMUNITY_FILE`             | API                | `/run/dpolens/community` | Where the API writes the account's ids                                                                      |
+| `DPOLENS_MCP_COMMUNITY`              | MCP server         | `false`                  | Answer anyone without a token, as the Community account                                                     |
+| `DPOLENS_MCP_COMMUNITY_FILE`         | MCP server         | `/run/dpolens/community` | Where the server reads the account's ids                                                                    |
+| `DPOLENS_MCP_CLIENT_ADDRESS_HEADER`  | MCP server         | none                     | A header carrying the caller's IP address, such as `CF-Connecting-IP`, when a proxy in front always sets it |
+| `DPOLENS_MCP_SHARED_RANGES`          | MCP server         | `[]`                     | IP address ranges that share one allowance, as a JSON list                                                  |
+| `DPOLENS_MCP_PER_ADDRESS_PER_MINUTE` | MCP server         | `30`                     | Calls one IP address may make a minute                                                                      |
+| `DPOLENS_MCP_PER_RANGE_PER_MINUTE`   | MCP server         | `120`                    | Calls one shared range may make a minute                                                                    |
+| `DPOLENS_MCP_OVERALL_PER_MINUTE`     | MCP server         | `300`                    | Calls everybody together may make a minute                                                                  |
+| `DPOLENS_QUERY_LOG_RETENTION_DAYS`   | API and MCP server | none                     | How long questions are kept. The server reads the same variable, to tell the AI assistant                   |
 
 The API still limits each token, so on a community version `DPOLENS_RATE_LIMIT_PER_MINUTE`
 has to allow at least the overall limit, or the Community account's one token reaches its own
