@@ -42,8 +42,11 @@ export default defineConfig({
         "form-action 'self'",
         "object-src 'none'",
       ],
-      // Search runs Pagefind's WebAssembly in the page.
-      scriptDirective: { resources: ["'self'", "'wasm-unsafe-eval'"] },
+      // Search runs Pagefind's WebAssembly in the page. Cloudflare Web Analytics adds its
+      // script to every page as it is served, and reports to the site's own /cdn-cgi/rum.
+      scriptDirective: {
+        resources: ["'self'", "'wasm-unsafe-eval'", "https://static.cloudflareinsights.com"],
+      },
     },
   },
 });
