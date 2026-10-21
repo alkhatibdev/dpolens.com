@@ -193,7 +193,7 @@ administrator can add it, and until somebody has chosen, every search is refused
 `409` and `/problems/no-laws-selected`. The response's `laws` lists what was searched.
 
 The fusion rule is not a parameter. It is chosen by measurement, and
-[retrieval.md](https://github.com/alkhatibdev/dpolens/blob/main/docs/retrieval.md) publishes the measurement.
+[retrieval.md](https://github.com/alkhatibdev/dpolens/blob/main/evals/retrieval.md) publishes the measurement.
 
 ### Clauses
 
