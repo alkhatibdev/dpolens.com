@@ -1,6 +1,6 @@
 ---
 title: "Connect your AI assistant"
-description: "Connect Claude Code, Cursor, VS Code or any other MCP client to a DPOLens instance, with its address and your personal access token."
+description: "Connect Claude Code, Cursor, VS Code or any other MCP client to a DPOLens instance, with its URL and your personal access token."
 ---
 
 DPOLens speaks the Model Context Protocol over HTTP, so any client that can reach a URL and send

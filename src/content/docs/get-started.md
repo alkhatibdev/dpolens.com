@@ -65,7 +65,7 @@ claude plugin marketplace add alkhatibdev/dpolens
 claude plugin install dpolens@dpolens
 ```
 
-Then open Claude Code, run `/plugin configure dpolens@dpolens`, keep the default address
+Then open Claude Code, run `/plugin configure dpolens@dpolens`, keep the default URL
 (`http://localhost:8765/mcp`) and paste the token. It is kept in your operating system's
 credential store, not in a file. Restart Claude Code, and `/mcp` lists `dpolens` as connected.
 
