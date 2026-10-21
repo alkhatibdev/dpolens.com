@@ -1,0 +1,7 @@
+dist/
+.astro/
+.wrangler/
+package-lock.json
+LICENSE
+LICENSE-CC-BY-4.0.txt
+public/

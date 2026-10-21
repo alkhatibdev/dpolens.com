@@ -1,0 +1,46 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  # Once a day, so the law pages follow new releases of the packs.
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+# One deploy at a time, and a newer one waits rather than cancelling one half done.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  ASTRO_TELEMETRY_DISABLED: "1"
+
+jobs:
+  deploy:
+    name: build and deploy
+    runs-on: ubuntu-24.04
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Site
+        run: npm run check:site
+
+      - name: Deploy
+        # wrangler.jsonc names the Worker, the files and the domain.
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

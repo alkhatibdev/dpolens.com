@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ASTRO_TELEMETRY_DISABLED: "1"
+
+jobs:
+  # The image is named, ubuntu-24.04 rather than ubuntu-latest, so it changes when this file
+  # does, not when GitHub moves the label.
+  check:
+    name: format, types, build, site
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        # From the lock file, so the tools that decide whether this build passes are the
+        # versions it names.
+        run: npm ci
+
+      - name: Format
+        run: npm run format:check
+
+      - name: Types
+        run: npm run check
+
+      - name: Build
+        run: npm run build
+
+      - name: Site
+        # Titles, descriptions and canonical addresses, links between pages, punctuation.
+        run: npm run check:site

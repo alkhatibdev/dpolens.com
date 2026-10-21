@@ -1,0 +1,18 @@
+---
+// One section of a page after its opening. Which bands are framed is decided by their order on
+// the page (see .band in site.css), so a page lists its bands and the corners follow.
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"section"> {
+  /** The panel's grey ground, for a band that should stand apart from the white ones beside it. */
+  tint?: boolean;
+}
+
+const { tint = false, class: className, ...rest } = Astro.props;
+---
+
+<section class:list={["band", { tint }, className]} {...rest}>
+  <span class="corners top" aria-hidden="true"></span>
+  <slot />
+  <span class="corners bottom" aria-hidden="true"></span>
+</section>

@@ -1,0 +1,286 @@
+@import "./theme.css";
+
+/* The site's own, beside the dashboard's: plain white, and the gutters at each width. */
+:root {
+  --color-white: #ffffff;
+  --gutter: 56px;
+  color-scheme: light;
+}
+@media (max-width: 1000px) {
+  :root {
+    --gutter: 32px;
+  }
+}
+@media (max-width: 640px) {
+  :root {
+    --gutter: 18px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  background: var(--color-white);
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  background: var(--color-white);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  /* The lens corners stand a few pixels outside the column. */
+  overflow-x: clip;
+}
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+h1,
+h2 {
+  text-wrap: balance;
+}
+a {
+  color: inherit;
+}
+img,
+svg {
+  max-width: 100%;
+}
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+code,
+kbd {
+  font-family: var(--font-mono);
+}
+
+/* The framed column: two thin rules down the page, the header and footer inside them. */
+.col {
+  width: 100%;
+  max-width: 1180px;
+  min-height: 100vh;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  border-inline: 1px solid var(--color-line);
+}
+.col > main {
+  flex: 1 0 auto;
+}
+
+/*
+ * A band is one section of a page after its opening. Each starts under a rule and a seam of dots
+ * that fades. Every other band, from the first, is framed by the logo's lens corners, set outside
+ * it: the opening pair over the rule above it, the closing pair under the rule below it.
+ */
+.band {
+  position: relative;
+  border-top: 1px solid var(--color-line);
+  padding: 88px var(--gutter) 96px;
+}
+.band::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 64px;
+  pointer-events: none;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgb(18 120 78 / 0.22) 1px,
+    transparent 1.4px
+  );
+  background-size: 14px 14px;
+  mask-image: linear-gradient(to bottom, #000, transparent);
+}
+.band.tint {
+  background: var(--color-panel);
+}
+.corners {
+  --cx: -7px;
+  display: none;
+  position: absolute;
+  inset-inline: 0;
+  height: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.band:nth-child(odd of .band) > .corners {
+  display: block;
+}
+.corners.top {
+  top: -1px;
+}
+.corners.bottom {
+  top: 100%;
+}
+.corners::before,
+.corners::after {
+  content: "";
+  position: absolute;
+  top: -7px;
+  width: 13px;
+  height: 13px;
+  border: 2px solid var(--color-brand);
+}
+.corners::before {
+  left: var(--cx);
+  border-right: 0;
+}
+.corners::after {
+  right: var(--cx);
+  border-left: 0;
+}
+.corners.top::before,
+.corners.top::after {
+  border-bottom: 0;
+}
+.corners.top::before {
+  border-radius: 5px 0 0 0;
+}
+.corners.top::after {
+  border-radius: 0 5px 0 0;
+}
+.corners.bottom::before,
+.corners.bottom::after {
+  border-top: 0;
+}
+.corners.bottom::before {
+  border-radius: 0 0 0 5px;
+}
+.corners.bottom::after {
+  border-radius: 0 0 5px 0;
+}
+/* Once the column meets the screen's edges, the corners step just inside it. */
+@media (max-width: 1195px) {
+  .corners {
+    --cx: 3px;
+  }
+}
+
+/* A section's head: a small label, the heading, one line under it. */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 500 12.5px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.label::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--color-brand);
+}
+.h1 {
+  font-size: 66px;
+  line-height: 1.02;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+.h2 {
+  font-size: 42px;
+  line-height: 1.06;
+  font-weight: 600;
+  letter-spacing: -0.032em;
+}
+.lede {
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--color-muted);
+}
+@media (max-width: 1000px) {
+  .h1 {
+    font-size: 54px;
+  }
+}
+@media (max-width: 640px) {
+  .h1 {
+    font-size: 40px;
+  }
+  .h2 {
+    font-size: 30px;
+  }
+  .lede {
+    font-size: 17px;
+  }
+}
+
+/* The mint marker under the words that matter most in a heading. */
+.mark {
+  background: linear-gradient(
+    transparent 60%,
+    var(--color-mint) 60%,
+    var(--color-mint) 94%,
+    transparent 94%
+  );
+  padding-inline: 4px;
+  margin-inline: -4px;
+}
+
+.btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 20px;
+  font: 500 15px var(--font-sans);
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn.main {
+  background: var(--color-ink);
+  color: var(--color-white);
+}
+.btn.main:hover {
+  background: #000;
+}
+.btn.line {
+  background: var(--color-white);
+  color: var(--color-ink);
+  box-shadow: inset 0 0 0 1px var(--color-line-strong);
+}
+.btn.line:hover {
+  box-shadow: inset 0 0 0 1px var(--color-ink);
+}
+.btn svg {
+  flex: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
