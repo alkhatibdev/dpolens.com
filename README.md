@@ -1,7 +1,7 @@
 # dpolens.com
 
 The website of [DPOLens](https://github.com/alkhatibdev/dpolens), an open-source MCP server for
-GDPR, the UAE PDPL and an organisation's own policies. It holds the product's pages, the user
+privacy law and an organisation's own policies. It holds the product's pages, the user
 docs and a page for every article of every supported law. A blog is coming.
 
 dpolens.com is not open yet. Until it opens, every response asks search engines not to list it

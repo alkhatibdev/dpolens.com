@@ -3,7 +3,7 @@ export const SITE = {
   origin: "https://dpolens.com",
   tagline: "Privacy law your AI assistant can cite",
   description:
-    "An open-source MCP server for GDPR, the UAE PDPL and your own policies, with more laws to come. Every answer is the exact clause, with its version.",
+    "An open-source MCP server for privacy law and your own policies. Laws come as packs, GDPR and the UAE PDPL currently supported.",
   repo: "https://github.com/alkhatibdev/dpolens",
   repoName: "alkhatibdev/dpolens",
   contact: "hello@dpolens.com",

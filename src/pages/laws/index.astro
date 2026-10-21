@@ -57,12 +57,10 @@ const jsonLd = {
     <span class="label">Laws</span>
     <h1 class="h1">Supported laws</h1>
     <p class="lede">
-      Each law clause by clause, from its official source, with a key your AI assistant can cite.
+      Each law comes as a pack, clause by clause from its official source, with a key your AI
+      assistant can cite. Packs are added over time, each with releases of its own.
     </p>
     <div class="stats">
-      <span>
-        <b>{laws.length}</b> laws
-      </span>
       <span>
         <b>{number.format(articles.length)}</b> articles
       </span>
@@ -74,6 +72,7 @@ const jsonLd = {
       <span>
         <b>{number.format(clauses)}</b> clauses
       </span>
+      <span class="more">More laws on the way</span>
     </div>
   </header>
 
@@ -102,7 +101,9 @@ const jsonLd = {
           placeholder="Try erasure, consent or محو"
         />
       </div>
-      <div class="hits" aria-live="polite"></div>
+      <div class="hits idle" aria-live="polite">
+        <p class="hits-foot">Type a word from an article's title, in English or Arabic.</p>
+      </div>
       <script is:inline type="application/json" set:html={JSON.stringify(entries)} />
     </div>
   </Band>
@@ -165,6 +166,8 @@ const jsonLd = {
     );
     const show = () => {
       const words = input.value.trim().toLowerCase();
+      // With nothing typed, the panel is only its hint, as plain text under the field.
+      out.classList.toggle("idle", !words);
       if (!words) {
         out.innerHTML = `<p class="hits-foot">Type a word from an article's title, in English or Arabic.</p>`;
         return;
