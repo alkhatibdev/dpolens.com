@@ -1,0 +1,87 @@
+---
+import Icon from "../components/Icon.astro";
+import Page from "../layouts/Page.astro";
+import { SITE } from "../lib/site";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${SITE.origin}/#website`,
+      name: SITE.name,
+      url: SITE.origin,
+      description: SITE.description,
+    },
+    {
+      "@type": "Organization",
+      "@id": `${SITE.origin}/#organization`,
+      name: SITE.name,
+      url: SITE.origin,
+      logo: `${SITE.origin}/icon-512.png`,
+      sameAs: [SITE.repo],
+    },
+  ],
+};
+---
+
+<Page
+  title="DPOLens: privacy law your AI assistant can cite"
+  fullTitle
+  description={SITE.description}
+  jsonLd={jsonLd}
+>
+  <header class="hero">
+    <h1 class="h1">
+      Privacy law your AI assistant <span class="mark">can cite</span>
+    </h1>
+    <p class="lede">{SITE.description}</p>
+    <div class="btns">
+      <a class="btn main" href={SITE.repo}>
+        <Icon name="github" />
+        Self-host
+      </a>
+    </div>
+  </header>
+</Page>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    padding: 56px var(--gutter) 88px;
+    text-align: center;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      55% 45% at 50% 82%,
+      rgb(201 242 221 / 0.6),
+      rgb(201 242 221 / 0) 72%
+    );
+  }
+  .h1 {
+    max-width: 12ch;
+  }
+  .lede {
+    max-width: 33em;
+  }
+  @media (max-width: 640px) {
+    .hero {
+      padding-top: 32px;
+      padding-bottom: 56px;
+    }
+    .btns,
+    .btn {
+      width: 100%;
+    }
+  }
+</style>

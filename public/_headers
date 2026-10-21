@@ -1,0 +1,16 @@
+# Response headers for every file the site serves (Cloudflare Workers static assets).
+
+/*
+  # Until the site opens, search engines may read every page but list none of them.
+  # Remove this line on the day it opens.
+  X-Robots-Tag: noindex
+  # The rest of the policy is a meta tag on each page, written by Astro (astro.config.mjs).
+  Content-Security-Policy: frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Strict-Transport-Security: max-age=31536000
+
+# Built files carry a hash of their content in their name, so they never change.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable

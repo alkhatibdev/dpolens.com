@@ -1,0 +1,218 @@
+---
+import Icon from "../components/Icon.astro";
+import Page from "../layouts/Page.astro";
+import { SITE } from "../lib/site";
+---
+
+<Page
+  title="Page not found"
+  description="This page is not on dpolens.com. Search the site, or start from the home page."
+  canonical={false}
+  searchable={false}
+>
+  <section class="missing" aria-labelledby="missing-title">
+    <div class="lens" aria-hidden="true">
+      <i></i>
+      <i></i>
+      <i></i>
+      <i></i>
+      <span>404</span>
+    </div>
+    <h1 class="h1" id="missing-title">
+      This page is not here
+    </h1>
+    <p class="lede">
+      It may have moved, or the address may be mistyped. Search, or start from one of these.
+    </p>
+    <form class="find" data-find>
+      <Icon name="search" size={18} />
+      <label class="visually-hidden" for="missing-q">
+        Search dpolens.com
+      </label>
+      <input id="missing-q" type="search" placeholder="Search dpolens.com" autocomplete="off" />
+    </form>
+    <div class="btns">
+      <a class="btn line" href="/">
+        Home
+      </a>
+      <a class="btn line" href={SITE.repo}>
+        <Icon name="github" />
+        GitHub
+      </a>
+    </div>
+  </section>
+</Page>
+
+<script>
+  // The field hands what is typed to the site's search, which shows the results.
+  const form = document.querySelector<HTMLFormElement>("[data-find]")!;
+  const input = form.querySelector("input")!;
+  const hand = () => {
+    const query = input.value;
+    input.value = "";
+    document.dispatchEvent(new CustomEvent("dpolens:search", { detail: query }));
+  };
+  input.addEventListener("input", hand);
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    hand();
+  });
+</script>
+
+<style>
+  .missing {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    padding: 72px var(--gutter) 104px;
+    text-align: center;
+  }
+  .missing::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(
+      40% 60% at 50% 30%,
+      rgb(201 242 221 / 0.5),
+      rgb(201 242 221 / 0) 70%
+    );
+  }
+  .lens {
+    position: relative;
+    width: 250px;
+    height: 160px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 26px;
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      rgb(18 120 78 / 0.22) 1px,
+      transparent 1.4px
+    );
+    background-size: 14px 14px;
+  }
+  .lens span {
+    font: 600 72px var(--font-mono);
+    letter-spacing: -0.05em;
+    animation: blur 4.5s ease-in-out infinite;
+  }
+  .lens i {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border: 3px solid var(--color-brand);
+    animation: focus 4.5s ease-in-out infinite;
+  }
+  .lens i:nth-child(1) {
+    top: 0;
+    left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-radius: 12px 0 0 0;
+    --dx: -14px;
+    --dy: -12px;
+  }
+  .lens i:nth-child(2) {
+    top: 0;
+    right: 0;
+    border-left: 0;
+    border-bottom: 0;
+    border-radius: 0 12px 0 0;
+    --dx: 14px;
+    --dy: -12px;
+  }
+  .lens i:nth-child(3) {
+    bottom: 0;
+    left: 0;
+    border-right: 0;
+    border-top: 0;
+    border-radius: 0 0 0 12px;
+    --dx: -14px;
+    --dy: 12px;
+  }
+  .lens i:nth-child(4) {
+    bottom: 0;
+    right: 0;
+    border-left: 0;
+    border-top: 0;
+    border-radius: 0 0 12px 0;
+    --dx: 14px;
+    --dy: 12px;
+  }
+  @keyframes focus {
+    0%,
+    100% {
+      transform: translate(var(--dx), var(--dy));
+    }
+    45%,
+    75% {
+      transform: none;
+    }
+  }
+  @keyframes blur {
+    0%,
+    100% {
+      filter: blur(7px);
+      opacity: 0.45;
+    }
+    45%,
+    75% {
+      filter: blur(0);
+      opacity: 1;
+    }
+  }
+  .lede {
+    max-width: 30em;
+  }
+  .find {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: var(--color-white);
+    color: var(--color-muted);
+    box-shadow:
+      inset 0 0 0 1px var(--color-line-strong),
+      0 14px 34px -24px rgb(17 22 19 / 0.35);
+  }
+  .find:focus-within {
+    box-shadow:
+      inset 0 0 0 1.5px var(--color-brand),
+      0 14px 34px -24px rgb(17 22 19 / 0.35);
+  }
+  .find input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    padding: 15px 0;
+    font: 16.5px var(--font-sans);
+    color: var(--color-ink);
+  }
+  .btns {
+    justify-content: center;
+  }
+  @media (max-width: 640px) {
+    .missing {
+      padding-top: 48px;
+      padding-bottom: 72px;
+    }
+    .lens {
+      width: 200px;
+      height: 130px;
+    }
+    .lens span {
+      font-size: 56px;
+    }
+  }
+</style>

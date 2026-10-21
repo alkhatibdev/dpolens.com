@@ -1,0 +1,36 @@
+/*
+ * The dashboard's tokens, copied from the @theme block of dpolens/dashboard/src/index.css.
+ * When one changes, the other changes with it. --font-sans and --font-mono are set by the
+ * fonts in astro.config.mjs, under the same names.
+ */
+:root {
+  --color-ground: #eceeec;
+  --color-panel: #f7f8f7;
+  --color-field: #f3f5f3;
+  --color-line: #e3e7e4;
+  --color-line-strong: #d5dad6;
+  --color-ink: #111613;
+  --color-ink-2: #3a423d;
+  --color-muted: #5b635e;
+
+  /* The logo's green, and the tints mixed from it. */
+  --color-brand: #12784e;
+  --color-brand-dark: #0b4a30;
+  --color-brand-mid: #9bc6b5;
+  --color-brand-deep: #4d9a7a;
+  --color-brand-soft: #e3efea;
+
+  /* The brand's dark ground, from the logo's kit, and what reads on it. */
+  --color-deep: #0d3b2a;
+  --color-deep-muted: #a9cbbb;
+  --color-mint: #c9f2dd;
+
+  --color-warn-soft: #fdebd3;
+  --color-warn-ink: #7a3e00;
+  --color-danger-soft: #fbe2e0;
+  --color-danger-ink: #8a1c13;
+
+  --radius-panel: 24px;
+  --radius-card: 20px;
+  --radius-control: 14px;
+}

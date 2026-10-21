@@ -1,0 +1,33 @@
+---
+import { pagePath, SITE } from "../lib/site";
+
+interface Props {
+  /** The page's own title. The site's name is added after it unless `fullTitle` is set. */
+  title: string;
+  /** One or two sentences: what search results and link cards show under the title. */
+  description: string;
+  fullTitle?: boolean;
+  /** Pages that are not a page of their own, like the 404, have no canonical address. */
+  canonical?: boolean;
+  /** Structured data for search engines, as schema.org JSON-LD. */
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, fullTitle = false, canonical = true, jsonLd } = Astro.props;
+const pageTitle = fullTitle ? title : `${title} · ${SITE.name}`;
+const url = new URL(pagePath(Astro.url), SITE.origin).href;
+const image = new URL("/icon-512.png", SITE.origin).href;
+---
+
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+{canonical && <link rel="canonical" href={url} />}
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:locale" content="en_US" />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+{canonical && <meta property="og:url" content={url} />}
+<meta property="og:image" content={image} />
+<meta name="twitter:card" content="summary" />
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

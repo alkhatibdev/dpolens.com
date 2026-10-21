@@ -1,0 +1,202 @@
+---
+import Logo from "../assets/brand/dpolens-logo.svg";
+import { NAV, pagePath, SITE } from "../lib/site";
+import Icon from "./Icon.astro";
+
+const here = pagePath(Astro.url);
+const current = (href: string) =>
+  here === href || here.startsWith(`${href}/`) ? "page" : undefined;
+---
+
+<header class="top">
+  <a class="home" href="/" aria-label="DPOLens home">
+    <Logo width={128} height={28} />
+  </a>
+  {NAV.length > 0 && (
+    <nav class="nav" aria-label="Site">
+      {NAV.map((link) => (
+        <a href={link.href} aria-current={current(link.href)}>
+          {link.name}
+        </a>
+      ))}
+    </nav>
+  )}
+  <div class="end">
+    <button class="search" type="button" data-search-open aria-label="Search dpolens.com">
+      <Icon name="search" size={16} />
+      <span class="word">Search</span>
+      <kbd data-shortcut>⌘K</kbd>
+    </button>
+    <a class="gh" href={SITE.repo}>
+      <Icon name="github" />
+      <span>GitHub</span>
+    </a>
+    {NAV.length > 0 && (
+      <>
+        <button class="menu" type="button" popovertarget="site-menu" aria-label="Menu">
+          <Icon name="menu" size={18} />
+        </button>
+        <nav class="menu-pop" id="site-menu" popover aria-label="Site">
+          {NAV.map((link) => (
+            <a href={link.href} aria-current={current(link.href)}>
+              {link.name}
+            </a>
+          ))}
+          <a href={SITE.repo}>GitHub</a>
+        </nav>
+      </>
+    )}
+  </div>
+</header>
+
+<script>
+  // Windows and Linux open search with Ctrl K, so the hint says so there.
+  if (!/Mac|iPhone|iPad/.test(navigator.userAgent)) {
+    document.querySelectorAll("[data-shortcut]").forEach((key) => (key.textContent = "Ctrl K"));
+  }
+</script>
+
+<style>
+  .top {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 22px var(--gutter);
+  }
+  .home {
+    display: flex;
+    border-radius: 8px;
+  }
+  .home svg {
+    height: 28px;
+    width: auto;
+  }
+  .nav {
+    display: flex;
+    gap: 4px;
+    margin-left: 8px;
+  }
+  .nav a,
+  .gh {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    color: var(--color-ink-2);
+    font-size: 15px;
+    text-decoration: none;
+  }
+  .nav a:hover,
+  .gh:hover {
+    background: var(--color-field);
+  }
+  .nav a[aria-current="page"] {
+    background: var(--color-field);
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+  .end {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .search {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 999px;
+    padding: 7px 8px 7px 13px;
+    background: var(--color-field);
+    box-shadow: inset 0 0 0 1px var(--color-line);
+    color: var(--color-muted);
+    font: 14px var(--font-sans);
+    cursor: pointer;
+  }
+  .search:hover {
+    box-shadow: inset 0 0 0 1px var(--color-line-strong);
+    color: var(--color-ink);
+  }
+  .search .word {
+    margin-right: 18px;
+  }
+  .search kbd {
+    font-size: 12px;
+    color: var(--color-muted);
+    background: var(--color-white);
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 1px var(--color-line);
+    padding: 1px 6px;
+  }
+  .menu {
+    display: none;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: var(--color-white);
+    color: var(--color-ink);
+    cursor: pointer;
+  }
+  .menu-pop {
+    inset: auto;
+    top: 74px;
+    right: var(--gutter);
+    margin: 0;
+    width: min(260px, calc(100vw - 36px));
+    padding: 6px;
+    border: 0;
+    border-radius: 16px;
+    background: var(--color-white);
+    box-shadow:
+      0 0 0 1px var(--color-line),
+      0 24px 44px -20px rgb(17 22 19 / 0.38);
+  }
+  .menu-pop:popover-open {
+    display: flex;
+    flex-direction: column;
+  }
+  .menu-pop a {
+    padding: 10px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 15px;
+  }
+  .menu-pop a:hover,
+  .menu-pop a[aria-current="page"] {
+    background: var(--color-field);
+  }
+  @media (max-width: 640px) {
+    .top {
+      padding-block: 16px;
+    }
+    .nav,
+    .search .word,
+    .search kbd {
+      display: none;
+    }
+    /* The icon alone shows, and the word stays for screen readers. */
+    .gh span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .search {
+      width: 40px;
+      height: 40px;
+      justify-content: center;
+      padding: 0;
+    }
+    .menu {
+      display: inline-flex;
+    }
+  }
+</style>
