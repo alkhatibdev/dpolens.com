@@ -17,10 +17,17 @@ export interface Link {
 }
 
 /** The site's sections in the header. A section is listed once its pages exist. */
-export const NAV: Link[] = [{ name: "Docs", href: "/docs/get-started", section: "/docs" }];
+export const NAV: Link[] = [
+  { name: "Docs", href: "/docs/get-started", section: "/docs" },
+  { name: "Laws", href: "/laws" },
+];
 
 /** The footer's columns. A link is listed once the page it leads to exists. */
 export const FOOTER: { title: string; links: Link[] }[] = [
+  {
+    title: "Product",
+    links: [{ name: "Laws", href: "/laws" }],
+  },
   {
     title: "Docs",
     links: [

@@ -28,7 +28,7 @@ import Icon from "./Icon.astro";
 <script>
   interface Result {
     url: string;
-    meta: { title?: string };
+    meta: { title?: string; section?: string };
     excerpt: string;
   }
   interface Pagefind {
@@ -72,6 +72,11 @@ import Icon from "./Icon.astro";
         const title = Object.assign(document.createElement("span"), {
           textContent: hit.meta.title ?? link.pathname,
         });
+        if (hit.meta.section) {
+          title.prepend(
+            Object.assign(document.createElement("em"), { textContent: hit.meta.section }),
+          );
+        }
         const excerpt = document.createElement("small");
         // Pagefind escapes the page's text and marks the matched words with <mark>.
         excerpt.innerHTML = hit.excerpt;
@@ -202,6 +207,18 @@ import Icon from "./Icon.astro";
   .results :global(a span) {
     font-size: 15px;
     font-weight: 500;
+  }
+  .results :global(a em) {
+    margin-right: 8px;
+    padding: 1px 7px;
+    border-radius: 6px;
+    background: var(--color-field);
+    font: 500 11px var(--font-mono);
+    font-style: normal;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    vertical-align: 2px;
   }
   .results :global(a small) {
     font-size: 13px;

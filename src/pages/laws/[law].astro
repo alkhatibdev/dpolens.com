@@ -1,0 +1,221 @@
+---
+import "../../styles/laws.css";
+import Icon from "../../components/Icon.astro";
+import Page from "../../layouts/Page.astro";
+import { formatDate, itemName, itemPath, pageLanguage, textOf, wordsOf } from "../../lib/laws";
+import { clauseCount, getLaws, type Law } from "../../lib/packs";
+import { SITE } from "../../lib/site";
+
+export async function getStaticPaths() {
+  return (await getLaws()).map((law) => ({ params: { law: law.slug }, props: { law } }));
+}
+
+interface Props {
+  law: Law;
+}
+
+const { law } = Astro.props;
+const lang = pageLanguage(law);
+const number = new Intl.NumberFormat("en");
+const host = new URL(law.sourceUrl).hostname.replace(/^www\./, "");
+const parts = law.docs.map((doc) => ({
+  doc,
+  name: doc.items[0]?.kind === "recital" ? "Recitals" : "Articles",
+  items: doc.items.map((item) => {
+    const text = item.texts.get(lang) ?? item.texts.get(law.authoritative)!;
+    return {
+      href: itemPath(item, lang),
+      name: itemName(item, lang),
+      title: text.title ?? wordsOf(text.clauses[0]).slice(0, 150),
+      search: `${itemName(item, lang)} ${text.title ?? wordsOf(text.clauses[0])}`.toLowerCase(),
+    };
+  }),
+}));
+const firstItem = law.docs[0]?.items[0];
+const exampleKey = firstItem?.texts.get(law.authoritative)?.clauses[0]?.key ?? firstItem?.key;
+const description = `The ${law.name} (${law.short}), ${law.jurisdiction}, clause by clause from its official source: ${parts
+  .map((part) => `${part.items.length} ${part.name.toLowerCase()}`)
+  .join(" and ")}, version ${law.version}.`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Legislation",
+  name: law.name,
+  alternateName: law.short,
+  legislationIdentifier: law.slug,
+  legislationJurisdiction: law.jurisdiction,
+  inLanguage: law.authoritative,
+  legislationDate: law.effectiveDate,
+  isBasedOn: law.sourceUrl,
+  url: `${SITE.origin}/laws/${law.slug}`,
+};
+---
+
+<Page title={`${law.short}: ${law.name}`} description={description} jsonLd={jsonLd} section="Laws">
+  <header class="intro">
+    <ol class="crumbs" aria-label="Breadcrumb">
+      <li>
+        <a href="/laws">Laws</a>
+      </li>
+      <li aria-current="page">{law.short}</li>
+    </ol>
+    <div class="titlerow">
+      <h1 class="h1">{law.name}</h1>
+      <span class="kc big">{law.slug}</span>
+    </div>
+    <p class="lede">
+      The privacy law of the {law.jurisdiction}, clause by clause, from its official source.
+    </p>
+    <dl class="factsrow">
+      <div>
+        <dt>Region</dt>
+        <dd>{law.jurisdiction}</dd>
+      </div>
+      <div>
+        <dt>Version</dt>
+        <dd>{law.version}</dd>
+      </div>
+      <div>
+        <dt>In force since</dt>
+        <dd>{formatDate(law.effectiveDate)}</dd>
+      </div>
+      <div>
+        <dt>Text</dt>
+        <dd>{textOf(law)}</dd>
+      </div>
+      <div>
+        <dt>Clauses</dt>
+        <dd>{number.format(clauseCount(law))}</dd>
+      </div>
+      <div>
+        <dt>Source</dt>
+        <dd>
+          <a href={law.sourceUrl}>{host}</a>
+        </dd>
+      </div>
+    </dl>
+  </header>
+
+  <div class="lawbody">
+    <div data-lawparts>
+      <div class="ltabs" role="tablist" aria-label="Parts" data-pagefind-ignore>
+        {parts.map((part, index) => (
+          <button
+            type="button"
+            role="tab"
+            id={`part-${index}`}
+            aria-controls={`part-${index}-panel`}
+            aria-selected={index === 0 ? "true" : "false"}
+            tabindex={index === 0 ? 0 : -1}
+          >
+            {part.name} <span>{part.items.length}</span>
+          </button>
+        ))}
+        <div class="find">
+          <Icon name="search" size={16} />
+          <label class="visually-hidden" for="part-filter">
+            Filter
+          </label>
+          <input
+            id="part-filter"
+            type="search"
+            placeholder="Filter by title or number"
+            autocomplete="off"
+          />
+        </div>
+      </div>
+      {parts.map((part, index) => (
+        <ol
+          class="arts"
+          id={`part-${index}-panel`}
+          role="tabpanel"
+          aria-labelledby={`part-${index}`}
+          hidden={index !== 0}
+          lang={lang === "en" ? undefined : lang}
+          dir={lang === "ar" ? "rtl" : undefined}
+        >
+          {part.items.map((item) => (
+            <li data-search={item.search}>
+              <a href={item.href}>
+                <span class="n">{item.name}</span>
+                <span class="t">{item.title}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      ))}
+      <p class="none" hidden>
+        Nothing matches.
+      </p>
+    </div>
+
+    <aside class="rail" aria-label="About this law" data-pagefind-ignore>
+      {exampleKey && (
+        <div class="box">
+          <h2>Cite it</h2>
+          <p>Every clause has its own key, made from its numbers.</p>
+          <code class="bigkey">{exampleKey}</code>
+          <p class="note">
+            {law.short} {law.version}, in force since {formatDate(law.effectiveDate)}.
+          </p>
+        </div>
+      )}
+      <div class="box">
+        <h2>Reuse</h2>
+        <p>{law.license}</p>
+        {law.translations.map((translation) => (
+          <p>{translation.license}</p>
+        ))}
+      </div>
+      <div class="box">
+        <h2>The pack</h2>
+        <p>This version of the law, as a file you can check.</p>
+        <a class="dl" href={law.archive.url}>
+          <Icon name="download" size={16} />
+          {law.archive.name}
+        </a>
+        <a class="dl" href={law.archive.release}>
+          Every version, and its checksum
+        </a>
+      </div>
+    </aside>
+  </div>
+</Page>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-lawparts]").forEach((parts) => {
+    const tabs = [...parts.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = [...parts.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
+    const input = parts.querySelector<HTMLInputElement>("input")!;
+    const none = parts.querySelector<HTMLElement>(".none")!;
+    const filter = () => {
+      const words = input.value.trim().toLowerCase();
+      const panel = panels.find((candidate) => !candidate.hidden)!;
+      let shown = 0;
+      panel.querySelectorAll<HTMLElement>("li").forEach((item) => {
+        item.hidden = !item.dataset.search!.includes(words);
+        if (!item.hidden) shown++;
+      });
+      none.hidden = shown > 0;
+    };
+    const choose = (chosen: HTMLButtonElement) => {
+      tabs.forEach((tab, index) => {
+        const on = tab === chosen;
+        tab.setAttribute("aria-selected", String(on));
+        tab.tabIndex = on ? 0 : -1;
+        panels[index].hidden = !on;
+      });
+      filter();
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => choose(tab));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        const next =
+          tabs[(index + (event.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+        choose(next);
+        next.focus();
+      });
+    });
+    input.addEventListener("input", filter);
+  });
+</script>

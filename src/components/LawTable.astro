@@ -1,0 +1,98 @@
+---
+import { region, textOf } from "../lib/laws";
+import { clauseCount, type Law } from "../lib/packs";
+import Icon from "./Icon.astro";
+
+interface Props {
+  laws: Law[];
+}
+
+const { laws } = Astro.props;
+const regions = ["All", ...new Set(laws.map(region))];
+const count = (name: string) =>
+  name === "All" ? laws.length : laws.filter((law) => region(law) === name).length;
+const number = new Intl.NumberFormat("en");
+---
+
+<div data-lawlist>
+  <div class="lawbar">
+    <div class="regions" role="group" aria-label="Region">
+      {regions.map((name) => (
+        <button type="button" aria-pressed={name === "All" ? "true" : "false"} data-region={name}>
+          {name}
+          <span>{count(name)}</span>
+        </button>
+      ))}
+    </div>
+    <div class="find">
+      <Icon name="search" size={16} />
+      <label class="visually-hidden" for="law-find">
+        Search laws
+      </label>
+      <input id="law-find" type="search" placeholder="Search laws" autocomplete="off" />
+    </div>
+  </div>
+  <div class="lawtable">
+    <div class="thead" aria-hidden="true">
+      <span>Law</span>
+      <span class="reg">Region</span>
+      <span class="lang">Text</span>
+      <span class="ver">Version</span>
+      <span>Size</span>
+      <span></span>
+    </div>
+    {laws.map((law) => (
+      <a
+        class="lawrow"
+        href={`/laws/${law.slug}`}
+        data-region={region(law)}
+        data-text={`${law.short} ${law.name} ${law.jurisdiction}`.toLowerCase()}
+      >
+        <span class="nm">
+          <b>
+            {law.short} <span class="kc">{law.slug}</span>
+          </b>
+          <span>{law.name}</span>
+        </span>
+        <span class="c reg">{law.jurisdiction}</span>
+        <span class="c lang">{textOf(law)}</span>
+        <span class="num ver">{law.version}</span>
+        <span class="num">{number.format(clauseCount(law))} clauses</span>
+        <span class="go">Read →</span>
+      </a>
+    ))}
+    <p class="none" hidden>
+      No supported law matches.
+    </p>
+  </div>
+</div>
+
+<script>
+  // Region and words together decide which laws show.
+  document.querySelectorAll<HTMLElement>("[data-lawlist]").forEach((list) => {
+    const chips = [...list.querySelectorAll<HTMLButtonElement>(".regions button")];
+    const input = list.querySelector<HTMLInputElement>("input")!;
+    const rows = [...list.querySelectorAll<HTMLElement>(".lawrow")];
+    const none = list.querySelector<HTMLElement>(".none")!;
+    let chosen = "All";
+    const show = () => {
+      const words = input.value.trim().toLowerCase();
+      let shown = 0;
+      rows.forEach((row) => {
+        const visible =
+          (chosen === "All" || row.dataset.region === chosen) && row.dataset.text!.includes(words);
+        row.hidden = !visible;
+        if (visible) shown++;
+      });
+      none.hidden = shown > 0;
+    };
+    chips.forEach((chip) =>
+      chip.addEventListener("click", () => {
+        chosen = chip.dataset.region!;
+        chips.forEach((other) => other.setAttribute("aria-pressed", String(other === chip)));
+        show();
+      }),
+    );
+    input.addEventListener("input", show);
+  });
+</script>

@@ -42,6 +42,19 @@ npm run build && npm run check:site # titles, addresses, links, punctuation
 - `src/lib/site.ts` holds the site's name, its description, and the links in the header, the
   footer and `llms.txt`.
 
+## The law pages
+
+Every page under `/laws` is built from the newest release of each law pack in the DPOLens
+repository, `pack/<slug>/<version>`, the archive an instance's `dpolens pack update` would load.
+The build downloads it, checks it against its SHA-256, and reads it (`src/lib/packs.ts`). A
+new pack release reaches the site with the next daily deploy. Archives are kept in `.cache/packs`
+between builds, and `DPOLENS_PACKS_REPOSITORY` names another repository to read them from, as it
+does for an instance.
+
+Each article and recital has its own page, in every language the pack has, with a key on every
+clause and a Markdown copy beside it: `/laws/gdpr/art-17` and `/laws/gdpr/art-17.md`, and the
+text that prevails at `/ar/laws/uae-pdpl/art-15`.
+
 ## The docs
 
 The docs describe the newest release of DPOLens, which `DOCS_VERSION` in `src/lib/docs.ts`

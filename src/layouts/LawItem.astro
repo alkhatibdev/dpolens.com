@@ -1,0 +1,437 @@
+---
+import "../styles/laws.css";
+import Icon from "../components/Icon.astro";
+import {
+  cite,
+  formatDate,
+  itemName,
+  itemPath,
+  languageName,
+  languagesOf,
+  linkRefs,
+  wordsOf,
+} from "../lib/laws";
+import { type Item, type Ref, referredBy } from "../lib/packs";
+import { SITE } from "../lib/site";
+import Page from "./Page.astro";
+
+interface Props {
+  item: Item;
+  /** The language this page reads the item in. */
+  lang: string;
+}
+
+const { item, lang } = Astro.props;
+const law = item.law;
+const text = item.texts.get(lang)!;
+const arabic = lang === "ar";
+const prevails = law.authoritative;
+const translated = law.translations.length > 0;
+const name = itemName(item, lang);
+const heading = text.title ?? name;
+const date = formatDate(law.effectiveDate, lang);
+const twins = languagesOf(law).filter((other) => other !== lang && item.texts.has(other));
+const alternates = languagesOf(law)
+  .filter((other) => item.texts.has(other))
+  .map((other) => ({ lang: other, href: itemPath(item, other) }));
+const siblings = item.doc.items;
+const at = siblings.indexOf(item);
+const previous = siblings[at - 1];
+const next = siblings[at + 1];
+const words = text.clauses[0] ? wordsOf(text.clauses[0]) : "";
+const hasParts = text.clauses.some((clause) => clause.key !== item.key);
+const paragraphs = text.clauses.filter((clause) => clause.key !== item.key);
+const markdown = `${itemPath(item, lang)}.md`;
+const backHref = `/laws/${law.slug}`;
+const kind = item.kind === "recital" ? "recitals" : "articles";
+const listLang = arabic ? "ar" : undefined;
+const referred = referredBy(item);
+
+/** The references the pack found in one clause's words; an item with no paragraphs refers from itself. */
+const refsFrom = (key: string): Ref[] => text.refs.filter((ref) => (ref.from ?? item.key) === key);
+
+const language = translated
+  ? lang === prevails
+    ? `${languageName(lang)}, the text that prevails`
+    : `${languageName(lang)}, the official translation`
+  : `${languageName(lang)}, an authentic text`;
+
+const citation = `${law.short} ${cite(item.key, item, "en")}, version ${law.version} (${item.key})`;
+const question = arabic
+  ? `ماذا يتطلب ${item.key}؟ اقتبس البنود التي تعتمد عليها.`
+  : `What does ${item.key} require? Quote the clauses you rely on.`;
+const title = `${law.short} ${name}${text.title ? `: ${text.title}` : ""}`;
+const description = `${name}${arabic ? "، " : " of the "}${law.short}${arabic ? "" : ","} ${
+  words.length > 140 ? `${words.slice(0, 140).replace(/\s+\S*$/, "")} ...` : words
+}`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Legislation",
+  name: title,
+  legislationIdentifier: item.key,
+  legislationJurisdiction: law.jurisdiction,
+  inLanguage: lang,
+  legislationDate: law.effectiveDate,
+  isBasedOn: item.doc.sourceUrl,
+  url: `${SITE.origin}${itemPath(item, lang)}`,
+  isPartOf: {
+    "@type": "Legislation",
+    name: law.name,
+    alternateName: law.short,
+    url: `${SITE.origin}/laws/${law.slug}`,
+  },
+  ...(lang === prevails
+    ? {}
+    : { translationOfWork: { "@id": `${SITE.origin}${itemPath(item, prevails)}` } }),
+};
+---
+
+<Page
+  title={title}
+  description={description}
+  jsonLd={jsonLd}
+  section="Laws"
+  lang={lang}
+  alternates={alternates}
+>
+  <div class:list={["artpage", { ar: arabic }]}>
+    <div class="aside-col">
+      <nav class="alist" aria-label={`The ${kind} of the ${law.short}`} data-pagefind-ignore>
+        <a class="back" href={backHref}>
+          <Icon name="caret" size={14} />
+          {law.short} · {siblings.length} {kind}
+        </a>
+        <div class="find">
+          <Icon name="search" size={15} />
+          <label class="visually-hidden" for="item-filter">
+            Filter {kind}
+          </label>
+          <input id="item-filter" type="search" placeholder={`Filter ${kind}`} autocomplete="off" />
+        </div>
+        <ol lang={listLang} dir={arabic ? "rtl" : undefined}>
+          {siblings.map((sibling) => {
+            const own = sibling.texts.get(lang) ?? sibling.texts.get(prevails)!;
+            const label = own.title ?? wordsOf(own.clauses[0]).slice(0, 80);
+            return (
+              <li data-search={`${sibling.number} ${label}`.toLowerCase()}>
+                <a
+                  href={itemPath(sibling, lang)}
+                  aria-current={sibling === item ? "page" : undefined}
+                >
+                  <span>{sibling.number}</span>
+                  <span>{label}</span>
+                </a>
+              </li>
+            );
+          })}
+        </ol>
+        <p class="none" hidden>
+          Nothing matches.
+        </p>
+      </nav>
+    </div>
+
+    <div class="amain">
+      <ol class="crumbs" aria-label="Breadcrumb" data-pagefind-ignore>
+        <li>
+          <a href="/laws">Laws</a>
+        </li>
+        <li>
+          <a href={backHref}>{law.short}</a>
+        </li>
+        <li aria-current="page">{cite(item.key, item, "en")}</li>
+      </ol>
+      {translated &&
+        twins.map((other) => (
+          <div class="twin" data-pagefind-ignore>
+            <span>
+              {lang === prevails
+                ? `The ${languageName(lang)} text. Where the two differ, it prevails over the official ${languageName(other)} translation.`
+                : `The official ${languageName(lang)} translation. The ${languageName(prevails)} text prevails.`}
+            </span>
+            {other === "ar" ? (
+              <a href={itemPath(item, other)} lang="ar">
+                اقرأ النص العربي
+              </a>
+            ) : (
+              <a href={itemPath(item, other)}>Read in {languageName(other)}</a>
+            )}
+          </div>
+        ))}
+      <article
+        class="article"
+        lang={lang}
+        dir={arabic ? "rtl" : "ltr"}
+        aria-labelledby="item-title"
+      >
+        {text.title && <span class="artlabel">{name}</span>}
+        <h1 class="arttitle" id="item-title">
+          {heading}
+        </h1>
+        <div class="meta" lang="en" dir="ltr">
+          <span class="force">In force since {formatDate(law.effectiveDate)}</span>
+          <span>
+            {law.short} {law.version}
+          </span>
+          <span>{language}</span>
+        </div>
+        <p class="answer-top">
+          {arabic ? (
+            <>
+              {name}، السارية منذ {date}. مفتاحها{" "}
+              <span class="kc" dir="ltr">
+                {item.key}
+              </span>
+              {hasParts ? "، ولكل بند فيها مفتاحه." : "."}
+            </>
+          ) : (
+            <>
+              {name} of the {law.short}, as in force since {date}. Its key is{" "}
+              <span class="kc">{item.key}</span>
+              {hasParts ? ", and each paragraph and point has its own." : "."}
+            </>
+          )}
+        </p>
+        <div class="text">
+          {text.clauses.map((clause) => (
+            <div class="para">
+              {clause.paragraphs.length > 0 && (
+                <div class:list={["cr", { textonly: !clause.label }]} id={clause.anchor}>
+                  {clause.label && <span class="no">{clause.label}</span>}
+                  <div class="words">
+                    {clause.paragraphs.map((paragraph) => (
+                      <p set:html={linkRefs(paragraph, refsFrom(clause.key), law, lang)} />
+                    ))}
+                  </div>
+                  <button
+                    class="keybtn"
+                    type="button"
+                    data-key={clause.key}
+                    aria-label={`Copy the key ${clause.key}`}
+                    data-pagefind-ignore
+                  >
+                    <span class="copy-label" dir="ltr">
+                      {clause.key}
+                    </span>
+                    <Icon name="copy" size={13} />
+                  </button>
+                </div>
+              )}
+              {clause.points.length > 0 && (
+                <div class="points">
+                  {clause.points.map((point) => (
+                    <div class="cr" id={point.anchor}>
+                      <span class="no">{point.label}</span>
+                      <div class="words">
+                        {point.paragraphs.map((paragraph) => (
+                          <p set:html={linkRefs(paragraph, refsFrom(point.key), law, lang)} />
+                        ))}
+                      </div>
+                      <button
+                        class="keybtn"
+                        type="button"
+                        data-key={point.key}
+                        aria-label={`Copy the key ${point.key}`}
+                        data-pagefind-ignore
+                      >
+                        <span class="copy-label" dir="ltr">
+                          {point.key}
+                        </span>
+                        <Icon name="copy" size={13} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <div class="pop" role="tooltip" hidden></div>
+      </article>
+      <p class="note" data-pagefind-ignore>
+        {translated && `Where the two differ, the ${languageName(prevails)} text prevails. `}
+        DPOLens finds the law. It is not legal advice. <a href={markdown}>This page as Markdown</a>.
+      </p>
+      <nav class="prevnext" aria-label={`Previous and next ${kind}`} data-pagefind-ignore>
+        {previous ? (
+          <a class="previous" href={itemPath(previous, lang)}>
+            <small>Previous</small>
+            <b lang={listLang}>
+              {itemName(previous, lang)}
+              {previous.texts.get(lang)?.title ? ` · ${previous.texts.get(lang)?.title}` : ""}
+            </b>
+          </a>
+        ) : (
+          <span />
+        )}
+        {next && (
+          <a class="next" href={itemPath(next, lang)}>
+            <small>Next</small>
+            <b lang={listLang}>
+              {itemName(next, lang)}
+              {next.texts.get(lang)?.title ? ` · ${next.texts.get(lang)?.title}` : ""}
+            </b>
+          </a>
+        )}
+      </nav>
+    </div>
+
+    <aside class="rr" aria-label="About this article" data-pagefind-ignore>
+      {paragraphs.length > 1 && (
+        <nav class="toc">
+          <h2>On this page</h2>
+          {paragraphs.map((clause) => (
+            <a href={`#${clause.anchor}`}>Paragraph {clause.anchor.replace(/^para-/, "")}</a>
+          ))}
+        </nav>
+      )}
+      <div class="box">
+        <h2>Cite it</h2>
+        <code class="bigkey">{item.key}</code>
+        <p class="note">
+          {law.short} {law.version}, in force since {formatDate(law.effectiveDate)}.
+        </p>
+        <button class="mini" type="button" data-copy-text={citation}>
+          <Icon name="copy" size={13} />
+          <span class="copy-label">Copy citation</span>
+        </button>
+      </div>
+      <div class="box">
+        <h2>Ask your AI assistant</h2>
+        <p class="prompt" lang={arabic ? "ar" : undefined} dir={arabic ? "rtl" : undefined}>
+          {arabic ? (
+            <>
+              ماذا يتطلب <bdi dir="ltr">{item.key}</bdi>؟ اقتبس البنود التي تعتمد عليها.
+            </>
+          ) : (
+            question
+          )}
+        </p>
+        <button class="mini" type="button" data-copy-text={question}>
+          <Icon name="copy" size={13} />
+          <span class="copy-label">Copy the question</span>
+        </button>
+      </div>
+      {referred.length > 0 && (
+        <div class="box">
+          <h2>Referred to by</h2>
+          <ul class="refs">
+            {referred.map(({ item: other, from }) => (
+              <li>
+                <a
+                  href={`${itemPath(other, lang)}${from === other.key ? "" : `#${from.split(":").slice(2).join("-")}`}`}
+                >
+                  <b>{cite(from, other, "en")}</b>
+                  <span>{other.texts.get("en")?.title ?? other.texts.get(prevails)?.title}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </aside>
+  </div>
+</Page>
+
+<script>
+  const say = (button: HTMLElement, text: string) => {
+    const label = button.querySelector(".copy-label") ?? button;
+    const before = label.textContent;
+    label.textContent = text;
+    setTimeout(() => (label.textContent = before), 1600);
+  };
+  const copy = (text: string, button: HTMLElement) =>
+    navigator.clipboard.writeText(text).then(
+      () => say(button, "Copied"),
+      () => say(button, "Copy failed"),
+    );
+
+  document
+    .querySelectorAll<HTMLButtonElement>("button.keybtn")
+    .forEach((button) => button.addEventListener("click", () => copy(button.dataset.key!, button)));
+  document
+    .querySelectorAll<HTMLButtonElement>("[data-copy-text]")
+    .forEach((button) =>
+      button.addEventListener("click", () => copy(button.dataset.copyText!, button)),
+    );
+
+  // The list of articles, filtered by number or title.
+  const list = document.querySelector<HTMLElement>(".alist");
+  if (list) {
+    const input = list.querySelector("input")!;
+    const none = list.querySelector<HTMLElement>(".none")!;
+    input.addEventListener("input", () => {
+      const words = input.value.trim().toLowerCase();
+      let shown = 0;
+      list.querySelectorAll<HTMLElement>("li").forEach((item) => {
+        item.hidden = !item.dataset.search!.includes(words);
+        if (!item.hidden) shown++;
+      });
+      none.hidden = shown > 0;
+    });
+    // The current item in view inside the list, without moving the page itself.
+    const current = list.querySelector<HTMLElement>('[aria-current="page"]');
+    const items = list.querySelector<HTMLElement>("ol");
+    if (current && items) {
+      items.scrollTop =
+        current.offsetTop - items.offsetTop - items.clientHeight / 2 + current.offsetHeight / 2;
+    }
+  }
+
+  // A cross-reference shows the clause it names, without leaving the page.
+  const article = document.querySelector<HTMLElement>(".article");
+  const pop = article?.querySelector<HTMLElement>(".pop");
+  if (article && pop) {
+    const show = (link: HTMLAnchorElement) => {
+      const title = Object.assign(document.createElement("span"), {
+        className: "t",
+        textContent: link.dataset.title ?? "",
+      });
+      const key = Object.assign(document.createElement("span"), {
+        className: "kc",
+        textContent: link.dataset.key ?? "",
+      });
+      const words = Object.assign(document.createElement("span"), {
+        textContent: link.dataset.text ?? "",
+      });
+      pop.replaceChildren(title, key, words);
+      pop.lang = "en";
+      pop.dir = "ltr";
+      const from = article.getBoundingClientRect();
+      const at = link.getBoundingClientRect();
+      pop.hidden = false;
+      const left = Math.min(Math.max(at.left - from.left, 0), from.width - pop.offsetWidth);
+      pop.style.top = `${at.bottom - from.top + 8}px`;
+      pop.style.left = `${Math.max(left, 0)}px`;
+    };
+    const hide = () => (pop.hidden = true);
+    article.querySelectorAll<HTMLAnchorElement>(".xref").forEach((link) => {
+      link.addEventListener("mouseenter", () => show(link));
+      link.addEventListener("focus", () => show(link));
+      link.addEventListener("mouseleave", hide);
+      link.addEventListener("blur", hide);
+    });
+  }
+
+  // On this page marks the paragraph being read.
+  const links = new Map(
+    [...document.querySelectorAll<HTMLAnchorElement>(".toc a")].map((link) => [
+      link.hash.slice(1),
+      link,
+    ]),
+  );
+  if (links.size) {
+    const seen = new IntersectionObserver(
+      (entries) => {
+        const top = entries.find((entry) => entry.isIntersecting);
+        if (!top) return;
+        links.forEach((link, id) => link.classList.toggle("on", id === top.target.id));
+      },
+      { rootMargin: "0px 0px -70% 0px" },
+    );
+    links.forEach((_, id) => {
+      const target = document.getElementById(id);
+      if (target) seen.observe(target);
+    });
+  }
+</script>

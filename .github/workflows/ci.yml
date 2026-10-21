@@ -39,6 +39,10 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # The law pages read the packs' releases through GitHub's API, whose limit is far
+          # higher for the workflow's own token than for an address.
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Site
         # Titles, descriptions and canonical addresses, links between pages, punctuation.

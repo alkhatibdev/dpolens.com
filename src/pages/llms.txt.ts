@@ -1,6 +1,8 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
 import { DOCS_ORDER } from "../lib/docs";
+import { itemsOf } from "../lib/laws";
+import { getLaws } from "../lib/packs";
 import { LLMS, SITE } from "../lib/site";
 
 // https://llmstxt.org: a plain index of the site for AI assistants and answer engines. Each docs
@@ -21,6 +23,23 @@ export const GET: APIRoute = async () => {
         note: page.data.description,
       })),
     )}`,
+    `## Laws\n${list([
+      {
+        name: "Supported laws",
+        href: `${SITE.origin}/laws`,
+        note: "every law, its version and source",
+      },
+      ...(await getLaws()).map((law) => {
+        const items = itemsOf(law);
+        const articles = items.filter((item) => item.kind === "article").length;
+        const recitals = items.length - articles;
+        return {
+          name: `${law.short}: ${law.name}`,
+          href: `${SITE.origin}/laws/${law.slug}.md`,
+          note: `the privacy law of the ${law.jurisdiction}, version ${law.version}, ${articles} articles${recitals ? ` and ${recitals} recitals` : ""}, each with a Markdown copy`,
+        };
+      }),
+    ])}`,
     ...LLMS.map((section) => `## ${section.title}\n${list(section.links)}`),
   ];
   const body = [`# ${SITE.name}`, `> ${SITE.description}`, ...sections].join("\n\n");

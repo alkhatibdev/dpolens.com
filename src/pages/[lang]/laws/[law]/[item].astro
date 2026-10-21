@@ -1,0 +1,23 @@
+---
+import LawItem from "../../../../layouts/LawItem.astro";
+import { itemsOf, languagesOf } from "../../../../lib/laws";
+import { getLaws, type Item } from "../../../../lib/packs";
+
+// Every article and recital in each language other than English: /ar/laws/uae-pdpl/art-15.
+export async function getStaticPaths() {
+  return (await getLaws()).flatMap((law) =>
+    languagesOf(law)
+      .filter((lang) => lang !== "en")
+      .flatMap((lang) =>
+        itemsOf(law)
+          .filter((item) => item.texts.has(lang))
+          .map((item) => ({ params: { lang, law: law.slug, item: item.stem }, props: { item } })),
+      ),
+  );
+}
+
+const { item } = Astro.props as { item: Item };
+const { lang } = Astro.params as { lang: string };
+---
+
+<LawItem item={item} lang={lang} />

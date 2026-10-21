@@ -1,0 +1,197 @@
+---
+import "../../styles/laws.css";
+import Band from "../../components/Band.astro";
+import Icon from "../../components/Icon.astro";
+import LawTable from "../../components/LawTable.astro";
+import Page from "../../layouts/Page.astro";
+import { itemName, itemPath, itemsOf, languagesOf } from "../../lib/laws";
+import { clauseCount, getLaws } from "../../lib/packs";
+import { SITE } from "../../lib/site";
+
+const laws = await getLaws();
+const number = new Intl.NumberFormat("en");
+const items = laws.flatMap(itemsOf);
+const articles = items.filter((item) => item.kind === "article");
+const recitals = items.filter((item) => item.kind === "recital");
+const clauses = laws.reduce((sum, law) => sum + clauseCount(law), 0);
+
+// Every article's title in English and, where the law has it, in Arabic, for the search below.
+const entries = articles.map((item) => {
+  const english = item.texts.get("en");
+  const arabic = item.texts.get("ar");
+  const lang = languagesOf(item.law).includes("en") ? "en" : item.law.authoritative;
+  return {
+    law: item.law.short,
+    n: itemName(item, lang),
+    t: english?.title ?? "",
+    ar: arabic?.title ?? "",
+    href: itemPath(item, lang),
+  };
+});
+
+const first = laws[0];
+const example = first ? itemsOf(first)[0] : undefined;
+const sources = laws.map((law) => new URL(law.sourceUrl).hostname.replace(/^www\./, ""));
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Supported laws",
+  url: `${SITE.origin}/laws`,
+  hasPart: laws.map((law) => ({
+    "@type": "Legislation",
+    name: law.name,
+    alternateName: law.short,
+    legislationJurisdiction: law.jurisdiction,
+    url: `${SITE.origin}/laws/${law.slug}`,
+  })),
+};
+---
+
+<Page
+  title="Supported laws"
+  description="Every privacy law DPOLens supports, clause by clause from its official source, with a key your AI assistant can cite."
+  jsonLd={jsonLd}
+  section="Laws"
+>
+  <header class="intro center">
+    <span class="label">Laws</span>
+    <h1 class="h1">Supported laws</h1>
+    <p class="lede">
+      Each law clause by clause, from its official source, with a key your AI assistant can cite.
+    </p>
+    <div class="stats">
+      <span>
+        <b>{laws.length}</b> laws
+      </span>
+      <span>
+        <b>{number.format(articles.length)}</b> articles
+      </span>
+      {recitals.length > 0 && (
+        <span>
+          <b>{number.format(recitals.length)}</b> recitals
+        </span>
+      )}
+      <span>
+        <b>{number.format(clauses)}</b> clauses
+      </span>
+    </div>
+  </header>
+
+  <Band tint aria-label="The supported laws">
+    <LawTable laws={laws} />
+  </Band>
+
+  <Band aria-labelledby="find-article">
+    <div class="band-head">
+      <span class="label">Search</span>
+      <h2 class="h2" id="find-article">
+        Find an article
+      </h2>
+      <p class="sub">Every article of every supported law, by its title, in English or Arabic.</p>
+    </div>
+    <div class="artsearch" data-artsearch data-pagefind-ignore>
+      <div class="find big">
+        <Icon name="search" size={18} />
+        <label class="visually-hidden" for="article-search">
+          Search articles
+        </label>
+        <input
+          id="article-search"
+          type="search"
+          autocomplete="off"
+          placeholder="Try erasure, consent or محو"
+        />
+      </div>
+      <div class="hits" aria-live="polite"></div>
+      <script is:inline type="application/json" set:html={JSON.stringify(entries)} />
+    </div>
+  </Band>
+
+  <Band tint aria-labelledby="from-source">
+    <div class="band-head">
+      <span class="label">From the official text</span>
+      <h2 class="h2" id="from-source">
+        Read from the source, word for word
+      </h2>
+      <p class="sub">
+        Each pack names the file it was read from and that file's checksum, and every version of it
+        is published. A citation of an old version still reads what it quoted.
+      </p>
+    </div>
+    {first && example && (
+      <div class="pipe">
+        <div class="pipe-node">
+          <b>The official text</b>
+          <small>{[...new Set(sources)].join(", ")}</small>
+          <code>sha256 {first.docs[0].sourceSha256.slice(0, 8)}</code>
+        </div>
+        <div class="pipe-line" aria-hidden="true">
+          <i />
+        </div>
+        <div class="pipe-node">
+          <b>A law pack</b>
+          <small>A version of the law, one file for each article</small>
+          <code>{first.archive.name}</code>
+        </div>
+        <div class="pipe-line later" aria-hidden="true">
+          <i />
+        </div>
+        <div class="pipe-node">
+          <b>Your AI assistant</b>
+          <small>The clause it relied on, with its key</small>
+          <code>{example.key}</code>
+        </div>
+      </div>
+    )}
+  </Band>
+</Page>
+
+<script>
+  const escape = (text: string) =>
+    text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const mark = (text: string, words: string) => {
+    if (!words) return escape(text);
+    const at = text.toLowerCase().indexOf(words);
+    return at === -1
+      ? escape(text)
+      : `${escape(text.slice(0, at))}<mark>${escape(text.slice(at, at + words.length))}</mark>${escape(text.slice(at + words.length))}`;
+  };
+
+  document.querySelectorAll<HTMLElement>("[data-artsearch]").forEach((box) => {
+    const input = box.querySelector("input")!;
+    const out = box.querySelector<HTMLElement>(".hits")!;
+    const entries: { law: string; n: string; t: string; ar: string; href: string }[] = JSON.parse(
+      box.querySelector('script[type="application/json"]')!.textContent!,
+    );
+    const show = () => {
+      const words = input.value.trim().toLowerCase();
+      if (!words) {
+        out.innerHTML = `<p class="hits-foot">Type a word from an article's title, in English or Arabic.</p>`;
+        return;
+      }
+      const found = entries.filter(
+        (entry) =>
+          entry.t.toLowerCase().includes(words) ||
+          entry.ar.includes(words) ||
+          entry.n.toLowerCase().includes(words),
+      );
+      out.innerHTML =
+        found
+          .slice(0, 12)
+          .map(
+            (entry) =>
+              `<a class="hit" href="${entry.href}"><span class="law">${escape(entry.law)}</span>` +
+              `<span class="n">${escape(entry.n)}</span><span class="t">${mark(entry.t, words)}</span>` +
+              `<span class="ar" lang="ar" dir="rtl">${mark(entry.ar, words)}</span></a>`,
+          )
+          .join("") +
+        `<p class="hits-foot">${
+          found.length
+            ? `${found.length} ${found.length === 1 ? "article" : "articles"}${found.length > 12 ? ", the first 12 shown" : ""}`
+            : "No article's title has those words. Your AI assistant searches the clauses themselves."
+        }</p>`;
+    };
+    input.addEventListener("input", show);
+    show();
+  });
+</script>
