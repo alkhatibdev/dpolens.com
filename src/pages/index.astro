@@ -5,6 +5,7 @@ import Band from "../components/Band.astro";
 import ConnectCard from "../components/ConnectCard.astro";
 import Closing from "../components/home/Closing.astro";
 import Cloud from "../components/home/Cloud.astro";
+import Dashboard from "../components/home/Dashboard.astro";
 import Features from "../components/home/Features.astro";
 import Hero from "../components/home/Hero.astro";
 import LawTable from "../components/LawTable.astro";
@@ -72,18 +73,25 @@ const jsonLd = {
     <Features />
   </Band>
 
-  <Band tint id="laws" aria-labelledby="home-l-h">
+  <Band tint id="dashboard" aria-labelledby="home-d-h">
+    <Dashboard />
+  </Band>
+
+  <Band id="laws" aria-labelledby="home-l-h">
     <div class="v-head center">
       <span class="label">Laws</span>
       <h2 class="h2" id="home-l-h">
         Supported laws
       </h2>
-      <p class="v-sub">Each law clause by clause, in the language that prevails.</p>
+      <p class="v-sub">
+        Each law comes as a pack, clause by clause, in the language that prevails. More are added
+        over time.
+      </p>
     </div>
     <LawTable laws={laws} />
   </Band>
 
-  <Band id="cloud" aria-labelledby="home-cl-h">
+  <Band tint id="cloud" aria-labelledby="home-cl-h">
     <Cloud />
     <Closing />
   </Band>

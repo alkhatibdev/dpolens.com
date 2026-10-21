@@ -12,26 +12,30 @@ const regions = ["All", ...new Set(laws.map(region))];
 const count = (name: string) =>
   name === "All" ? laws.length : laws.filter((law) => region(law) === name).length;
 const number = new Intl.NumberFormat("en");
+// The region chips and the search help once the list is long; with a few laws they only count them.
+const filters = laws.length > 5;
 ---
 
 <div data-lawlist>
-  <div class="lawbar">
-    <div class="regions" role="group" aria-label="Region">
-      {regions.map((name) => (
-        <button type="button" aria-pressed={name === "All" ? "true" : "false"} data-region={name}>
-          {name}
-          <span>{count(name)}</span>
-        </button>
-      ))}
+  {filters && (
+    <div class="lawbar">
+      <div class="regions" role="group" aria-label="Region">
+        {regions.map((name) => (
+          <button type="button" aria-pressed={name === "All" ? "true" : "false"} data-region={name}>
+            {name}
+            <span>{count(name)}</span>
+          </button>
+        ))}
+      </div>
+      <div class="find">
+        <Icon name="search" size={16} />
+        <label class="visually-hidden" for="law-find">
+          Search laws
+        </label>
+        <input id="law-find" type="search" placeholder="Search laws" autocomplete="off" />
+      </div>
     </div>
-    <div class="find">
-      <Icon name="search" size={16} />
-      <label class="visually-hidden" for="law-find">
-        Search laws
-      </label>
-      <input id="law-find" type="search" placeholder="Search laws" autocomplete="off" />
-    </div>
-  </div>
+  )}
   <div class="lawtable">
     <div class="thead" aria-hidden="true">
       <span>Law</span>
@@ -71,7 +75,8 @@ const number = new Intl.NumberFormat("en");
   // Region and words together decide which laws show.
   document.querySelectorAll<HTMLElement>("[data-lawlist]").forEach((list) => {
     const chips = [...list.querySelectorAll<HTMLButtonElement>(".regions button")];
-    const input = list.querySelector<HTMLInputElement>("input")!;
+    const input = list.querySelector<HTMLInputElement>("input");
+    if (!input) return;
     const rows = [...list.querySelectorAll<HTMLElement>(".lawrow")];
     const none = list.querySelector<HTMLElement>(".none")!;
     let chosen = "All";

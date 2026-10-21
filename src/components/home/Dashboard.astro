@@ -1,0 +1,209 @@
+---
+// The dashboard, as the privacy officer sees it: the Overview with the dashboard's own menu and
+// words, made-up numbers, and what an organisation does with it.
+import Logo from "../../assets/brand/dpolens-logo.svg";
+import { getLaws } from "../../lib/packs";
+import Icon from "../Icon.astro";
+
+const laws = await getLaws();
+const lawNames = new Intl.ListFormat("en", { type: "conjunction" }).format(
+  laws.map((law) => law.short),
+);
+
+const menu = [
+  { icon: "grid", name: "Overview" },
+  { icon: "book", name: "Library" },
+  { icon: "upload", name: "Policies" },
+  { icon: "lines", name: "Logs" },
+  { icon: "scales", name: "Selected laws" },
+] as const;
+const general = [
+  { icon: "users", name: "Users and roles" },
+  { icon: "key", name: "Tokens" },
+  { icon: "gear", name: "Settings" },
+] as const;
+const days = ["Thu", "Fri", "Sat", "Sun", "Mon", "Tue", "Today"];
+const points = [
+  {
+    icon: "scales",
+    title: "Choose your laws",
+    line: "Pick the laws that apply to your organisation once. Every search, from every AI assistant, keeps to them.",
+  },
+  {
+    icon: "upload",
+    title: "Publish your policies",
+    line: "Upload PDF, Word, or Markdown, review what was read, and publish. AI assistants cite only the version you approved.",
+  },
+  {
+    icon: "shield",
+    title: "Keep the evidence",
+    line: "Every question, the clause that answered it, and every change made, in a log ready for your next audit.",
+  },
+] as const;
+---
+
+<div class="v-head center">
+  <span class="label">Dashboard</span>
+  <h2 class="h2" id="home-d-h">
+    See what your organisation asks
+  </h2>
+  <p class="v-sub">For the privacy officer and the legal team, in every instance.</p>
+</div>
+<div class="v-ov" data-ov>
+  <div class="v-bar" aria-hidden="true">
+    <i></i>
+    <i></i>
+    <i></i>
+    <span>DPOLens dashboard</span>
+  </div>
+  <div class="v-ov-app">
+    <nav class="v-ov-side" aria-label="The dashboard's menu">
+      <span class="logo">
+        <Logo height={22} width={76} aria-hidden="true" />
+      </span>
+      <span class="cap">Menu</span>
+      {menu.map((item) => (
+        <span class={item.name === "Overview" ? "item here" : "item"}>
+          <Icon name={item.icon} size={16} />
+          {item.name}
+        </span>
+      ))}
+      <span class="cap">General</span>
+      {general.map((item) => (
+        <span class="item">
+          <Icon name={item.icon} size={16} />
+          {item.name}
+        </span>
+      ))}
+    </nav>
+    <div class="v-ov-main">
+      <div class="v-ov-top">
+        <div>
+          <h3>Overview</h3>
+          <p>What was asked in the last 7 days, and what answered it.</p>
+        </div>
+        <span class="v-ov-range">
+          <Icon name="calendar" size={15} />
+          Last 7 days
+        </span>
+      </div>
+      <div class="v-ov-tiles">
+        <div class="t lead">
+          <span>Questions</span>
+          <b data-ov-count>1,284</b>
+          <small>18% more than the 7 days before</small>
+        </div>
+        <div class="t">
+          <span>Answered with a clause</span>
+          <b>94%</b>
+          <small>77 found nothing in force</small>
+        </div>
+        <div class="t">
+          <span>Laws that apply</span>
+          <b>{laws.length}</b>
+          <small>{lawNames}</small>
+        </div>
+        <div class="t">
+          <span>Policies in force</span>
+          <b>6</b>
+          <small>2 drafts waiting for review</small>
+        </div>
+      </div>
+      <div class="v-ov-row">
+        <div class="v-ov-card">
+          <div class="head">
+            <h4>Questions by day</h4>
+            <div class="key">
+              <span class="a">From AI assistants</span>
+              <span class="d">From the dashboard or the API</span>
+            </div>
+          </div>
+          <div class="v-ov-bars" aria-hidden="true">
+            {days.map((day) => (
+              <div class:list={["day", { peak: day === "Mon", today: day === "Today" }]}>
+                <div class="bar">
+                  {day === "Mon" && <em>302</em>}
+                  <div class="fill">
+                    <i class="d" />
+                    <i class="a" />
+                  </div>
+                </div>
+                <span>{day}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div class="v-ov-card">
+          <h4>Waiting for review</h4>
+          <div class="w">
+            <b>Data retention policy, version 3</b>
+            <span class="flag">3 flags to settle</span>
+            <small>Uploaded today</small>
+            <span class="go">Continue the review</span>
+          </div>
+          <div class="w">
+            <b>Acceptable use policy, version 1</b>
+            <span class="ready">Ready to publish</span>
+            <small>Every flag is settled</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="v-ov-foot">
+  <div class="v-ov-points">
+    {points.map((point) => (
+      <div>
+        <span class="ico">
+          <Icon name={point.icon} size={18} />
+        </span>
+        <div>
+          <h3>{point.title}</h3>
+          <p>{point.line}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+  <p class="v-ov-cta">
+    Free and open source, on your own servers.
+    <a class="btn line" href="/docs/get-started">
+      Get started
+      <Icon name="right" size={16} />
+    </a>
+  </p>
+</div>
+
+<script>
+  // The bars grow in when the Overview comes into view; then a question arrives every few
+  // seconds, from an AI assistant, so Today's bar grows with the count.
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll<HTMLElement>("[data-ov]").forEach((overview) => {
+    // The bars stand at full height without the script; with it, they wait to grow in.
+    overview.classList.add("ready");
+    const count = overview.querySelector<HTMLElement>("[data-ov-count]")!;
+    const today = overview.querySelector<HTMLElement>(".v-ov-bars .today .bar")!;
+    const start = () => {
+      overview.classList.add("on");
+      if (still) return;
+      let arrived = 0;
+      setInterval(() => {
+        arrived = arrived < 12 ? arrived + 1 : 0;
+        count.textContent = (1284 + arrived).toLocaleString("en");
+        today.style.setProperty("--grow", String(arrived));
+        count.classList.remove("tick");
+        void count.offsetWidth;
+        count.classList.add("tick");
+      }, 3200);
+    };
+    const watch = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        start();
+        watch.disconnect();
+      },
+      { threshold: 0.3 },
+    );
+    watch.observe(overview);
+  });
+</script>

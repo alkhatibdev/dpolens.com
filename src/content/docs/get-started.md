@@ -21,7 +21,7 @@ docker compose up -d
 ```
 
 The first `up` builds the images, or downloads them once the version has been released, and
-loads GDPR and the UAE law, which takes a few minutes. After that it takes seconds. When it
+loads the law packs, which takes a few minutes. After that it takes seconds. When it
 returns, `docker compose ps` shows `db`, `api`, `dashboard` and `mcp` as healthy, and `worker`
 as running.
 
