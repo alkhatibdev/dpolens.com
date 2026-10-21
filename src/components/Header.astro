@@ -1,11 +1,13 @@
 ---
 import Logo from "../assets/brand/dpolens-logo.svg";
-import { NAV, pagePath, SITE } from "../lib/site";
+import { type Link, NAV, pagePath, SITE } from "../lib/site";
 import Icon from "./Icon.astro";
 
 const here = pagePath(Astro.url);
-const current = (href: string) =>
-  here === href || here.startsWith(`${href}/`) ? "page" : undefined;
+const current = ({ href, section }: Link) => {
+  const start = section ?? href;
+  return here === start || here.startsWith(`${start}/`) ? "page" : undefined;
+};
 ---
 
 <header class="top">
@@ -15,7 +17,7 @@ const current = (href: string) =>
   {NAV.length > 0 && (
     <nav class="nav" aria-label="Site">
       {NAV.map((link) => (
-        <a href={link.href} aria-current={current(link.href)}>
+        <a href={link.href} aria-current={current(link)}>
           {link.name}
         </a>
       ))}
@@ -38,7 +40,7 @@ const current = (href: string) =>
         </button>
         <nav class="menu-pop" id="site-menu" popover aria-label="Site">
           {NAV.map((link) => (
-            <a href={link.href} aria-current={current(link.href)}>
+            <a href={link.href} aria-current={current(link)}>
               {link.name}
             </a>
           ))}

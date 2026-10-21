@@ -55,6 +55,10 @@ img,
 svg {
   max-width: 100%;
 }
+/* Hidden means hidden, whatever display a component's own rule gives it. */
+[hidden] {
+  display: none !important;
+}
 :focus-visible {
   outline: 2px solid var(--color-brand);
   outline-offset: 3px;
