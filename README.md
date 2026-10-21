@@ -42,6 +42,23 @@ npm run build && npm run check:site # titles, addresses, links, punctuation
 - `src/lib/site.ts` holds the site's name, its description, and the links in the header, the
   footer and `llms.txt`.
 
+## The docs
+
+The docs describe the newest release of DPOLens, which `DOCS_VERSION` in `src/lib/docs.ts`
+names. Each page is a Markdown file in `src/content/docs`, with a `title` and a `description`
+at the top: the description is the answer the page opens with, and what search results show.
+`DOCS_NAV` beside it sets the menu and the reading order.
+
+Write a page as plain Markdown, so it reads the same on GitHub and in the copy given to AI
+assistants at `/docs/<page>.md`. Two conventions:
+
+- A heading such as `## 1. Set it up` is a numbered step.
+- Level-4 headings between `<!-- tabs -->` and `<!-- /tabs -->` become tabs, one for each
+  AI assistant.
+
+When a change to DPOLens touches a setting, a command, an API route, an MCP tool or a law
+pack, the page that describes it changes too, merged when that release ships.
+
 ## Deploying
 
 Every merge to `main` deploys the site to Cloudflare Workers as static files, and so does a

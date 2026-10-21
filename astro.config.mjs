@@ -8,6 +8,12 @@ export default defineConfig({
   trailingSlash: "never",
   build: { format: "file" },
   integrations: [sitemap()],
+  markdown: {
+    // Prism marks code with classes, which the Content Security Policy allows, where inline
+    // styles would be blocked. Straight quotes stay straight, and two hyphens never become a dash.
+    syntaxHighlight: "prism",
+    smartypants: false,
+  },
   // Downloaded at build time and served from the site itself, with fallbacks sized to match.
   fonts: [
     {

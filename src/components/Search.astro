@@ -2,12 +2,12 @@
 import Icon from "./Icon.astro";
 ---
 
-<dialog class="search" id="search" aria-label="Search dpolens.com">
+<dialog class="search" id="site-search" aria-label="Search dpolens.com">
   <div class="box">
     <div class="field">
       <Icon name="search" size={18} />
       <input
-        id="search-q"
+        id="site-search-q"
         type="search"
         aria-label="Search dpolens.com"
         placeholder="Search dpolens.com"
@@ -40,7 +40,7 @@ import Icon from "./Icon.astro";
     ): Promise<{ results: { data(): Promise<Result> }[] } | null>;
   }
 
-  const dialog = document.querySelector<HTMLDialogElement>("#search")!;
+  const dialog = document.querySelector<HTMLDialogElement>("#site-search")!;
   const input = dialog.querySelector<HTMLInputElement>("input")!;
   const out = dialog.querySelector<HTMLElement>(".results")!;
   let pagefind: Promise<Pagefind> | undefined;

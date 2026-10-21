@@ -2,7 +2,9 @@
 //
 // - every page has a title and a description, and every page but the 404 a canonical address
 //   in the form the site serves (https://dpolens.com/about, never about.html or about/);
-// - every link from one page of the site to another leads to a file the site serves;
+// - every link from one page of the site to another leads to a file the site serves, and a link
+//   to a section of a page, to an id on that page;
+// - no id appears twice on a page (a heading's id can clash with the page's own);
 // - the search index is there;
 // - no text uses an em dash or an en dash. The site punctuates with commas, colons, full stops
 //   and parentheses, and a plain hyphen where a dash cannot be avoided.
@@ -27,6 +29,22 @@ const walk = (dir) =>
   });
 
 const problems = [];
+const ids = new Map();
+// The ids on a built page, read once.
+const idsOn = (file) => {
+  if (!ids.has(file)) {
+    ids.set(
+      file,
+      new Set([...readFileSync(file, "utf8").matchAll(/\sid="([^"]+)"/g)].map((m) => m[1])),
+    );
+  }
+  return ids.get(file);
+};
+// The built page an address inside the site leads to, the way the host serves it: /about from about.html.
+const pageFor = (path) =>
+  [join(DIST, path), join(DIST, `${path}.html`), join(DIST, path, "index.html")].find(
+    (file) => existsSync(file) && statSync(file).isFile(),
+  );
 const built = walk(DIST).filter((file) => !SKIP.some((skip) => file.startsWith(skip)));
 
 // An address inside the site resolves the way the host serves it: /about from about.html.
@@ -52,9 +70,20 @@ for (const file of built.filter((file) => file.endsWith(".html"))) {
       problems.push(`${name}: canonical address ${canonical ?? "missing"}`);
     }
   }
+  const seen = new Set();
+  for (const [, id] of page.matchAll(/\sid="([^"]+)"/g)) {
+    if (seen.has(id)) problems.push(`${name}: the id ${id} appears twice`);
+    seen.add(id);
+  }
   for (const [, href] of page.matchAll(/\shref="([^"]+)"/g)) {
+    const [path, hash] = href.split("#");
     if (href.startsWith("/") && !href.startsWith("//") && !served(href)) {
       problems.push(`${name}: the link to ${href} leads nowhere`);
+    } else if (hash && (href.startsWith("/") || href.startsWith("#"))) {
+      const target = href.startsWith("#") ? file : pageFor(decodeURIComponent(path));
+      if (target && !idsOn(target).has(decodeURIComponent(hash))) {
+        problems.push(`${name}: the link to ${href} names a section that is not there`);
+      }
     }
   }
 }

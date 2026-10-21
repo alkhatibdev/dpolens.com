@@ -1,0 +1,683 @@
+/* The docs: the menu, the page, what is on it. Global, because a page's Markdown is rendered
+   outside any component's scope. */
+
+.docs {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr) 220px;
+  border-top: 1px solid var(--color-line);
+}
+
+/* The menu: its column runs the page's whole height, and the menu stays in view. */
+.dside {
+  border-right: 1px solid var(--color-line);
+}
+.dnav {
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px 14px 32px;
+}
+.sbtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  padding: 9px 10px;
+  background: var(--color-white);
+  box-shadow: inset 0 0 0 1px var(--color-line);
+  font: 14px var(--font-sans);
+  color: var(--color-muted);
+  cursor: pointer;
+}
+.sbtn:hover {
+  box-shadow: inset 0 0 0 1px var(--color-line-strong);
+  color: var(--color-ink);
+}
+.sbtn kbd {
+  margin-left: auto;
+  font-size: 11.5px;
+  color: var(--color-muted);
+  background: var(--color-field);
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+.ver {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 0 4px;
+  font-size: 12.5px;
+  color: var(--color-muted);
+}
+.ver code {
+  font: 500 12px var(--font-mono);
+  color: var(--color-brand-dark);
+  background: var(--color-brand-soft);
+  border-radius: 6px;
+  padding: 2px 7px;
+}
+.dgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.dgroup h2 {
+  margin: 0 0 6px;
+  padding-left: 10px;
+  font: 500 11px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.dgroup a {
+  padding: 6px 10px;
+  border-radius: 9px;
+  text-decoration: none;
+  font-size: 14px;
+  color: var(--color-ink-2);
+}
+.dgroup a:hover {
+  background: var(--color-field);
+}
+.dgroup a[aria-current="page"] {
+  background: var(--color-brand-soft);
+  color: var(--color-brand-dark);
+  font-weight: 500;
+}
+
+/* The menu on a narrow screen: a bar above the page. */
+.dbar {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 10px var(--gutter);
+  border-top: 1px solid var(--color-line);
+  background: var(--color-panel);
+}
+.dbar details {
+  flex: 1 1 auto;
+  position: relative;
+}
+.dbar summary {
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0;
+  font-size: 14.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.dbar summary::-webkit-details-marker {
+  display: none;
+}
+.dbar-pop {
+  position: absolute;
+  left: -6px;
+  top: calc(100% + 8px);
+  z-index: 6;
+  width: min(280px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+  background: var(--color-white);
+  border-radius: 16px;
+  box-shadow:
+    0 0 0 1px var(--color-line),
+    0 24px 44px -20px rgb(17 22 19 / 0.38);
+}
+.dbar > button {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-white);
+  box-shadow: inset 0 0 0 1px var(--color-line);
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+/* The page. */
+.doc {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px 48px 72px;
+}
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: 13px var(--font-mono);
+  color: var(--color-muted);
+}
+.crumbs li + li::before {
+  content: "/";
+  margin: 0 8px;
+  color: var(--color-line-strong);
+}
+.crumbs a {
+  color: var(--color-muted);
+  text-decoration: none;
+}
+.crumbs a:hover {
+  color: var(--color-brand);
+}
+.doc-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.doc-top h1 {
+  font-size: 46px;
+  line-height: 1.04;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+.doc > .lede {
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--color-muted);
+  max-width: 40em;
+}
+
+/* Copy page, and the menu beside it. */
+.pageact {
+  position: relative;
+  display: inline-flex;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--color-line-strong);
+}
+.pageact > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 0;
+  background: transparent;
+  font: 500 13.5px var(--font-sans);
+  color: var(--color-ink);
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.pageact > .a {
+  border-radius: 999px 0 0 999px;
+  padding-left: 14px;
+}
+.pageact > .b {
+  border-radius: 0 999px 999px 0;
+  border-left: 1px solid var(--color-line-strong);
+  padding: 8px 10px;
+}
+.pageact > button:hover {
+  background: var(--color-field);
+}
+.pagemenu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 6;
+  width: 250px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-white);
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 1px var(--color-line),
+    0 24px 44px -20px rgb(17 22 19 / 0.38);
+}
+.pagemenu > * {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  text-align: left;
+  text-decoration: none;
+  font: 14px var(--font-sans);
+  color: var(--color-ink);
+  cursor: pointer;
+}
+.pagemenu > *:hover {
+  background: var(--color-field);
+}
+.pagemenu small {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+/* What the Markdown becomes. */
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.prose > * {
+  margin: 0;
+}
+.prose h2 {
+  margin-top: 26px;
+  font-size: 26px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  scroll-margin-top: 20px;
+}
+.prose h3 {
+  margin-top: 12px;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  scroll-margin-top: 20px;
+}
+.prose h4 {
+  font-size: 16px;
+  font-weight: 600;
+}
+.prose .anchor {
+  margin-left: 8px;
+  color: var(--color-line-strong);
+  text-decoration: none;
+  font-weight: 400;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.prose h2:hover .anchor,
+.prose h3:hover .anchor,
+.prose .anchor:focus-visible {
+  opacity: 1;
+}
+.prose .anchor:hover {
+  color: var(--color-brand);
+}
+/* A numbered step: its number in a tile with the logo's corners. */
+.prose h2.numbered {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 21px;
+  letter-spacing: -0.015em;
+}
+.prose .step {
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--color-white);
+  box-shadow: inset 0 0 0 1px var(--color-line);
+  font: 600 15px var(--font-mono);
+  color: var(--color-brand-dark);
+}
+.prose .step::before,
+.prose .step::after {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--color-brand);
+}
+.prose .step::before {
+  top: -3px;
+  left: -3px;
+  border-right: 0;
+  border-bottom: 0;
+  border-radius: 4px 0 0 0;
+}
+.prose .step::after {
+  bottom: -3px;
+  right: -3px;
+  border-left: 0;
+  border-top: 0;
+  border-radius: 0 0 4px 0;
+}
+.prose p,
+.prose li {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--color-ink-2);
+}
+.prose p,
+.prose ul,
+.prose ol {
+  max-width: 44em;
+}
+.prose ul,
+.prose ol {
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.prose a {
+  color: var(--color-brand);
+  text-underline-offset: 3px;
+}
+.prose a:hover {
+  color: var(--color-brand-dark);
+}
+.prose strong {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.prose :not(pre) > code {
+  font-size: 0.86em;
+  color: var(--color-ink);
+  background: var(--color-field);
+  border-radius: 6px;
+  padding: 1px 6px;
+  overflow-wrap: anywhere;
+}
+.prose blockquote {
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: var(--color-panel);
+  box-shadow: inset 0 0 0 1px var(--color-line);
+}
+.prose hr {
+  width: 100%;
+  border: 0;
+  border-top: 1px solid var(--color-line);
+}
+
+/* Tables scroll inside their own box. */
+.prose .table {
+  overflow-x: auto;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px var(--color-line);
+}
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+.prose th {
+  padding: 10px 14px;
+  text-align: left;
+  font: 500 11.5px var(--font-mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  background: var(--color-panel);
+  border-bottom: 1px solid var(--color-line);
+}
+.prose td {
+  padding: 10px 14px;
+  vertical-align: top;
+  color: var(--color-ink-2);
+  border-top: 1px solid var(--color-line);
+}
+.prose tr:first-child td {
+  border-top: 0;
+}
+.prose td code {
+  white-space: nowrap;
+}
+
+/* Code: a bar with its language and Copy, above the code itself. */
+.prose .code {
+  min-width: 0;
+  border-radius: 14px;
+  background: #1b211d;
+  overflow: hidden;
+}
+.prose .code .bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 34px;
+  padding: 4px 6px 4px 14px;
+  background: #242b26;
+  font: 12px var(--font-mono);
+  color: #9aa69f;
+}
+.prose .code .bar button {
+  border: 0;
+  border-radius: 8px;
+  padding: 5px 9px;
+  background: transparent;
+  font: 12.5px var(--font-sans);
+  color: #c9d2cc;
+  cursor: pointer;
+}
+.prose .code .bar button:hover {
+  background: #313a34;
+}
+.prose pre {
+  margin: 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font: 13.5px/1.65 var(--font-mono);
+  color: #e4e9e5;
+  background: transparent;
+}
+.prose pre code {
+  font: inherit;
+}
+.prose .token.comment {
+  color: #7f8c85;
+}
+.prose .token.string,
+.prose .token.attr-value {
+  color: #9be7c1;
+}
+.prose .token.keyword,
+.prose .token.function,
+.prose .token.builtin {
+  color: #c9f2dd;
+}
+.prose .token.property,
+.prose .token.attr-name {
+  color: #b9d7ff;
+}
+.prose .token.number,
+.prose .token.boolean,
+.prose .token.constant {
+  color: #f2d49b;
+}
+.prose .token.punctuation,
+.prose .token.operator {
+  color: #9aa69f;
+}
+.prose .token.variable {
+  color: #f0b8c8;
+}
+
+/* Tabs, one for each AI assistant. */
+.prose .tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.prose .tablist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.prose .tablist button {
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 13px;
+  background: var(--color-white);
+  box-shadow: inset 0 0 0 1px var(--color-line);
+  font: 500 13.5px var(--font-sans);
+  color: var(--color-ink-2);
+  cursor: pointer;
+}
+.prose .tablist button[aria-selected="true"] {
+  background: var(--color-ink);
+  color: var(--color-white);
+  box-shadow: none;
+}
+.prose .panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.prose .panel[hidden] {
+  display: none;
+}
+
+/* Previous and next, and where to change the page. */
+.prevnext {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 26px;
+}
+.prevnext a {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px var(--color-line);
+  text-decoration: none;
+}
+.prevnext a:hover {
+  box-shadow: inset 0 0 0 1px var(--color-ink);
+}
+.prevnext a.next {
+  grid-column: 2;
+  text-align: right;
+}
+.prevnext small {
+  font-size: 12.5px;
+  color: var(--color-muted);
+}
+.prevnext b {
+  font-size: 15px;
+  font-weight: 500;
+}
+.docfoot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-line);
+  font-size: 13.5px;
+  color: var(--color-muted);
+}
+.docfoot a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-muted);
+  text-decoration: none;
+}
+.docfoot a:hover {
+  color: var(--color-brand);
+}
+
+/* On this page. */
+.rail {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: 22px 20px;
+}
+.toc {
+  display: flex;
+  flex-direction: column;
+}
+.toc h2 {
+  margin-bottom: 8px;
+  font: 500 11.5px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.toc a {
+  padding: 5px 10px;
+  border-left: 2px solid var(--color-line);
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--color-muted);
+  text-decoration: none;
+}
+.toc a:hover {
+  color: var(--color-ink);
+}
+.toc a.on {
+  color: var(--color-brand-dark);
+  border-left-color: var(--color-brand);
+  font-weight: 500;
+}
+
+@media (max-width: 1195px) {
+  .docs {
+    grid-template-columns: 230px minmax(0, 1fr);
+  }
+  .rail {
+    display: none;
+  }
+}
+@media (max-width: 1000px) {
+  .docs {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dside {
+    display: none;
+  }
+  .dbar {
+    display: flex;
+  }
+  .doc {
+    padding: 22px var(--gutter) 64px;
+  }
+}
+@media (max-width: 640px) {
+  .doc-top h1 {
+    font-size: 34px;
+  }
+  .doc > .lede {
+    font-size: 17px;
+  }
+  .prose h2 {
+    font-size: 23px;
+  }
+  .prose pre {
+    font-size: 12.5px;
+  }
+  .prevnext {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .prevnext a.next {
+    grid-column: auto;
+  }
+  /* Copy page sits under the title here, so its menu opens from the left. */
+  .pagemenu {
+    left: 0;
+    right: auto;
+  }
+}

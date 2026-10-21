@@ -1,0 +1,272 @@
+---
+import "../styles/docs.css";
+import { type CollectionEntry, getCollection, render } from "astro:content";
+import Icon from "../components/Icon.astro";
+import { DOCS_NAV, DOCS_ORDER, DOCS_VERSION, enhance } from "../lib/docs";
+import { SITE } from "../lib/site";
+import Page from "./Page.astro";
+
+interface Props {
+  entry: CollectionEntry<"docs">;
+}
+
+const { entry } = Astro.props;
+const { title, description } = entry.data;
+const pages = new Map((await getCollection("docs")).map((page) => [page.id, page]));
+const groups = DOCS_NAV.map((group) => ({
+  title: group.title,
+  pages: group.pages.flatMap((id) => pages.get(id) ?? []),
+}));
+const at = DOCS_ORDER.indexOf(entry.id);
+const previous = pages.get(DOCS_ORDER[at - 1] ?? "");
+const next = pages.get(DOCS_ORDER[at + 1] ?? "");
+const headings = (await render(entry)).headings.filter((heading) => heading.depth === 2);
+const html = enhance(entry.rendered?.html ?? "");
+const markdown = `/docs/${entry.id}.md`;
+const ask = encodeURIComponent(`Read ${SITE.origin}${markdown} and help me with DPOLens.`);
+const source = `https://github.com/alkhatibdev/dpolens.com/blob/main/src/content/docs/${entry.id}.md`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  headline: title,
+  description,
+  url: `${SITE.origin}/docs/${entry.id}`,
+  inLanguage: "en",
+  about: { "@type": "SoftwareApplication", name: SITE.name, softwareVersion: DOCS_VERSION },
+  publisher: { "@type": "Organization", name: SITE.name, url: SITE.origin },
+};
+---
+
+<Page title={title} description={description} jsonLd={jsonLd}>
+  <div class="dbar" data-pagefind-ignore>
+    <details>
+      <summary>
+        Docs menu <Icon name="caret" size={16} />
+      </summary>
+      <nav class="dbar-pop" aria-label="Docs">
+        {groups.map((group) => (
+          <div class="dgroup">
+            <h2>{group.title}</h2>
+            {group.pages.map((page) => (
+              <a href={`/docs/${page.id}`} aria-current={page.id === entry.id ? "page" : undefined}>
+                {page.data.title}
+              </a>
+            ))}
+          </div>
+        ))}
+      </nav>
+    </details>
+    <button type="button" data-search-open aria-label="Search the docs">
+      <Icon name="search" />
+    </button>
+  </div>
+  <div class="docs">
+    <div class="dside">
+      <nav class="dnav" aria-label="Docs" data-pagefind-ignore>
+        <button class="sbtn" type="button" data-search-open>
+          <Icon name="search" size={16} />
+          Search the docs
+          <kbd data-shortcut>⌘K</kbd>
+        </button>
+        <div class="ver">
+          <span>For the latest release</span>
+          <code>{DOCS_VERSION}</code>
+        </div>
+        {groups.map((group) => (
+          <div class="dgroup">
+            <h2>{group.title}</h2>
+            {group.pages.map((page) => (
+              <a href={`/docs/${page.id}`} aria-current={page.id === entry.id ? "page" : undefined}>
+                {page.data.title}
+              </a>
+            ))}
+          </div>
+        ))}
+      </nav>
+    </div>
+
+    <article class="doc" aria-labelledby="docs-page-title">
+      <ol class="crumbs" aria-label="Breadcrumb" data-pagefind-ignore>
+        <li>
+          <a href="/docs/get-started">Docs</a>
+        </li>
+        <li aria-current="page">{title}</li>
+      </ol>
+      <div class="doc-top">
+        <h1 id="docs-page-title">{title}</h1>
+        <div class="pageact" data-pagemenu data-pagefind-ignore>
+          <button class="a" type="button" data-copy-page={markdown}>
+            <Icon name="copy" size={15} />
+            <span class="copy-label">Copy page</span>
+          </button>
+          <button
+            class="b"
+            type="button"
+            aria-label="More ways to use this page"
+            aria-expanded="false"
+            aria-controls="docs-page-menu"
+          >
+            <Icon name="caret" size={16} />
+          </button>
+          <div class="pagemenu" id="docs-page-menu" hidden>
+            <button type="button" data-copy-page={markdown}>
+              <span class="copy-label">Copy page as Markdown</span>
+              <small>For an AI assistant or a note</small>
+            </button>
+            <a href={`https://claude.ai/new?q=${ask}`}>
+              Open in Claude<small>Ask about this page</small>
+            </a>
+            <a href={`https://chatgpt.com/?q=${ask}`}>
+              Open in ChatGPT<small>Ask about this page</small>
+            </a>
+            <a href={markdown}>
+              View as Markdown<small>{markdown}</small>
+            </a>
+          </div>
+        </div>
+      </div>
+      <p class="lede">{description}</p>
+      <div class="prose">
+        <Fragment set:html={html} />
+      </div>
+      <nav class="prevnext" aria-label="Previous and next page" data-pagefind-ignore>
+        {previous ? (
+          <a class="previous" href={`/docs/${previous.id}`}>
+            <small>Previous</small>
+            <b>{previous.data.title}</b>
+          </a>
+        ) : (
+          <span />
+        )}
+        {next && (
+          <a class="next" href={`/docs/${next.id}`}>
+            <small>Next</small>
+            <b>{next.data.title}</b>
+          </a>
+        )}
+      </nav>
+      <div class="docfoot" data-pagefind-ignore>
+        <a href={source}>
+          <Icon name="pen" size={14} />
+          Edit this page on GitHub
+        </a>
+        <span>For DPOLens {DOCS_VERSION}</span>
+      </div>
+    </article>
+
+    <aside class="rail" aria-label="On this page" data-pagefind-ignore>
+      {headings.length > 0 && (
+        <nav class="toc">
+          <h2>On this page</h2>
+          {headings.map((heading) => (
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          ))}
+        </nav>
+      )}
+    </aside>
+  </div>
+</Page>
+
+<script>
+  const say = (button: HTMLElement, text: string) => {
+    const label = button.querySelector(".copy-label") ?? button;
+    const before = label.textContent;
+    label.textContent = text;
+    setTimeout(() => (label.textContent = before), 1600);
+  };
+
+  // A promise of the text is handed to the clipboard at once, so Safari still counts the click.
+  const copy = async (text: string | Promise<string>) => {
+    try {
+      const blob = Promise.resolve(text).then((value) => new Blob([value], { type: "text/plain" }));
+      await navigator.clipboard.write([new ClipboardItem({ "text/plain": blob })]);
+    } catch {
+      await navigator.clipboard.writeText(await text);
+    }
+  };
+
+  document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const code = button.closest(".code")?.querySelector("pre")?.textContent ?? "";
+      copy(code).then(
+        () => say(button, "Copied"),
+        () => say(button, "Copy failed"),
+      );
+    });
+  });
+
+  document.querySelectorAll<HTMLButtonElement>("[data-copy-page]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const text = fetch(button.dataset.copyPage!).then((response) => {
+        if (!response.ok) throw new Error(String(response.status));
+        return response.text();
+      });
+      copy(text).then(
+        () => say(button, "Copied"),
+        () => say(button, "Copy failed"),
+      );
+    });
+  });
+
+  // The menu beside Copy page.
+  document.querySelectorAll<HTMLElement>("[data-pagemenu]").forEach((wrap) => {
+    const toggle = wrap.querySelector<HTMLButtonElement>(".b")!;
+    const menu = wrap.querySelector<HTMLElement>(".pagemenu")!;
+    const show = (open: boolean) => {
+      menu.hidden = !open;
+      toggle.setAttribute("aria-expanded", String(open));
+    };
+    toggle.addEventListener("click", () => show(menu.hidden));
+    document.addEventListener("click", (event) => {
+      if (!wrap.contains(event.target as Node)) show(false);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !menu.hidden) {
+        show(false);
+        toggle.focus();
+      }
+    });
+  });
+
+  // Tabs: a click or the arrow keys choose one.
+  document.querySelectorAll<HTMLElement>("[data-tabs]").forEach((set) => {
+    const tabs = [...set.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const choose = (chosen: HTMLButtonElement) => {
+      tabs.forEach((tab) => {
+        const on = tab === chosen;
+        tab.setAttribute("aria-selected", String(on));
+        tab.tabIndex = on ? 0 : -1;
+        document.getElementById(tab.getAttribute("aria-controls")!)!.hidden = !on;
+      });
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => choose(tab));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        const step = event.key === "ArrowRight" ? 1 : tabs.length - 1;
+        const target = tabs[(index + step) % tabs.length];
+        choose(target);
+        target.focus();
+      });
+    });
+  });
+
+  // On this page marks the section being read.
+  const links = new Map(
+    [...document.querySelectorAll<HTMLAnchorElement>(".toc a")].map((link) => [
+      link.hash.slice(1),
+      link,
+    ]),
+  );
+  if (links.size) {
+    const seen = new IntersectionObserver(
+      (entries) => {
+        const top = entries.find((entry) => entry.isIntersecting);
+        if (!top) return;
+        links.forEach((link, id) => link.classList.toggle("on", id === top.target.id));
+      },
+      { rootMargin: "0px 0px -70% 0px" },
+    );
+    document.querySelectorAll(".prose h2[id]").forEach((heading) => seen.observe(heading));
+  }
+</script>

@@ -1,0 +1,2 @@
+# Addresses that lead somewhere else (Cloudflare Workers static assets).
+/docs /docs/get-started 302

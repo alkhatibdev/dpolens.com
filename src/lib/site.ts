@@ -12,13 +12,24 @@ export const SITE = {
 export interface Link {
   name: string;
   href: string;
+  /** For a section's link: the start of every address in the section, to mark it as current. */
+  section?: string;
 }
 
 /** The site's sections in the header. A section is listed once its pages exist. */
-export const NAV: Link[] = [];
+export const NAV: Link[] = [{ name: "Docs", href: "/docs/get-started", section: "/docs" }];
 
 /** The footer's columns. A link is listed once the page it leads to exists. */
 export const FOOTER: { title: string; links: Link[] }[] = [
+  {
+    title: "Docs",
+    links: [
+      { name: "Get started", href: "/docs/get-started" },
+      { name: "Connect your AI assistant", href: "/docs/connect" },
+      { name: "Your own policies", href: "/docs/policies" },
+      { name: "The HTTP API", href: "/docs/api" },
+    ],
+  },
   {
     title: "Project",
     links: [
@@ -30,7 +41,7 @@ export const FOOTER: { title: string; links: Link[] }[] = [
   },
 ];
 
-/** What llms.txt lists for AI assistants and answer engines, section by section. */
+/** What llms.txt lists beside the docs, which it takes from the docs themselves. */
 export const LLMS: { title: string; links: Link[] }[] = [
   {
     title: "Project",
