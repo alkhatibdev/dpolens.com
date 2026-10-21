@@ -1346,12 +1346,27 @@
 .v-cloud form small a {
   color: var(--color-muted);
 }
+/* Turnstile's check is unseen unless it needs a click, and then takes its own room. */
+.v-turnstile:empty {
+  display: none;
+}
+.v-formerr {
+  font-size: 13.5px;
+  color: var(--color-danger-ink);
+}
+/* The thanks takes the form's place, in the same card. */
 .v-cloud .done {
+  margin: 0;
+  padding: 22px;
+  border-radius: 20px;
+  background: var(--color-white);
+  box-shadow:
+    0 0 0 1px var(--color-line),
+    0 20px 50px -30px rgba(17, 22, 19, 0.3);
   font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
   color: var(--color-brand-dark);
-  display: flex;
-  gap: 8px;
-  align-items: center;
 }
 .v-cloud-art {
   position: absolute;
@@ -2441,22 +2456,3 @@
 }
 
 /* Until its waitlist opens, Cloud says where it will. */
-.v-soon {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 22px;
-  border-radius: 20px;
-  background: var(--color-white);
-  box-shadow:
-    0 0 0 1px var(--color-line),
-    0 20px 50px -30px rgb(17 22 19 / 0.3);
-}
-.v-soon p {
-  font-size: 16px;
-  font-weight: 500;
-}
-.v-soon small {
-  font-size: 13.5px;
-  color: var(--color-muted);
-}

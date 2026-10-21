@@ -9,6 +9,15 @@ export const SITE = {
   contact: "hello@dpolens.com",
 };
 
+/**
+ * The DPOLens Cloud waitlist's bot check. A deploy builds with the Turnstile widget's site key,
+ * the repository secret TURNSTILE_SITE_KEY; every other build uses Cloudflare's test key, which
+ * always passes.
+ */
+export const WAITLIST = {
+  siteKey: import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA",
+};
+
 /** The community version: DPOLens hosted for anyone, with public law only. */
 export const COMMUNITY = {
   url: "https://mcp.dpolens.com",

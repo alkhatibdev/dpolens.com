@@ -13,6 +13,9 @@ import { getLaws } from "../lib/packs";
 import { SITE } from "../lib/site";
 
 const laws = await getLaws();
+// The Cloud waitlist's bot check: Turnstile's script, and the frame it draws its check in.
+Astro.csp?.insertScriptResource("https://challenges.cloudflare.com");
+Astro.csp?.insertDirective("frame-src https://challenges.cloudflare.com");
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [

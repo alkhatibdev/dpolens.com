@@ -11,6 +11,7 @@
     "preview": "wrangler dev",
     "check": "astro check",
     "check:site": "node scripts/check-site.mjs",
+    "check:worker": "tsc -p worker && node --test 'worker/*.test.ts'",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.11",
+    "@cloudflare/workers-types": "^5.20261021.1",
     "pagefind": "^1.5.2",
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.1",

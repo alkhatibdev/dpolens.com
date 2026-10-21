@@ -16,7 +16,7 @@ jobs:
   # The image is named, ubuntu-24.04 rather than ubuntu-latest, so it changes when this file
   # does, not when GitHub moves the label.
   check:
-    name: format, types, build, site
+    name: format, types, build, site, worker
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -47,3 +47,10 @@ jobs:
       - name: Site
         # Titles, descriptions and canonical addresses, links between pages, punctuation.
         run: npm run check:site
+
+      - name: Worker
+        # The waitlist's Worker: its types and its rules' tests, then a bundle the way a deploy
+        # makes it, with the configuration checked, and nothing sent to Cloudflare.
+        run: |
+          npm run check:worker
+          npx wrangler deploy --dry-run --outdir .wrangler/dry-run

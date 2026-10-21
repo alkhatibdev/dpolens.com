@@ -32,12 +32,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Waitlist settings
+        # The Cloud waitlist's Turnstile site key and D1 database id are repository secrets.
+        # This stops the deploy if either is missing, and pins the database in wrangler.jsonc.
+        run: node scripts/deploy-config.mjs
+        env:
+          PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.TURNSTILE_SITE_KEY }}
+          D1_DATABASE_ID: ${{ secrets.D1_DATABASE_ID }}
+
       - name: Build
         run: npm run build
         env:
           # The law pages read the packs' releases through GitHub's API, whose limit is far
           # higher for the workflow's own token than for an address.
           GITHUB_TOKEN: ${{ github.token }}
+          PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.TURNSTILE_SITE_KEY }}
 
       - name: Site
         run: npm run check:site

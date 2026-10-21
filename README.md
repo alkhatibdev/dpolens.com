@@ -82,11 +82,55 @@ assistants at `/docs/<page>.md`. Two conventions:
 When a change to DPOLens touches a setting, a command, an API route, an MCP tool or a law
 pack, the page that describes it changes too, merged when that release ships.
 
+## The Cloud waitlist
+
+The home page's DPOLens Cloud section has a form, the site's only code that runs on the server.
+`wrangler.jsonc` sends the paths under `/api/` to a small Worker, `worker/index.ts`; every other
+request is a static file. For `POST /api/waitlist`, the Worker:
+
+1. accepts the form only from the site's own page, and only small;
+2. checks the email address and the optional answer (`worker/waitlist.ts`);
+3. asks Turnstile whether the bot check's token is real, unused, from dpolens.com and from the
+   waitlist's widget;
+4. stores the entry in a D1 database, once for each address, and answers the same whether or
+   not the address was already on the list;
+5. emails a new entry to the maintainer through Cloudflare Email Routing.
+
+Turnstile's script loads when somebody starts filling in the form, and only the home page's
+Content Security Policy allows it. The database's table is in `migrations/`.
+
+A build outside the deploy uses Cloudflare's test site key, which always passes. To try the form
+locally, give the Worker the matching test secret:
+
+```bash
+printf 'TURNSTILE_SECRET=1x0000000000000000000000000000000AA\nNOTIFY_TO=you@example.com\n' > .dev.vars
+npm run build
+npx wrangler d1 migrations apply dpolens-waitlist --local
+npm run preview                     # the email is not sent, only shown in the terminal
+```
+
+The Worker's own rules are tested with `npm run check:worker`.
+
 ## Deploying
 
-Every merge to `main` deploys the site to Cloudflare Workers as static files, and so does a
-run once a day. The workflow needs two repository secrets: `CLOUDFLARE_API_TOKEN` and
-`CLOUDFLARE_ACCOUNT_ID`.
+Every merge to `main` deploys the site to Cloudflare Workers, and so does a run once a day.
+The workflow needs four repository secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`,
+`TURNSTILE_SITE_KEY` and `D1_DATABASE_ID`. It stops before building if either of the last two is
+missing (`scripts/deploy-config.mjs`).
+
+The Worker needs, once, on the Cloudflare account:
+
+- the D1 database: `npx wrangler d1 create dpolens-waitlist --jurisdiction eu`, its id as the
+  repository secret `D1_DATABASE_ID`, and its table:
+  `npx wrangler d1 migrations apply dpolens-waitlist --remote`, which finds the database by name;
+- a Turnstile widget for `dpolens.com`, its site key as the repository secret
+  `TURNSTILE_SITE_KEY`, and its secret key as the Worker's secret:
+  `npx wrangler secret put TURNSTILE_SECRET`;
+- Email Routing on `dpolens.com`, and the address the entries go to, verified there, as the
+  Worker's secret `NOTIFY_TO`.
+
+A new migration is applied with the same `migrations apply` command, before the deploy that
+needs it.
 
 ## Licence
 
