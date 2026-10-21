@@ -1,0 +1,19 @@
+---
+// The closing panel: the one action again, and the way to run it yourself.
+import Icon from "../Icon.astro";
+import { SITE } from "../../lib/site";
+---
+
+<div class="v-end">
+  <h2 id="home-e-h">Give your AI assistant the law</h2>
+  <p>Free to try. Open source to run.</p>
+  <div class="btns">
+    <a class="btn main" href="#community">
+      Try the community version
+    </a>
+    <a class="btn line" href={SITE.repo}>
+      <Icon name="github" size={17} />
+      Self-host
+    </a>
+  </div>
+</div>

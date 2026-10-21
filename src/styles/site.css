@@ -223,6 +223,21 @@ kbd {
   }
 }
 
+/* A key, as DPOLens cites a clause: gdpr:art-17:para-1. */
+.kc {
+  display: inline-block;
+  font: 500 12px var(--font-mono);
+  color: var(--color-brand-dark);
+  background: var(--color-brand-soft);
+  border-radius: 6px;
+  padding: 1px 6px;
+}
+.kc.big {
+  font-size: 15px;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
 /* The mint marker under the words that matter most in a heading. */
 .mark {
   background: linear-gradient(
@@ -334,6 +349,36 @@ kbd {
   font-size: 15px;
   font-weight: 500;
 }
+/* A group of links in a side menu: the docs and the legal pages. */
+.dgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.dgroup h2 {
+  margin: 0 0 6px;
+  padding-left: 10px;
+  font: 500 11px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.dgroup a {
+  padding: 6px 10px;
+  border-radius: 9px;
+  text-decoration: none;
+  font-size: 14px;
+  color: var(--color-ink-2);
+}
+.dgroup a:hover {
+  background: var(--color-field);
+}
+.dgroup a[aria-current="page"] {
+  background: var(--color-brand-soft);
+  color: var(--color-brand-dark);
+  font-weight: 500;
+}
+
 .toc {
   display: flex;
   flex-direction: column;

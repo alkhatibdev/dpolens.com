@@ -1,0 +1,70 @@
+---
+// What people ask before they connect, and where their own policies go instead.
+import Icon from "../Icon.astro";
+import { SITE } from "../../lib/site";
+---
+
+<div class="v-head center">
+  <span class="label">Questions</span>
+  <h2 class="h2" id="cm-fq-h">
+    Before you connect
+  </h2>
+</div>
+<div class="v-faq">
+  <details>
+    <summary>
+      Does it cost anything?
+      <Icon name="caret" size={16} />
+    </summary>
+    <p>No. The community version is free for anyone, within the limits above.</p>
+  </details>
+  <details>
+    <summary>
+      Do I need an account or a token?
+      <Icon name="caret" size={16} />
+    </summary>
+    <p>No. Add the URL to your AI assistant, and ask.</p>
+  </details>
+  <details>
+    <summary>
+      Which AI assistants can use it?
+      <Icon name="caret" size={16} />
+    </summary>
+    <p>
+      Any AI assistant that connects to a remote MCP server over HTTP, such as Claude Code, Claude,
+      ChatGPT, Cursor and VS Code.
+    </p>
+  </details>
+  <details>
+    <summary>
+      Can it read my organisation’s policies?
+      <Icon name="caret" size={16} />
+    </summary>
+    <p>
+      No. It holds public law only. Your own policies need your own instance: run DPOLens yourself.
+      DPOLens Cloud, an instance hosted for a team, is coming.
+    </p>
+  </details>
+  <details>
+    <summary>
+      Is it legal advice?
+      <Icon name="caret" size={16} />
+    </summary>
+    <p>
+      No. DPOLens finds the clause and quotes it. What it means for your case is for the people
+      responsible for it.
+    </p>
+  </details>
+</div>
+<div class="v-band">
+  <p>Your own policies need your own instance.</p>
+  <div class="btns">
+    <a class="btn line" href={SITE.repo}>
+      <Icon name="github" size={17} />
+      Self-host
+    </a>
+    <a class="btn main" href="/#cloud">
+      About DPOLens Cloud
+    </a>
+  </div>
+</div>

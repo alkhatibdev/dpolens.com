@@ -1,0 +1,164 @@
+---
+// The three limits, as a meter anyone can spend.
+---
+
+<div class="v-two">
+  <div class="v-head">
+    <span class="label">Limits</span>
+    <h2 class="h2" id="cm-lm-h">
+      Fair for everyone
+    </h2>
+    <p class="v-sub">
+      Three limits keep one busy script from spending everybody’s allowance. Past one, a call is
+      refused with how long to wait.
+    </p>
+    <div class="v-nums">
+      <div>
+        <b>30</b>
+        <span>calls a minute from each IP address</span>
+      </div>
+      <div>
+        <b>120</b>
+        <span>a minute shared by everyone behind one platform, such as claude.ai</span>
+      </div>
+      <div>
+        <b>300</b>
+        <span>a minute for everybody together</span>
+      </div>
+    </div>
+  </div>
+  <div class="v-meter" data-meter="cm">
+    <div class="v-seg" role="group" aria-label="Where your calls come from">
+      <button type="button" aria-pressed="true" data-from="own">
+        From your machine
+      </button>
+      <button type="button" aria-pressed="false" data-from="shared">
+        Through claude.ai
+      </button>
+    </div>
+    <div class="v-gauges">
+      <div class="v-gauge" data-g="address">
+        <span class="nm">Your IP address</span>
+        <span class="bar">
+          <i></i>
+        </span>
+        <span class="n">
+          <b>30</b> / 30 a minute
+        </span>
+      </div>
+      <div class="v-gauge" data-g="range" hidden>
+        <span class="nm">claude.ai’s servers, shared</span>
+        <span class="bar">
+          <i></i>
+        </span>
+        <span class="n">
+          <b>120</b> / 120 a minute
+        </span>
+      </div>
+      <div class="v-gauge" data-g="all">
+        <span class="nm">Everyone together</span>
+        <span class="bar">
+          <i></i>
+        </span>
+        <span class="n">
+          <b>300</b> / 300 a minute
+        </span>
+      </div>
+    </div>
+    <div class="v-meter-foot">
+      <button class="btn main" type="button" data-ask="1">
+        Ask a question
+      </button>
+      <button class="btn line" type="button" data-ask="10">
+        Ask ten at once
+      </button>
+      <span class="v-result" aria-live="polite">
+        Each question spends one call.
+      </span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // The three limits, to try: each allowance refills at its rate a minute, and everybody else's
+  // calls keep the shared ones a little below full.
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll<HTMLElement>("[data-meter]").forEach((meter) => {
+    const sizes = { address: 30, range: 120, all: 300 };
+    const left = { address: 30, range: 108, all: 284 };
+    type Bucket = keyof typeof sizes;
+    const gauges = new Map<Bucket, HTMLElement>();
+    meter
+      .querySelectorAll<HTMLElement>(".v-gauge")
+      .forEach((gauge) => gauges.set(gauge.dataset.g as Bucket, gauge));
+    const result = meter.querySelector<HTMLElement>(".v-result")!;
+    let from: "own" | "shared" = "own";
+    const draw = () =>
+      gauges.forEach((gauge, key) => {
+        const remaining = Math.max(0, left[key]);
+        gauge.querySelector<HTMLElement>(".bar i")!.style.width =
+          `${((100 * remaining) / sizes[key]).toFixed(1)}%`;
+        gauge.querySelector(".n b")!.textContent = String(Math.floor(remaining));
+        gauge.classList.toggle("low", remaining < 1);
+      });
+    let last = performance.now();
+    const tick = (now: number) => {
+      const elapsed = Math.min(0.5, (now - last) / 1000);
+      last = now;
+      const seconds = now / 1000;
+      const others = {
+        address: sizes.address,
+        range: still ? 108 : 104 + 10 * Math.sin(seconds / 2.3),
+        all: still ? 284 : 283 + 13 * Math.sin(seconds / 3.1),
+      };
+      (Object.keys(left) as Bucket[]).forEach((key) => {
+        left[key] = Math.min(others[key], left[key] + (elapsed * sizes[key]) / 60);
+      });
+      draw();
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    const ask = (count: number) => {
+      const own: Bucket = from === "own" ? "address" : "range";
+      let answered = 0;
+      let wait = 0;
+      for (let i = 0; i < count; i++) {
+        if (left[own] >= 1 && left.all >= 1) {
+          left[own] -= 1;
+          left.all -= 1;
+          answered += 1;
+          continue;
+        }
+        const short: Bucket = left[own] < 1 ? own : "all";
+        wait = Math.max(1, Math.ceil((1 - left[short]) / (sizes[short] / 60)));
+        break;
+      }
+      draw();
+      if (wait) {
+        result.className = "v-result no";
+        result.textContent = `${answered ? `${answered} answered, then ` : ""}429: try again in ${wait} s`;
+      } else {
+        result.className = "v-result yes";
+        result.textContent = answered === 1 ? "Answered" : `${answered} answered`;
+      }
+    };
+    meter
+      .querySelectorAll<HTMLButtonElement>("[data-ask]")
+      .forEach((button) => button.addEventListener("click", () => ask(Number(button.dataset.ask))));
+    meter.querySelectorAll<HTMLButtonElement>("[data-from]").forEach((button) =>
+      button.addEventListener("click", () => {
+        from = button.dataset.from as "own" | "shared";
+        meter
+          .querySelectorAll("[data-from]")
+          .forEach((other) => other.setAttribute("aria-pressed", String(other === button)));
+        gauges.get("address")!.hidden = from !== "own";
+        gauges.get("range")!.hidden = from === "own";
+        result.className = "v-result";
+        result.textContent =
+          from === "own"
+            ? "Each question spends one call."
+            : "Everyone on claude.ai shares this allowance.";
+      }),
+    );
+  });
+</script>

@@ -1,0 +1,94 @@
+---
+// What the community version keeps of a question, and what it never keeps.
+import Icon from "../Icon.astro";
+---
+
+<div class="v-two">
+  <div class="v-head">
+    <span class="label">What it keeps</span>
+    <h2 class="h2" id="cm-kp-h">
+      Your question, never you
+    </h2>
+    <ul class="v-facts">
+      <li>
+        <Icon name="check" size={17} />
+        <span>
+          <b>Questions are kept 30 days</b>, then deleted. Email addresses, phone numbers, card
+          numbers, IBANs and Emirates ID numbers are taken out first.
+        </span>
+      </li>
+      <li>
+        <Icon name="check" size={17} />
+        <span>
+          <b>Nobody is recorded.</b> Every question is asked as one shared account.
+        </span>
+      </li>
+      <li>
+        <Icon name="check" size={17} />
+        <span>
+          <b>Your IP address is only counted</b>, for the limits, in the server’s memory. It is
+          never written down.
+        </span>
+      </li>
+    </ul>
+    <a class="v-more" href="/privacy">
+      Read the privacy notice{" "}
+      <svg
+        aria-hidden="true"
+        width="14"
+        height="14"
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="m8 5 5 5-5 5" />
+      </svg>
+    </a>
+  </div>
+  <div class="v-kept">
+    <div class="v-kept-head">
+      <span>The questions log</span>
+      <span>One row: all that is kept</span>
+    </div>
+    <dl>
+      <div>
+        <dt>Asked</dt>
+        <dd>21 Oct 2026, 10:42</dd>
+      </div>
+      <div>
+        <dt>Who asked</dt>
+        <dd>
+          Community<small>The same for everyone</small>
+        </dd>
+      </div>
+      <div>
+        <dt>The question</dt>
+        <dd>
+          <span class="v-turn">
+            <span class="asked">
+              Can we keep sara@acme.com on file after the account is deleted?
+            </span>
+            <span class="kept">
+              Can we keep <span class="kc">[redacted:email]</span> on file after the account is
+              deleted?
+            </span>
+          </span>
+        </dd>
+      </div>
+      <div>
+        <dt>Clauses returned</dt>
+        <dd class="keys">
+          <span class="kc">gdpr:art-17:para-1</span>
+          <span class="kc">gdpr:art-5:para-1:pt-e</span>
+        </dd>
+      </div>
+      <div>
+        <dt>Deleted on</dt>
+        <dd>20 Nov 2026</dd>
+      </div>
+    </dl>
+  </div>
+</div>

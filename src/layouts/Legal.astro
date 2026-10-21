@@ -1,0 +1,68 @@
+---
+import "../styles/home.css";
+import Icon from "../components/Icon.astro";
+import Page from "./Page.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  lede: string;
+  /** The day the page last changed, as people read it: 21 October 2026. */
+  updated: string;
+  sections: { id: string; title: string; html: string }[];
+}
+
+const { title, description, lede, updated, sections } = Astro.props;
+const here = Astro.url.pathname.replace(/\.html$/, "");
+const pages = [
+  { name: "Privacy", href: "/privacy" },
+  { name: "Terms", href: "/terms" },
+];
+---
+
+<Page title={title} description={description}>
+  <div class="v-legal">
+    <div class="v-lside">
+      <nav class="v-lnav" aria-label="Legal" data-pagefind-ignore>
+        <div class="dgroup">
+          <h2>Legal</h2>
+          {pages.map((page) => (
+            <a href={page.href} aria-current={page.href === here ? "page" : undefined}>
+              {page.name}
+            </a>
+          ))}
+        </div>
+        <div class="toc">
+          <h2>On this page</h2>
+          {sections.map((section) => (
+            <a href={`#${section.id}`}>{section.title}</a>
+          ))}
+        </div>
+      </nav>
+    </div>
+    <article class="v-lbody" aria-labelledby="legal-title">
+      <ol class="crumbs" aria-label="Breadcrumb" data-pagefind-ignore>
+        <li>Legal</li>
+        <li aria-current="page">{title}</li>
+      </ol>
+      <h1 class="h1" id="legal-title">
+        {title}
+      </h1>
+      <p class="lede">{lede}</p>
+      <p class="v-updated">
+        <Icon name="calendar" size={15} />
+        Updated {updated}
+      </p>
+      <slot />
+      {sections.map((section, index) => (
+        <section class="v-lsec" aria-labelledby={section.id}>
+          <h2 id={section.id}>
+            <span class="no">{index + 1}</span>
+            {section.title}
+          </h2>
+          <Fragment set:html={section.html} />
+        </section>
+      ))}
+    </article>
+  </div>
+</Page>

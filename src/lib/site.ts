@@ -3,16 +3,21 @@ export const SITE = {
   origin: "https://dpolens.com",
   tagline: "Privacy law your AI assistant can cite",
   description:
-    "An open-source MCP server for GDPR, the UAE PDPL and your own policies. Every answer is the exact clause, with its version.",
+    "An open-source MCP server for GDPR, the UAE PDPL and your own policies, with more laws to come. Every answer is the exact clause, with its version.",
   repo: "https://github.com/alkhatibdev/dpolens",
   repoName: "alkhatibdev/dpolens",
-  security: "security@dpolens.com",
+  contact: "hello@dpolens.com",
+};
+
+/** The community version: DPOLens hosted for anyone, with public law only. */
+export const COMMUNITY = {
+  url: "https://mcp.dpolens.com",
 };
 
 export interface Link {
   name: string;
   href: string;
-  /** For a section's link: the start of every address in the section, to mark it as current. */
+  /** For a section's link: the start of every path in the section, to mark it as current. */
   section?: string;
 }
 
@@ -20,13 +25,18 @@ export interface Link {
 export const NAV: Link[] = [
   { name: "Docs", href: "/docs/get-started", section: "/docs" },
   { name: "Laws", href: "/laws" },
+  { name: "Community", href: "/community" },
 ];
 
 /** The footer's columns. A link is listed once the page it leads to exists. */
 export const FOOTER: { title: string; links: Link[] }[] = [
   {
     title: "Product",
-    links: [{ name: "Laws", href: "/laws" }],
+    links: [
+      { name: "Community version", href: "/community" },
+      { name: "Cloud", href: "/#cloud" },
+      { name: "Laws", href: "/laws" },
+    ],
   },
   {
     title: "Docs",
@@ -46,10 +56,27 @@ export const FOOTER: { title: string; links: Link[] }[] = [
       { name: "Security", href: `${SITE.repo}/blob/main/SECURITY.md` },
     ],
   },
+  {
+    title: "Legal",
+    links: [
+      { name: "Privacy", href: "/privacy" },
+      { name: "Terms", href: "/terms" },
+    ],
+  },
 ];
 
 /** What llms.txt lists beside the docs, which it takes from the docs themselves. */
-export const LLMS: { title: string; links: Link[] }[] = [
+export const LLMS: { title: string; links: (Link & { note?: string })[] }[] = [
+  {
+    title: "Community version",
+    links: [
+      {
+        name: "DPOLens, hosted for anyone",
+        href: `${SITE.origin}/community`,
+        note: `add ${COMMUNITY.url} to an AI assistant, with no sign-in and no token; public law only`,
+      },
+    ],
+  },
   {
     title: "Project",
     links: [
@@ -59,5 +86,5 @@ export const LLMS: { title: string; links: Link[] }[] = [
   },
 ];
 
-/** A page's address as people use it: /about rather than the built file's /about.html. */
+/** A page's path as people use it: /about rather than the built file's /about.html. */
 export const pagePath = (url: URL) => url.pathname.replace(/(\/index)?\.html$/, "") || "/";

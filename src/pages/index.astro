@@ -1,8 +1,18 @@
 ---
-import Icon from "../components/Icon.astro";
+import "../styles/home.css";
+import "../styles/laws.css";
+import Band from "../components/Band.astro";
+import ConnectCard from "../components/ConnectCard.astro";
+import Closing from "../components/home/Closing.astro";
+import Cloud from "../components/home/Cloud.astro";
+import Features from "../components/home/Features.astro";
+import Hero from "../components/home/Hero.astro";
+import LawTable from "../components/LawTable.astro";
 import Page from "../layouts/Page.astro";
+import { getLaws } from "../lib/packs";
 import { SITE } from "../lib/site";
 
+const laws = await getLaws();
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
@@ -12,6 +22,17 @@ const jsonLd = {
       name: SITE.name,
       url: SITE.origin,
       description: SITE.description,
+    },
+    {
+      "@type": "SoftwareApplication",
+      name: SITE.name,
+      description: SITE.description,
+      applicationCategory: "DeveloperApplication",
+      operatingSystem: "Linux, macOS, Windows (Docker)",
+      license: "https://www.apache.org/licenses/LICENSE-2.0",
+      url: SITE.origin,
+      sameAs: [SITE.repo],
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     },
     {
       "@type": "Organization",
@@ -31,57 +52,43 @@ const jsonLd = {
   description={SITE.description}
   jsonLd={jsonLd}
 >
-  <header class="hero">
-    <h1 class="h1">
-      Privacy law your AI assistant <span class="mark">can cite</span>
-    </h1>
-    <p class="lede">{SITE.description}</p>
-    <div class="btns">
-      <a class="btn main" href={SITE.repo}>
-        <Icon name="github" />
-        Self-host
-      </a>
+  <Hero />
+
+  <Band tint id="community" aria-labelledby="home-c-h">
+    <div class="v-head center">
+      <span class="label">Community version</span>
+      <h2 class="h2" id="home-c-h">
+        Connect in one line
+      </h2>
+      <p class="v-sub">Free for anyone. Add one URL to your AI assistant, and ask.</p>
     </div>
-  </header>
+    <ConnectCard />
+  </Band>
+
+  <Band aria-labelledby="home-f-h">
+    <Features />
+  </Band>
+
+  <Band tint id="laws" aria-labelledby="home-l-h">
+    <div class="v-head center">
+      <span class="label">Laws</span>
+      <h2 class="h2" id="home-l-h">
+        Supported laws
+      </h2>
+      <p class="v-sub">Each law clause by clause, in the language that prevails.</p>
+    </div>
+    <LawTable laws={laws} />
+  </Band>
+
+  <Band id="cloud" aria-labelledby="home-cl-h">
+    <Cloud />
+    <Closing />
+  </Band>
 </Page>
 
 <style>
-  .hero {
-    position: relative;
-    isolation: isolate;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 22px;
-    padding: 56px var(--gutter) 88px;
-    text-align: center;
-  }
-  .hero::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background: radial-gradient(
-      55% 45% at 50% 82%,
-      rgb(201 242 221 / 0.6),
-      rgb(201 242 221 / 0) 72%
-    );
-  }
-  .h1 {
-    max-width: 12ch;
-  }
-  .lede {
-    max-width: 33em;
-  }
-  @media (max-width: 640px) {
-    .hero {
-      padding-top: 32px;
-      padding-bottom: 56px;
-    }
-    .btns,
-    .btn {
-      width: 100%;
-    }
+  /* Cloud and the closing panel share the page's last band. */
+  :global(.v-cloud + .v-end) {
+    margin-top: 64px;
   }
 </style>

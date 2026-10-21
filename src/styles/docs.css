@@ -64,35 +64,6 @@
   border-radius: 6px;
   padding: 2px 7px;
 }
-.dgroup {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.dgroup h2 {
-  margin: 0 0 6px;
-  padding-left: 10px;
-  font: 500 11px var(--font-mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-muted);
-}
-.dgroup a {
-  padding: 6px 10px;
-  border-radius: 9px;
-  text-decoration: none;
-  font-size: 14px;
-  color: var(--color-ink-2);
-}
-.dgroup a:hover {
-  background: var(--color-field);
-}
-.dgroup a[aria-current="page"] {
-  background: var(--color-brand-soft);
-  color: var(--color-brand-dark);
-  font-weight: 500;
-}
-
 /* The menu on a narrow screen: a bar above the page. */
 .dbar {
   display: none;

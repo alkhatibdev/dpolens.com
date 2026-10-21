@@ -1,0 +1,52 @@
+---
+// The connect card, and questions to copy into an AI assistant.
+import ConnectCard from "../ConnectCard.astro";
+import Icon from "../Icon.astro";
+
+const asks = [
+  { text: "How long can we keep a deleted user’s data?" },
+  { text: "Do we need consent to log IP addresses for debugging?" },
+  { text: "What has to happen when somebody asks for a copy of their data?" },
+  { text: "متى يحق لصاحب البيانات طلب محو بياناته الشخصية؟", lang: "ar" },
+];
+---
+
+<h2 class="visually-hidden" id="cm-cn-h">
+  Connect
+</h2>
+<ConnectCard />
+<div class="v-asks-wrap">
+  <span class="v-cap">Then ask, in English or Arabic</span>
+  <div class="v-asks">
+    {asks.map((ask) => (
+      <button type="button" data-clip={ask.text}>
+        <span class="lbl" lang={ask.lang} dir={ask.lang === "ar" ? "rtl" : undefined}>
+          {ask.text}
+        </span>
+        <Icon name="copy" size={14} />
+      </button>
+    ))}
+  </div>
+</div>
+
+<script>
+  // Each example question copies itself, ready to paste into an AI assistant.
+  document.querySelectorAll<HTMLButtonElement>("[data-clip]").forEach((button) => {
+    const label = button.querySelector<HTMLElement>(".lbl") ?? button;
+    const words = label.textContent;
+    const lang = label.lang;
+    button.addEventListener("click", async () => {
+      label.lang = "en";
+      try {
+        await navigator.clipboard.writeText(button.dataset.clip ?? "");
+        label.textContent = "Copied";
+      } catch {
+        label.textContent = "Copy failed";
+      }
+      setTimeout(() => {
+        label.textContent = words;
+        label.lang = lang;
+      }, 1600);
+    });
+  });
+</script>
