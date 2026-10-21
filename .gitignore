@@ -4,5 +4,6 @@ dist/
 .wrangler/
 .env
 .env.*
+.dev.vars
 .DS_Store
 .cache/

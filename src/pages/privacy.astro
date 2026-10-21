@@ -34,6 +34,17 @@ const sections = [
       "GDPR).</p>",
   },
   {
+    id: "cloud",
+    title: "The Cloud waitlist",
+    html:
+      "<p>If you join, we keep your email address, your answer to “What would you use it for?”, and when " +
+      "you joined. We use them to tell you when DPOLens Cloud opens and to decide whether to build it, and " +
+      "nothing else. We keep them until Cloud opens or we decide not to build it, and delete them sooner " +
+      "if you ask. When you start filling in the form, a check that you are not a bot runs in your " +
+      "browser. This rests on your consent (Article 6(1)(a) GDPR), which you can withdraw at any time by " +
+      "writing to <b>hello@dpolens.com</b>.</p>",
+  },
+  {
     id: "email",
     title: "Email",
     html:
@@ -44,8 +55,8 @@ const sections = [
     id: "others",
     title: "Who else handles it",
     html:
-      "<p>Our network provider (this website and its visit counts, connections to the community version, and " +
-      "email forwarding) and our hosting provider (the community version's server). " +
+      "<p>Our network provider (this website and its visit counts, connections to the community version, the " +
+      "Cloud waitlist and its bot check, and email forwarding) and our hosting provider (the community version's server). " +
       "Both act on our instructions. Our network provider may process data outside the EU, under the EU-U.S. " +
       "Data Privacy Framework and the EU's standard contractual clauses.</p>",
   },
@@ -90,6 +101,11 @@ const sections = [
       <b>The community version</b>
       <span>Your question, with personal data taken out. Never who asked.</span>
       <span class="v-chip">30 days</span>
+    </div>
+    <div class="v-short-row">
+      <b>The Cloud waitlist</b>
+      <span>Your email address, and what you would use Cloud for.</span>
+      <span class="v-chip">Until Cloud opens</span>
     </div>
     <div class="v-short-row">
       <b>Email to us</b>

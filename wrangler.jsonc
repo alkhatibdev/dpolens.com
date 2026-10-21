@@ -2,12 +2,28 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "dpolens-com",
   "compatibility_date": "2026-10-21",
-  // Static files only: no Worker code runs, so public/_headers applies to every response.
+  // The site is static files, served without running any code. Only paths under /api/ reach
+  // the Worker in worker/index.ts, which answers the DPOLens Cloud waitlist's form.
+  "main": "worker/index.ts",
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash",
   },
+  // The waitlist's entries, made with `wrangler d1 create dpolens-waitlist --jurisdiction eu`.
+  // Its table is in migrations/. Commands run by hand find the database by its name; a deploy
+  // pins its id from the repository secret D1_DATABASE_ID (scripts/deploy-config.mjs).
+  "d1_databases": [
+    {
+      "binding": "WAITLIST",
+      "database_name": "dpolens-waitlist",
+    },
+  ],
+  // Each new entry is emailed to a verified address on the account, which the NOTIFY_TO
+  // secret names. TURNSTILE_SECRET is the other secret.
+  "send_email": [{ "name": "NOTIFY" }],
   "routes": [{ "pattern": "dpolens.com", "custom_domain": true }],
   "workers_dev": false,
   "preview_urls": false,

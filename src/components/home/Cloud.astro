@@ -1,5 +1,6 @@
 ---
-// DPOLens Cloud: what it will be, and where its waitlist will open.
+// DPOLens Cloud: what it will be, and its waitlist.
+import { WAITLIST } from "../../lib/site";
 import Icon from "../Icon.astro";
 
 // The rings' sizes, from the middle out: each ripples outwards in turn.
@@ -55,8 +56,140 @@ const rings = [153, 314, 475, 637, 798, 959];
       </li>
     </ul>
   </div>
-  <div class="v-soon">
-    <p>The waitlist opens here soon.</p>
-    <small>For teams who want DPOLens hosted, with their own policies.</small>
-  </div>
+  <form method="post" action="/api/waitlist" data-waitlist>
+    <label for="cloud-email">
+      <span class="l">Work email</span>
+      <input
+        id="cloud-email"
+        name="email"
+        type="email"
+        placeholder="you@company.com"
+        autocomplete="email"
+        maxlength="254"
+        required
+      />
+    </label>
+    <label for="cloud-use">
+      <span class="l">
+        What would you use it for? <span>Optional</span>
+      </span>
+      <input
+        id="cloud-use"
+        name="use_for"
+        type="text"
+        placeholder="Our policies, for a team of 12"
+        autocomplete="off"
+        maxlength="300"
+      />
+    </label>
+    <div class="v-turnstile" data-sitekey={WAITLIST.siteKey}></div>
+    <p class="v-formerr" role="alert" hidden></p>
+    <button class="btn main" type="submit">
+      Join the waitlist
+    </button>
+    <small>
+      Only for news about Cloud. <a href="/privacy#cloud">Privacy</a>
+    </small>
+  </form>
 </div>
+
+<script>
+  // The bot check loads when somebody starts filling in the form, not with the page, and runs
+  // unseen unless it needs a click. The form then goes to the Worker under /api/waitlist.
+  interface Turnstile {
+    render(container: HTMLElement, options: Record<string, unknown>): string;
+    reset(widget: string): void;
+    remove(widget: string): void;
+  }
+  const MESSAGES: Record<string, string> = {
+    email: "That email address does not look right.",
+    "too-long": "Keep the answer under 300 characters.",
+    check: "The bot check did not pass. Try again.",
+    load: "The bot check did not load. Try again, or write to hello@dpolens.com.",
+    other: "Something went wrong. Try again, or write to hello@dpolens.com.",
+  };
+
+  const form = document.querySelector<HTMLFormElement>("[data-waitlist]");
+  if (form) {
+    const box = form.querySelector<HTMLElement>(".v-turnstile")!;
+    const error = form.querySelector<HTMLElement>(".v-formerr")!;
+    const button = form.querySelector<HTMLButtonElement>("button[type=submit]")!;
+    const say = (key: string) => {
+      error.textContent = MESSAGES[key] ?? MESSAGES.other;
+      error.hidden = false;
+    };
+
+    let turnstile: Turnstile | undefined;
+    let widget: string | undefined;
+    let token: Promise<string> | undefined;
+    let settle: (value: string) => void = () => {};
+    let fail: (reason: Error) => void = () => {};
+    const expect = () => {
+      token = new Promise<string>((resolve, reject) => {
+        settle = resolve;
+        fail = reject;
+      });
+      // A failure is reported when the form is sent, not as an error before then.
+      token.catch(() => {});
+      return token;
+    };
+
+    // One token for each try: Turnstile spends it when the Worker checks it.
+    const check = () => {
+      if (token) return token;
+      const next = expect();
+      const script = document.createElement("script");
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+      script.async = true;
+      script.addEventListener("error", () => fail(new Error("load")));
+      script.addEventListener("load", () => {
+        turnstile = (window as unknown as { turnstile: Turnstile }).turnstile;
+        widget = turnstile.render(box, {
+          sitekey: box.dataset.sitekey,
+          action: "waitlist",
+          appearance: "interaction-only",
+          callback: (value: string) => settle(value),
+          "error-callback": () => fail(new Error("check")),
+        });
+      });
+      document.head.append(script);
+      return next;
+    };
+
+    form.addEventListener("focusin", () => void check().catch(() => {}), { once: true });
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      error.hidden = true;
+      button.disabled = true;
+      try {
+        await check();
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        if (response.ok) {
+          if (turnstile && widget) turnstile.remove(widget);
+          const done = document.createElement("p");
+          done.className = "done";
+          done.setAttribute("role", "status");
+          done.textContent = "Thanks. You are on the list, and we will write when Cloud opens.";
+          form.replaceWith(done);
+          return;
+        }
+        const body = (await response.json().catch(() => ({}))) as { error?: string };
+        say(body.error ?? "other");
+      } catch (reason) {
+        say(reason instanceof Error ? reason.message : "other");
+      }
+      // After a failed try, the next one needs a fresh token.
+      if (turnstile && widget) {
+        expect();
+        turnstile.reset(widget);
+      } else {
+        token = undefined;
+      }
+      button.disabled = false;
+    });
+  }
+</script>
