@@ -20,6 +20,9 @@ const ORIGIN = "https://dpolens.com";
 const DASHES = new RegExp(`[${String.fromCharCode(0x2013, 0x2014)}]`);
 // Files written by Pagefind and font files are not the site's own text.
 const SKIP = [join(DIST, "pagefind"), join(DIST, "_astro", "fonts")];
+// The law pages quote the law as it is written, so their words are left to the law. The
+// templates that frame them are checked with the sources.
+const QUOTED = [join(DIST, "laws"), join(DIST, "laws.html"), join(DIST, "ar")];
 const TEXT = /\.(astro|css|html|js|json|jsonc|md|mjs|ts|txt|webmanifest|xml|ya?ml)$/;
 
 const walk = (dir) =>
@@ -98,7 +101,8 @@ const sources = [
   "wrangler.jsonc",
   "package.json",
 ];
-for (const file of [...built, ...sources].filter((file) => TEXT.test(file))) {
+const ownText = built.filter((file) => !QUOTED.some((quoted) => file.startsWith(quoted)));
+for (const file of [...ownText, ...sources].filter((file) => TEXT.test(file))) {
   readFileSync(file, "utf8")
     .split("\n")
     .forEach((line, index) => {

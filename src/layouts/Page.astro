@@ -5,6 +5,7 @@ import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import Search from "../components/Search.astro";
 import Seo from "../components/Seo.astro";
+import { SITE } from "../lib/site";
 
 interface Props {
   title: string;
@@ -14,13 +15,19 @@ interface Props {
   jsonLd?: Record<string, unknown>;
   /** Whether site search lists this page. */
   searchable?: boolean;
+  /** What search results call the part of the site the page is in: Docs, Laws. */
+  section?: string;
+  /** The language of the page's own content. The site's menus stay English. */
+  lang?: string;
+  /** The same page in its other languages, for search engines. */
+  alternates?: { lang: string; href: string }[];
 }
 
-const { searchable = true, ...seo } = Astro.props;
+const { searchable = true, section, lang = "en", alternates = [], ...seo } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang={lang} dir="ltr">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -39,14 +46,21 @@ const { searchable = true, ...seo } = Astro.props;
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="theme-color" content="#ffffff" />
+    {alternates.map((alternate) => (
+      <link rel="alternate" hreflang={alternate.lang} href={new URL(alternate.href, SITE.origin)} />
+    ))}
   </head>
   <body>
     <a class="skip" href="#main">
       Skip to content
     </a>
-    <div class="col">
+    <div class="col" lang={lang === "en" ? undefined : "en"}>
       <Header />
-      <main id="main" data-pagefind-body={searchable ? "" : undefined}>
+      <main
+        id="main"
+        data-pagefind-body={searchable ? "" : undefined}
+        data-pagefind-meta={section ? `section:${section}` : undefined}
+      >
         <slot />
       </main>
       <Footer />

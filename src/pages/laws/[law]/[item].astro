@@ -1,0 +1,18 @@
+---
+import LawItem from "../../../layouts/LawItem.astro";
+import { itemsOf } from "../../../lib/laws";
+import { getLaws, type Item } from "../../../lib/packs";
+
+// Every article and recital in English: the law itself, or its official English translation.
+export async function getStaticPaths() {
+  return (await getLaws()).flatMap((law) =>
+    itemsOf(law)
+      .filter((item) => item.texts.has("en"))
+      .map((item) => ({ params: { law: law.slug, item: item.stem }, props: { item } })),
+  );
+}
+
+const { item } = Astro.props as { item: Item };
+---
+
+<LawItem item={item} lang="en" />

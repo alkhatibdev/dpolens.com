@@ -158,28 +158,6 @@
   gap: 18px;
   padding: 22px 48px 72px;
 }
-.crumbs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font: 13px var(--font-mono);
-  color: var(--color-muted);
-}
-.crumbs li + li::before {
-  content: "/";
-  margin: 0 8px;
-  color: var(--color-line-strong);
-}
-.crumbs a {
-  color: var(--color-muted);
-  text-decoration: none;
-}
-.crumbs a:hover {
-  color: var(--color-brand);
-}
 .doc-top {
   display: flex;
   flex-wrap: wrap;
@@ -545,37 +523,7 @@
   display: none;
 }
 
-/* Previous and next, and where to change the page. */
-.prevnext {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 26px;
-}
-.prevnext a {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 14px 16px;
-  border-radius: 16px;
-  box-shadow: inset 0 0 0 1px var(--color-line);
-  text-decoration: none;
-}
-.prevnext a:hover {
-  box-shadow: inset 0 0 0 1px var(--color-ink);
-}
-.prevnext a.next {
-  grid-column: 2;
-  text-align: right;
-}
-.prevnext small {
-  font-size: 12.5px;
-  color: var(--color-muted);
-}
-.prevnext b {
-  font-size: 15px;
-  font-weight: 500;
-}
+/* Where to change the page. */
 .docfoot {
   display: flex;
   flex-wrap: wrap;
@@ -605,33 +553,6 @@
   max-height: 100vh;
   overflow-y: auto;
   padding: 22px 20px;
-}
-.toc {
-  display: flex;
-  flex-direction: column;
-}
-.toc h2 {
-  margin-bottom: 8px;
-  font: 500 11.5px var(--font-mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-muted);
-}
-.toc a {
-  padding: 5px 10px;
-  border-left: 2px solid var(--color-line);
-  font-size: 13.5px;
-  line-height: 1.4;
-  color: var(--color-muted);
-  text-decoration: none;
-}
-.toc a:hover {
-  color: var(--color-ink);
-}
-.toc a.on {
-  color: var(--color-brand-dark);
-  border-left-color: var(--color-brand);
-  font-weight: 500;
 }
 
 @media (max-width: 1195px) {
@@ -668,12 +589,6 @@
   }
   .prose pre {
     font-size: 12.5px;
-  }
-  .prevnext {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .prevnext a.next {
-    grid-column: auto;
   }
   /* Copy page sits under the title here, so its menu opens from the left. */
   .pagemenu {
