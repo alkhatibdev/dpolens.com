@@ -1,0 +1,62 @@
+---
+// DPOLens Cloud: what it will be, and where its waitlist will open.
+import Icon from "../Icon.astro";
+
+// The rings' sizes, from the middle out: each ripples outwards in turn.
+const rings = [153, 314, 475, 637, 798, 959];
+---
+
+<div class="v-cloud">
+  <div class="v-cloud-art" aria-hidden="true">
+    <div class="v-rings">
+      <svg
+        class="v-rings-svg"
+        width="1040"
+        height="1040"
+        viewBox="0 0 1040 1040"
+        fill="none"
+        stroke="currentColor"
+        stroke-opacity="0.16"
+        stroke-width="1.5"
+      >
+        {rings.map((size) => (
+          <rect
+            class="dpl-ring"
+            x={(1040 - size) / 2}
+            y={(1040 - size) / 2}
+            width={size}
+            height={size}
+            rx={size * 0.22}
+            vector-effect="non-scaling-stroke"
+          />
+        ))}
+      </svg>
+    </div>
+  </div>
+  <div>
+    <div class="v-head">
+      <span class="label">Coming soon</span>
+      <h2 class="h2" id="home-cl-h">
+        DPOLens Cloud
+      </h2>
+      <p class="v-sub">Your policies, hosted for your team. Every feature stays open source.</p>
+    </div>
+    <ul>
+      <li>
+        <Icon name="check" size={17} />
+        No servers to run
+      </li>
+      <li>
+        <Icon name="check" size={17} />A private instance for your team
+      </li>
+      <li>
+        <Icon name="check" size={17} />
+        The same open-source DPOLens
+      </li>
+    </ul>
+  </div>
+  <div class="v-soon">
+    <p>The waitlist opens here soon.</p>
+    <small>For teams who want DPOLens hosted, with their own policies.</small>
+  </div>
+</div>

@@ -1,0 +1,108 @@
+---
+// The community version's MCP server URL, and each AI assistant's own line to add it.
+import { COMMUNITY } from "../lib/site";
+import Icon from "./Icon.astro";
+
+const url = `${COMMUNITY.url}/`;
+const clients = [
+  { name: "Claude Code", prompt: "$ ", line: `claude mcp add --transport http dpolens ${url}` },
+  { name: "Claude", line: "Settings › Connectors › Add custom connector, then paste the URL" },
+  { name: "ChatGPT", line: "Settings › Connectors › Create, then paste the URL" },
+  { name: "Cursor", line: `{ "mcpServers": { "dpolens": { "url": "${url}" } } }` },
+  {
+    name: "VS Code",
+    prompt: "$ ",
+    line: `code --add-mcp '${JSON.stringify({ name: "dpolens", type: "http", url })}'`,
+  },
+];
+const [first] = clients;
+---
+
+<div class="v-try" data-connect>
+  <div class="v-try-head">
+    <h3>Try the community version</h3>
+    <div class="v-try-meta">
+      <span class="v-live">
+        <i aria-hidden="true"></i>Online
+      </span>
+      <span class="v-tag">Free</span>
+    </div>
+  </div>
+  <div class="v-url">
+    <code>{COMMUNITY.url}</code>
+    <button class="v-copy" type="button">
+      <Icon name="copy" size={16} />
+      <span>Copy</span>
+    </button>
+  </div>
+  <div class="v-clients" role="group" aria-label="Your AI assistant">
+    {clients.map((client) => (
+      <button
+        type="button"
+        aria-pressed={client === first ? "true" : "false"}
+        data-prompt={client.prompt ?? ""}
+        data-cmd={client.line}
+      >
+        {client.name}
+      </button>
+    ))}
+  </div>
+  {/* The line keeps its spaces, so it stays on one line here. */}
+  <!-- prettier-ignore -->
+  <div class="v-cmd" aria-live="polite"><span class="p">{first.prompt}</span><span class="t">{first.line}</span><span class="caret" aria-hidden="true"></span></div>
+  <p class="v-checks">
+    <span>
+      <Icon name="check" />
+      No sign-in
+    </span>
+    <span>
+      <Icon name="check" />A growing list of laws
+    </span>
+  </p>
+</div>
+
+<script>
+  // A tab for each AI assistant types its own line; Copy copies the URL.
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll<HTMLElement>("[data-connect]").forEach((card) => {
+    const buttons = [...card.querySelectorAll<HTMLButtonElement>(".v-clients button")];
+    const prompt = card.querySelector<HTMLElement>(".v-cmd .p")!;
+    const text = card.querySelector<HTMLElement>(".v-cmd .t")!;
+    let typing: ReturnType<typeof setInterval> | undefined;
+    buttons.forEach((button) =>
+      button.addEventListener("click", () => {
+        buttons.forEach((other) => other.setAttribute("aria-pressed", String(other === button)));
+        clearInterval(typing);
+        prompt.textContent = button.dataset.prompt ?? "";
+        const line = button.dataset.cmd ?? "";
+        if (still) {
+          text.textContent = line;
+          return;
+        }
+        let shown = 0;
+        text.textContent = "";
+        typing = setInterval(() => {
+          shown += 2;
+          text.textContent = line.slice(0, shown);
+          if (shown >= line.length) clearInterval(typing);
+        }, 18);
+      }),
+    );
+    const copy = card.querySelector<HTMLButtonElement>(".v-copy")!;
+    const label = copy.querySelector("span")!;
+    copy.addEventListener("click", async () => {
+      const url = card.querySelector<HTMLElement>(".v-url code")!;
+      try {
+        await navigator.clipboard.writeText(url.textContent ?? "");
+        label.textContent = "Copied";
+        setTimeout(() => (label.textContent = "Copy"), 1600);
+      } catch {
+        // Where the clipboard is refused, the URL is selected for copying by hand.
+        const range = document.createRange();
+        range.selectNodeContents(url);
+        getSelection()?.removeAllRanges();
+        getSelection()?.addRange(range);
+      }
+    });
+  });
+</script>

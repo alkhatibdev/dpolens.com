@@ -1,0 +1,58 @@
+---
+import Legal from "../layouts/Legal.astro";
+
+const sections = [
+  {
+    id: "advice",
+    title: "Not legal advice",
+    html:
+      "<p>DPOLens finds the law and quotes it. It does not tell you what the law means for your case. Check " +
+      "anything with real consequences with the people responsible for it.</p>",
+  },
+  {
+    id: "community",
+    title: "The community version",
+    html:
+      "<p>Free for anyone, for questions about public law. Keep to its limits, and do not try to break, " +
+      "overload or get around them: we block IP addresses that do. It can change, pause or stop, and we say so " +
+      "on this site first when we can.</p>",
+  },
+  {
+    id: "law",
+    title: "The law texts",
+    html:
+      "<p>Each law is taken from its official source, under that source's terms of reuse, which the law's " +
+      'page names. Only the official publication is authentic, and for the <a href="/laws/uae-pdpl">UAE PDPL</a> ' +
+      "the Arabic text prevails.</p>",
+  },
+  {
+    id: "software",
+    title: "The software",
+    html:
+      "<p>DPOLens is open source under the Apache License 2.0, and is provided as is, without warranties, as " +
+      "the licence says. The docs and the posts on this site are under CC BY 4.0.</p>",
+  },
+  {
+    id: "liability",
+    title: "Liability",
+    html:
+      "<p>As far as the law allows, we are not liable for losses that come from using DPOLens or from relying " +
+      "on what it returns.</p>",
+  },
+  {
+    id: "contact",
+    title: "Changes and contact",
+    html:
+      "<p>When these terms change, the date above changes with them. Write to <b>hello@dpolens.com</b> with " +
+      "any question.</p>",
+  },
+];
+---
+
+<Legal
+  title="Terms"
+  description="The terms for using dpolens.com and the DPOLens community version: not legal advice, fair use, the law texts and the licence."
+  lede="The terms for using dpolens.com and the community version."
+  updated="21 October 2026"
+  sections={sections}
+/>

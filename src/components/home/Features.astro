@@ -1,0 +1,341 @@
+---
+// Six features, each a small live scene.
+import { formatDate } from "../../lib/laws";
+import { getLaws } from "../../lib/packs";
+import Icon from "../Icon.astro";
+
+// The scenes quote GDPR at the version the site carries.
+const gdpr = (await getLaws()).find((law) => law.slug === "gdpr")!;
+const inForce = formatDate(gdpr.effectiveDate);
+---
+
+<div class="v-head center">
+  <span class="label">Features</span>
+  <h2 class="h2" id="home-f-h">
+    What DPOLens gives your AI assistant
+  </h2>
+</div>
+<div class="v-bento">
+  <article class="v-ft w2">
+    <div class="v-ft-txt">
+      <h3>Exact citations</h3>
+      <p>The clause word for word, with its key, version and date in force.</p>
+    </div>
+    <div class="v-ft-scene">
+      <div class="v-match">
+        <div class="v-claim">
+          <span class="who">Your AI assistant</span>
+          <p>
+            The data is erased <span class="v-hl">“without undue delay”</span>.
+          </p>
+        </div>
+        <div class="v-link" aria-hidden="true"></div>
+        <div class="v-source">
+          <div class="top">
+            <span class="kc">gdpr:art-17:para-1</span>
+            <span class="force">In force</span>
+          </div>
+          <p>
+            …the controller shall have the obligation to erase personal data{" "}
+            <span class="v-hl">without undue delay</span> where one of the following grounds
+            applies:
+          </p>
+          <div class="meta">
+            <span>
+              GDPR · version {gdpr.version} · in force since {inForce}
+            </span>
+            <button
+              class="v-mini"
+              type="button"
+              data-copy={`GDPR Article 17(1), version ${gdpr.version}, in force since ${inForce}`}
+            >
+              Copy citation
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <article class="v-ft">
+    <div class="v-ft-txt">
+      <h3>Arabic and English</h3>
+      <p>The UAE PDPL in the Arabic that prevails, beside its official English.</p>
+    </div>
+    <div class="v-ft-scene">
+      <div class="v-seg" role="group" aria-label="Language" data-lang="home">
+        <button type="button" aria-pressed="true" data-l="en">
+          English
+        </button>
+        <button type="button" aria-pressed="false" data-l="ar">
+          العربية
+        </button>
+      </div>
+      <div class="v-clause" data-show="en">
+        <span class="t">
+          uae-pdpl:art-15:para-2:pt-a · Right to correction or erasure of Personal Data
+        </span>
+        <p>
+          His/her Personal Data is no longer necessary for the purposes for which it is collected or
+          processed.
+        </p>
+      </div>
+      <div class="v-clause" data-show="ar" hidden lang="ar" dir="rtl">
+        <span class="t">حق تصحيح أو محو البيانات الشخصية</span>
+        <p>لم تعد بياناته الشخصية ضرورية للأغراض التي جُمعت أو عولجت من أجلها.</p>
+      </div>
+      <span class="v-prevails">The Arabic text prevails</span>
+    </div>
+  </article>
+  <article class="v-ft">
+    <div class="v-ft-txt">
+      <h3>Your own policies</h3>
+      <p>Upload Word or Markdown files and publish versions that never change.</p>
+    </div>
+    <div class="v-ft-scene">
+      <div class="v-read">
+        <div class="v-docx">
+          <b>.docx</b>
+        </div>
+        <div class="v-arrow" aria-hidden="true"></div>
+        <div class="v-cl">
+          <div>
+            <code>4.1</code>Data stays in the EU
+          </div>
+          <div>
+            <code>4.2</code>Access by named roles
+          </div>
+          <div>
+            <code>5.1</code>Answer within a month
+          </div>
+          <div>
+            <code>5.2</code>Backups expire
+          </div>
+        </div>
+      </div>
+      <span class="v-pub">
+        <Icon name="check" size={14} />
+        Version 3 published
+      </span>
+    </div>
+  </article>
+  <article class="v-ft w2">
+    <div class="v-ft-txt">
+      <h3>Audit logs</h3>
+      <p>A hash-chained governance log, and every question with personal data removed.</p>
+    </div>
+    <div class="v-ft-scene">
+      <div class="v-audit">
+        <div class="v-chain" data-chain="home">
+          <span class="cap">Governance log</span>
+          <div class="v-entry">
+            <span class="n">#1041</span>
+            <span>role.created</span>
+            <span class="h">7d2e…</span>
+          </div>
+          <div class="v-entry">
+            <span class="n">#1042</span>
+            <span>policy.uploaded</span>
+            <span class="h">a90c…</span>
+          </div>
+          <div class="v-entry">
+            <span class="n">#1043</span>
+            <span>policy.published</span>
+            <span class="h">3f81…</span>
+          </div>
+        </div>
+        <div class="v-q">
+          <div class="v-turn">
+            <div class="asked">
+              <span class="cap">As asked</span>
+              <p>Can we keep sara@acme.com on file after the account is deleted?</p>
+            </div>
+            <div class="kept">
+              <span class="cap">As kept</span>
+              <p>
+                Can we keep <span class="kc">[redacted:email]</span> on file after the account is
+                deleted?
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <article class="v-ft">
+    <div class="v-ft-txt">
+      <h3>No LLM, no API key</h3>
+      <p>Search runs on the CPU, inside your own server.</p>
+    </div>
+    <div class="v-ft-scene">
+      <div class="v-vec">
+        <span class="qq">how long can we keep a deleted user’s data</span>
+        <div class="v-cells" aria-hidden="true">
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+        </div>
+        <div class="v-cpu-row">
+          <span>CPU</span>
+          <span>0 API keys</span>
+          <span>4 clauses found</span>
+        </div>
+      </div>
+    </div>
+  </article>
+  <article class="v-ft w2 shrink">
+    <div class="v-ft-txt">
+      <h3>The laws that apply</h3>
+      <p>Choose your laws once. Every search keeps to them.</p>
+    </div>
+    <div class="v-ft-scene">
+      <div class="v-pick" data-laws="home">
+        <div class="v-lawrow">
+          <span>
+            <b>GDPR</b>
+            <small>European Union</small>
+          </span>
+          <button
+            class="v-sw"
+            type="button"
+            role="switch"
+            aria-checked="true"
+            aria-label="GDPR"
+            data-law="GDPR"
+          ></button>
+        </div>
+        <div class="v-lawrow">
+          <span>
+            <b>UAE PDPL</b>
+            <small>United Arab Emirates</small>
+          </span>
+          <button
+            class="v-sw"
+            type="button"
+            role="switch"
+            aria-checked="true"
+            aria-label="UAE PDPL"
+            data-law="UAE PDPL"
+          ></button>
+        </div>
+        <div class="v-covers" aria-live="polite">
+          Every search covers <b class="list">GDPR, UAE PDPL</b>
+        </div>
+      </div>
+    </div>
+  </article>
+</div>
+
+<script>
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Copy citation.
+  document.querySelectorAll<HTMLButtonElement>(".v-bento [data-copy]").forEach((button) => {
+    const label = button.textContent;
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy ?? "");
+        button.textContent = "Copied";
+      } catch {
+        button.textContent = button.dataset.copy ?? "";
+      }
+      setTimeout(() => (button.textContent = label), 1800);
+    });
+  });
+
+  // Arabic and English: the switch, which also turns by itself until somebody uses it.
+  document.querySelectorAll<HTMLElement>("[data-lang]").forEach((group) => {
+    const scene = group.parentElement!;
+    const buttons = [...group.querySelectorAll<HTMLButtonElement>("button")];
+    const set = (lang: string) => {
+      buttons.forEach((button) =>
+        button.setAttribute("aria-pressed", String(button.dataset.l === lang)),
+      );
+      scene
+        .querySelectorAll<HTMLElement>("[data-show]")
+        .forEach((clause) => (clause.hidden = clause.dataset.show !== lang));
+    };
+    let touched = false;
+    buttons.forEach((button) =>
+      button.addEventListener("click", () => {
+        touched = true;
+        set(button.dataset.l!);
+      }),
+    );
+    if (!still) {
+      setInterval(() => {
+        if (!touched) set(buttons[0].getAttribute("aria-pressed") === "true" ? "ar" : "en");
+      }, 4200);
+    }
+  });
+
+  // The laws that apply: switches, and what a search covers.
+  document.querySelectorAll<HTMLElement>("[data-laws]").forEach((box) => {
+    const switches = [...box.querySelectorAll<HTMLButtonElement>(".v-sw")];
+    const list = box.querySelector<HTMLElement>(".list")!;
+    const update = () => {
+      const on = switches
+        .filter((toggle) => toggle.getAttribute("aria-checked") === "true")
+        .map((toggle) => toggle.dataset.law);
+      list.textContent = on.length ? on.join(", ") : "nothing: choose at least one";
+    };
+    switches.forEach((toggle) =>
+      toggle.addEventListener("click", () => {
+        toggle.setAttribute("aria-checked", String(toggle.getAttribute("aria-checked") !== "true"));
+        update();
+      }),
+    );
+  });
+
+  // The governance log: a new entry, sealed by the one before it, every few seconds.
+  document.querySelectorAll<HTMLElement>("[data-chain]").forEach((chain) => {
+    if (still) return;
+    const actions = [
+      "question.viewed",
+      "token.created",
+      "policy.compared",
+      "settings.changed",
+      "policy.published",
+    ];
+    let number = 1043;
+    let at = 0;
+    setInterval(() => {
+      number += 1;
+      const entry = document.createElement("div");
+      entry.className = "v-entry";
+      const parts = [
+        `#${number}`,
+        actions[at++ % actions.length],
+        `${Math.random().toString(16).slice(2, 6)}...`,
+      ];
+      ["n", "", "h"].forEach((name, index) => {
+        const span = Object.assign(document.createElement("span"), { textContent: parts[index] });
+        if (name) span.className = name;
+        entry.append(span);
+      });
+      chain.append(entry);
+      const entries = chain.querySelectorAll(".v-entry");
+      if (entries.length > 3) entries[0].remove();
+    }, 2600);
+  });
+</script>

@@ -2,7 +2,7 @@
 
 The website of [DPOLens](https://github.com/alkhatibdev/dpolens), an open-source MCP server for
 GDPR, the UAE PDPL and an organisation's own policies. It holds the product's pages, the user
-docs, a page for every article of every supported law, and the blog.
+docs and a page for every article of every supported law. A blog is coming.
 
 dpolens.com is not open yet. Until it opens, every response asks search engines not to list it
 (`public/_headers`).
@@ -28,7 +28,7 @@ Before a pull request:
 ```bash
 npm run format:check
 npm run check                       # types
-npm run build && npm run check:site # titles, addresses, links, punctuation
+npm run build && npm run check:site # titles, URLs, links, punctuation
 ```
 
 ## How it is built
@@ -39,8 +39,18 @@ npm run build && npm run check:site # titles, addresses, links, punctuation
   `dashboard/src/index.css` in the DPOLens repository, and the two change together.
 - Readex Pro and JetBrains Mono are downloaded at build time and served from the site itself.
 - Search is [Pagefind](https://pagefind.app), indexed from the built pages.
-- `src/lib/site.ts` holds the site's name, its description, and the links in the header, the
-  footer and `llms.txt`.
+- `src/lib/site.ts` holds the site's name, its description, the community version's URL,
+  and the links in the header, the footer and `llms.txt`.
+
+## The product pages
+
+The home page, the community version's page (`/community`) and the legal pages (`/privacy` and
+`/terms`) share `src/styles/home.css`. Their scenes are plain HTML and CSS, moved by small scripts,
+and the law versions they quote come from the law packs.
+
+`/privacy` says what DPOLens keeps about the people who use it. When the community version
+changes what it keeps, how long it keeps it, or what it takes out of a question, `/privacy`
+changes in the same release, with a new date at the top.
 
 ## The law pages
 

@@ -48,19 +48,6 @@
   max-width: none;
   font-size: 50px;
 }
-.kc {
-  display: inline-block;
-  font: 500 12px var(--font-mono);
-  color: var(--color-brand-dark);
-  background: var(--color-brand-soft);
-  border-radius: 6px;
-  padding: 1px 6px;
-}
-.kc.big {
-  font-size: 15px;
-  padding: 4px 10px;
-  border-radius: 8px;
-}
 .stats {
   display: flex;
   flex-wrap: wrap;

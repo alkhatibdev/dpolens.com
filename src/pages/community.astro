@@ -1,0 +1,64 @@
+---
+import "../styles/home.css";
+import Band from "../components/Band.astro";
+import Connect from "../components/community/Connect.astro";
+import Kept from "../components/community/Kept.astro";
+import Limits from "../components/community/Limits.astro";
+import Questions from "../components/community/Questions.astro";
+import Page from "../layouts/Page.astro";
+import { getLaws } from "../lib/packs";
+import { COMMUNITY, SITE } from "../lib/site";
+
+const laws = await getLaws();
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebAPI",
+  name: "DPOLens community version",
+  description:
+    "A DPOLens instance anyone can add to an AI assistant, over MCP, with no sign-in: public privacy law only.",
+  url: `${SITE.origin}/community`,
+  documentation: `${SITE.origin}/docs/connect`,
+  provider: { "@type": "Organization", name: SITE.name, url: SITE.origin },
+  isAccessibleForFree: true,
+};
+---
+
+<Page
+  title="The community version"
+  description={`DPOLens hosted for anyone: add ${COMMUNITY.url} to your AI assistant and ask GDPR and the UAE PDPL, with no sign-in and no token.`}
+  jsonLd={jsonLd}
+>
+  <header class="v-intro center">
+    <span class="label">Community version</span>
+    <h1 class="h1">
+      DPOLens, hosted for <span class="mark">anyone</span>
+    </h1>
+    <p class="lede">
+      GDPR and the UAE PDPL in the AI assistant you already use, with more laws to come. No sign-in,
+      no token.
+    </p>
+    <div class="v-stats">
+      <span class="v-live">
+        <i aria-hidden="true"></i>Online
+      </span>
+      {laws.map((law) => (
+        <span>
+          <b>{law.short}</b> {law.version}
+        </span>
+      ))}
+    </div>
+  </header>
+
+  <Band tint aria-labelledby="cm-cn-h">
+    <Connect />
+  </Band>
+  <Band aria-labelledby="cm-lm-h">
+    <Limits />
+  </Band>
+  <Band tint aria-labelledby="cm-kp-h">
+    <Kept />
+  </Band>
+  <Band aria-labelledby="cm-fq-h">
+    <Questions />
+  </Band>
+</Page>

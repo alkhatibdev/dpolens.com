@@ -1,0 +1,100 @@
+---
+import Legal from "../layouts/Legal.astro";
+import { COMMUNITY } from "../lib/site";
+
+const sections = [
+  {
+    id: "who",
+    title: "Who we are",
+    html: "<p>DPOLens is run by Alkhatib Adam. Write to <b>hello@dpolens.com</b> about anything on this page.</p>",
+  },
+  {
+    id: "site",
+    title: "This website",
+    html:
+      "<p>No cookies, and nothing stored in your browser. Our network provider delivers the pages and " +
+      "protects the site from abuse, which means processing your IP address and your browser's details. It " +
+      "also counts visits for us, without cookies: we see which pages were read, which sites sent their " +
+      "readers, and from which countries and kinds of device, never who read them. We count visits to learn " +
+      "which pages help, which is our legitimate interest (Article 6(1)(f) GDPR).</p>",
+  },
+  {
+    id: "community",
+    title: "The community version",
+    html:
+      `<p>When your AI assistant calls <code>${COMMUNITY.url}</code>:</p><ul>` +
+      "<li>Your question is kept for 30 days, then deleted. Before it is kept, email addresses, phone " +
+      "numbers, payment card numbers, IBANs and Emirates ID numbers are replaced with placeholders. Names " +
+      "and other details are not, so leave personal data out of your questions.</li>" +
+      "<li>The clauses each question returned are kept with it, with the time it was asked.</li>" +
+      "<li>Who asked is never recorded. Every question is asked as one shared account, with no sign-in.</li>" +
+      "<li>Your IP address is used only to apply the limits. It stays in the server's memory, is never " +
+      "written down, and is forgotten when the server restarts or needs the room.</li></ul>" +
+      "<p>We keep questions to run the service, to keep it working and safe, and to learn what people ask, which is our legitimate interest (Article 6(1)(f) " +
+      "GDPR).</p>",
+  },
+  {
+    id: "email",
+    title: "Email",
+    html:
+      "<p>Mail to hello@ or security@dpolens.com is forwarded to our mailbox, and kept as long as the " +
+      "conversation needs it.</p>",
+  },
+  {
+    id: "others",
+    title: "Who else handles it",
+    html:
+      "<p>Our network provider (this website and its visit counts, connections to the community version, and " +
+      "email forwarding) and our hosting provider (the community version's server). " +
+      "Both act on our instructions. Our network provider may process data outside the EU, under the EU-U.S. " +
+      "Data Privacy Framework and the EU's standard contractual clauses.</p>",
+  },
+  {
+    id: "rights",
+    title: "Your rights",
+    html:
+      "<p>You can ask to see, correct or delete what we hold about you, to restrict or object to its use, " +
+      "and to take a copy with you. A question on the community version cannot be traced to whoever asked " +
+      "it, so we usually cannot find yours (Article 11 GDPR). You can also complain to a data protection " +
+      "authority, such as the one in the EU country where you live or work.</p>",
+  },
+  {
+    id: "changes",
+    title: "Changes",
+    html:
+      "<p>When this page changes, the date above changes with it. Every earlier version is in the site's " +
+      'public repository, <a href="https://github.com/alkhatibdev/dpolens.com">alkhatibdev/dpolens.com</a>.</p>',
+  },
+];
+---
+
+<Legal
+  title="Privacy"
+  description="What DPOLens keeps about you when you read dpolens.com or use the community version, why, and for how long."
+  lede="What DPOLens keeps about you, why, and for how long."
+  updated="21 October 2026"
+  sections={sections}
+>
+  <div class="v-short">
+    <div class="v-short-head">
+      <span>In short</span>
+      <span>What is kept</span>
+      <span>For how long</span>
+    </div>
+    <div class="v-short-row">
+      <b>This website</b>
+      <span>Nothing about you. No cookies. Visits are counted, not who made them.</span>
+      <span class="v-chip">Nothing kept</span>
+    </div>
+    <div class="v-short-row">
+      <b>The community version</b>
+      <span>Your question, with personal data taken out. Never who asked.</span>
+      <span class="v-chip">30 days</span>
+    </div>
+    <div class="v-short-row">
+      <b>Email to us</b>
+      <span>What you write to us.</span>
+      <span class="v-chip">As long as needed</span>
+    </div>
+  </div>
+</Legal>
