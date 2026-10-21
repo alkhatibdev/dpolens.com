@@ -881,6 +881,16 @@
   background: var(--color-ink);
   color: var(--color-white);
 }
+.v-langs {
+  display: grid;
+}
+.v-langs > .v-clause {
+  grid-area: 1 / 1;
+}
+.v-langs > [aria-hidden="true"] {
+  visibility: hidden;
+  opacity: 0;
+}
 .v-clause {
   background: var(--color-white);
   border-radius: 14px;
@@ -889,7 +899,9 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: opacity 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s;
 }
 .v-clause .t {
   font-size: 12.5px;
@@ -961,10 +973,8 @@
   box-shadow: 0 0 0 1px var(--color-line);
   padding: 5px 8px;
   font-size: 12.5px;
+  line-height: 1.35;
   color: var(--color-ink-2);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   animation: v-in 6s ease-in-out infinite;
 }
 .v-cl div code {
@@ -1139,42 +1149,83 @@
   }
 }
 
-/* 5. No LLM, no API key: the question as numbers, on the processor. */
-.v-vec {
+/* 5. No LLM, no API key: the steps a search takes, all on the server, and nothing sent out. */
+.v-local {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
-.v-vec .qq {
-  align-self: flex-start;
+/* The question as it was asked: a search box, which may take two lines. */
+.v-local .qq {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
   font-size: 13.5px;
+  line-height: 1.45;
   background: var(--color-white);
-  border-radius: 999px;
+  border-radius: 12px;
   box-shadow: 0 0 0 1px var(--color-line);
-  padding: 6px 12px;
+  padding: 9px 12px;
 }
-.v-cells {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 4px;
+.v-local .qq svg {
+  margin-top: 2px;
+  color: var(--color-muted);
 }
-.v-cells i {
-  height: 18px;
-  border-radius: 4px;
-  background: var(--color-line);
-  animation: v-cell 3.6s ease-in-out infinite;
+.v-onsite {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--color-white);
+  box-shadow: 0 0 0 1px var(--color-line);
 }
-@keyframes v-cell {
+.v-onsite .cap {
+  font: 500 11px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.v-onsite ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.v-onsite li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--color-ink-2);
+}
+/* The words stay; each step's tick lands in turn. */
+.v-onsite li svg {
+  color: var(--color-brand);
+  animation: v-tick 4.8s ease-in-out infinite;
+}
+.v-onsite li:nth-child(2) svg {
+  animation-delay: 0.5s;
+}
+.v-onsite li:nth-child(3) svg {
+  animation-delay: 1s;
+}
+@keyframes v-tick {
   0%,
-  10% {
-    background: var(--color-line);
+  6% {
+    opacity: 0.15;
+    transform: scale(0.6);
   }
-  30%,
-  80% {
-    background: var(--color-brand);
+  16%,
+  86% {
+    opacity: 1;
+    transform: scale(1);
   }
   100% {
-    background: var(--color-line);
+    opacity: 0.15;
+    transform: scale(0.6);
   }
 }
 .v-cpu-row {
@@ -1245,6 +1296,16 @@
 }
 .v-sw[aria-checked="true"]::after {
   left: 19px;
+}
+.v-lawrow.more {
+  background: transparent;
+  box-shadow: none;
+  outline: 1px dashed var(--color-line-strong);
+  outline-offset: -1px;
+}
+.v-lawrow.more b,
+.v-lawrow.more small {
+  color: var(--color-muted);
 }
 .v-covers {
   display: flex;
@@ -2311,78 +2372,6 @@
 }
 
 /* The number cells light up one after another. */
-.v-cells i:nth-child(1) {
-  animation-delay: 0s;
-}
-.v-cells i:nth-child(2) {
-  animation-delay: 0.08s;
-}
-.v-cells i:nth-child(3) {
-  animation-delay: 0.16s;
-}
-.v-cells i:nth-child(4) {
-  animation-delay: 0.24s;
-}
-.v-cells i:nth-child(5) {
-  animation-delay: 0.32s;
-}
-.v-cells i:nth-child(6) {
-  animation-delay: 0.4s;
-}
-.v-cells i:nth-child(7) {
-  animation-delay: 0.48s;
-}
-.v-cells i:nth-child(8) {
-  animation-delay: 0.56s;
-}
-.v-cells i:nth-child(9) {
-  animation-delay: 0.64s;
-}
-.v-cells i:nth-child(10) {
-  animation-delay: 0.72s;
-}
-.v-cells i:nth-child(11) {
-  animation-delay: 0.8s;
-}
-.v-cells i:nth-child(12) {
-  animation-delay: 0.88s;
-}
-.v-cells i:nth-child(13) {
-  animation-delay: 0.96s;
-}
-.v-cells i:nth-child(14) {
-  animation-delay: 1.04s;
-}
-.v-cells i:nth-child(15) {
-  animation-delay: 1.12s;
-}
-.v-cells i:nth-child(16) {
-  animation-delay: 1.2s;
-}
-.v-cells i:nth-child(17) {
-  animation-delay: 1.28s;
-}
-.v-cells i:nth-child(18) {
-  animation-delay: 1.36s;
-}
-.v-cells i:nth-child(19) {
-  animation-delay: 1.44s;
-}
-.v-cells i:nth-child(20) {
-  animation-delay: 1.52s;
-}
-.v-cells i:nth-child(21) {
-  animation-delay: 1.6s;
-}
-.v-cells i:nth-child(22) {
-  animation-delay: 1.68s;
-}
-.v-cells i:nth-child(23) {
-  animation-delay: 1.76s;
-}
-.v-cells i:nth-child(24) {
-  animation-delay: 1.84s;
-}
 
 /* The logo's outlines behind Cloud, rippling out from its open corner. */
 .v-rings {
