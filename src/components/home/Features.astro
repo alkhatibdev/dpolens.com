@@ -1,12 +1,14 @@
 ---
 // Six features, each a small live scene.
 import { formatDate } from "../../lib/laws";
-import { getLaws } from "../../lib/packs";
+import { clauseCount, getLaws } from "../../lib/packs";
 import Icon from "../Icon.astro";
 
-// The scenes quote GDPR at the version the site carries.
-const gdpr = (await getLaws()).find((law) => law.slug === "gdpr")!;
+// The scenes quote GDPR at the version the site carries, and count every law it carries.
+const laws = await getLaws();
+const gdpr = laws.find((law) => law.slug === "gdpr")!;
 const inForce = formatDate(gdpr.effectiveDate);
+const clauses = laws.reduce((total, law) => total + clauseCount(law), 0);
 ---
 
 <div class="v-head center">
@@ -70,18 +72,20 @@ const inForce = formatDate(gdpr.effectiveDate);
           العربية
         </button>
       </div>
-      <div class="v-clause" data-show="en">
-        <span class="t">
-          uae-pdpl:art-15:para-2:pt-a · Right to correction or erasure of Personal Data
-        </span>
-        <p>
-          His/her Personal Data is no longer necessary for the purposes for which it is collected or
-          processed.
-        </p>
-      </div>
-      <div class="v-clause" data-show="ar" hidden lang="ar" dir="rtl">
-        <span class="t">حق تصحيح أو محو البيانات الشخصية</span>
-        <p>لم تعد بياناته الشخصية ضرورية للأغراض التي جُمعت أو عولجت من أجلها.</p>
+      <div class="v-langs">
+        <div class="v-clause" data-show="en">
+          <span class="t">
+            uae-pdpl:art-15:para-2:pt-a · Right to correction or erasure of Personal Data
+          </span>
+          <p>
+            His/her Personal Data is no longer necessary for the purposes for which it is collected
+            or processed.
+          </p>
+        </div>
+        <div class="v-clause" data-show="ar" aria-hidden="true" inert lang="ar" dir="rtl">
+          <span class="t">حق تصحيح أو محو البيانات الشخصية</span>
+          <p>لم تعد بياناته الشخصية ضرورية للأغراض التي جُمعت أو عولجت من أجلها.</p>
+        </div>
       </div>
       <span class="v-prevails">The Arabic text prevails</span>
     </div>
@@ -102,10 +106,10 @@ const inForce = formatDate(gdpr.effectiveDate);
             <code>4.1</code>Data stays in the EU
           </div>
           <div>
-            <code>4.2</code>Access by named roles
+            <code>4.2</code>Named roles only
           </div>
           <div>
-            <code>5.1</code>Answer within a month
+            <code>5.1</code>Reply in 30 days
           </div>
           <div>
             <code>5.2</code>Backups expire
@@ -167,38 +171,30 @@ const inForce = formatDate(gdpr.effectiveDate);
       <p>Search runs on the CPU, inside your own server.</p>
     </div>
     <div class="v-ft-scene">
-      <div class="v-vec">
-        <span class="qq">how long can we keep a deleted user’s data</span>
-        <div class="v-cells" aria-hidden="true">
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
+      <div class="v-local">
+        <span class="qq">
+          <Icon name="search" size={15} />
+          How long can we keep a deleted user’s data?
+        </span>
+        <div class="v-onsite">
+          <span class="cap">On your server</span>
+          <ol>
+            <li>
+              <Icon name="check" size={15} />
+              Turned into numbers, on the CPU
+            </li>
+            <li>
+              <Icon name="check" size={15} />
+              Compared with {clauses.toLocaleString("en")} clauses
+            </li>
+            <li>
+              <Icon name="check" size={15} />4 returned, word for word
+            </li>
+          </ol>
         </div>
         <div class="v-cpu-row">
-          <span>CPU</span>
+          <span>Sent out: nothing</span>
           <span>0 API keys</span>
-          <span>4 clauses found</span>
         </div>
       </div>
     </div>
@@ -210,36 +206,31 @@ const inForce = formatDate(gdpr.effectiveDate);
     </div>
     <div class="v-ft-scene">
       <div class="v-pick" data-laws="home">
-        <div class="v-lawrow">
+        {laws.map((law) => (
+          <div class="v-lawrow">
+            <span>
+              <b>{law.short}</b>
+              <small>{law.jurisdiction}</small>
+            </span>
+            <button
+              class="v-sw"
+              type="button"
+              role="switch"
+              aria-checked="true"
+              aria-label={law.short}
+              data-law={law.short}
+            />
+          </div>
+        ))}
+        <div class="v-lawrow more">
           <span>
-            <b>GDPR</b>
-            <small>European Union</small>
+            <b>More laws</b>
+            <small>On the way</small>
           </span>
-          <button
-            class="v-sw"
-            type="button"
-            role="switch"
-            aria-checked="true"
-            aria-label="GDPR"
-            data-law="GDPR"
-          ></button>
-        </div>
-        <div class="v-lawrow">
-          <span>
-            <b>UAE PDPL</b>
-            <small>United Arab Emirates</small>
-          </span>
-          <button
-            class="v-sw"
-            type="button"
-            role="switch"
-            aria-checked="true"
-            aria-label="UAE PDPL"
-            data-law="UAE PDPL"
-          ></button>
+          <span class="v-chip">Soon</span>
         </div>
         <div class="v-covers" aria-live="polite">
-          Every search covers <b class="list">GDPR, UAE PDPL</b>
+          Every search covers <b class="list">{laws.map((law) => law.short).join(", ")}</b>
         </div>
       </div>
     </div>
@@ -271,9 +262,12 @@ const inForce = formatDate(gdpr.effectiveDate);
       buttons.forEach((button) =>
         button.setAttribute("aria-pressed", String(button.dataset.l === lang)),
       );
-      scene
-        .querySelectorAll<HTMLElement>("[data-show]")
-        .forEach((clause) => (clause.hidden = clause.dataset.show !== lang));
+      // The other language stays in place, unseen, so the card never changes height.
+      scene.querySelectorAll<HTMLElement>("[data-show]").forEach((clause) => {
+        const away = clause.dataset.show !== lang;
+        clause.setAttribute("aria-hidden", String(away));
+        clause.inert = away;
+      });
     };
     let touched = false;
     buttons.forEach((button) =>
