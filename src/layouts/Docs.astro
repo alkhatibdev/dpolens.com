@@ -20,8 +20,16 @@ const groups = DOCS_NAV.map((group) => ({
 const at = DOCS_ORDER.indexOf(entry.id);
 const previous = pages.get(DOCS_ORDER[at - 1] ?? "");
 const next = pages.get(DOCS_ORDER[at + 1] ?? "");
+const sections = entry.data.sections ?? [];
 const headings = (await render(entry)).headings.filter((heading) => heading.depth === 2);
-const html = enhance(entry.rendered?.html ?? "");
+// On this page: a label over each part the page names, and the headings under it set in.
+let inPart = false;
+const toc = headings.map((heading) => {
+  const label = sections.find((section) => section.from === heading.slug)?.label;
+  if (label) inPart = true;
+  return { ...heading, label, inPart };
+});
+const html = enhance(entry.rendered?.html ?? "", sections);
 const markdown = `/docs/${entry.id}.md`;
 const ask = encodeURIComponent(`Read ${SITE.origin}${markdown} and help me with DPOLens.`);
 const source = `https://github.com/alkhatibdev/dpolens.com/blob/main/src/content/docs/${entry.id}.md`;
@@ -158,8 +166,13 @@ const jsonLd = {
       {headings.length > 0 && (
         <nav class="toc">
           <h2>On this page</h2>
-          {headings.map((heading) => (
-            <a href={`#${heading.slug}`}>{heading.text}</a>
+          {toc.map((heading) => (
+            <>
+              {heading.label && <span class="toc-label">{heading.label}</span>}
+              <a href={`#${heading.slug}`} class:list={{ sub: heading.inPart }}>
+                {heading.text}
+              </a>
+            </>
           ))}
         </nav>
       )}
