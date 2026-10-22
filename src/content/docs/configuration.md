@@ -61,7 +61,7 @@ Three things are not settings. Five wrong passwords for one email address within
 mean a wait before the next try. Each API worker runs at most 7 requests at once, as many as
 its 15 database connections can serve at two each, and the others wait their turn rather than
 being refused. And every instance takes email addresses, phone numbers,
-card numbers, IBANs and Emirates ID numbers out of a question before storing it, which
+card numbers, IBANs and many national ID numbers out of a question before storing it, which
 nothing can switch off.
 
 ## The worker
@@ -82,7 +82,7 @@ settings above, because ending sessions is part of its daily round.
 ## Taking more out of a question
 
 `DPOLENS_REDACTION_PATTERNS` adds patterns of your own to the ones every instance has, such
-as the format of a staff number:
+as the format of a staff number, or of a national ID the built-in ones miss:
 
 ```bash
 DPOLENS_REDACTION_PATTERNS='{"staff_id": "EMP-\\d{6}"}'
