@@ -6,11 +6,12 @@ import Icon from "./Icon.astro";
 const url = `${COMMUNITY.url}/`;
 const clients = [
   { name: "Claude Code", prompt: "$ ", line: `claude mcp add --transport http dpolens ${url}` },
-  { name: "Claude", line: "Settings › Connectors › Add custom connector, then paste the URL" },
+  { name: "Claude.ai", line: "Settings › Connectors › Add custom connector, then paste the URL" },
   { name: "ChatGPT", line: "Settings › Connectors › Create, then paste the URL" },
+  { name: "Codex", prompt: "$ ", line: `codex mcp add dpolens --url ${url}` },
   { name: "Cursor", line: `{ "mcpServers": { "dpolens": { "url": "${url}" } } }` },
   {
-    name: "VS Code",
+    name: "Copilot in VS Code",
     prompt: "$ ",
     line: `code --add-mcp '${JSON.stringify({ name: "dpolens", type: "http", url })}'`,
   },

@@ -3,7 +3,7 @@ export const SITE = {
   origin: "https://dpolens.com",
   tagline: "Privacy law your AI assistant can cite",
   description:
-    "An open-source MCP server for privacy law and your own policies. Laws come as packs, GDPR and the UAE PDPL currently supported.",
+    "An open-source, self-hosted MCP server that gives AI coding assistants your privacy policies and the law, so they cite the exact clause while code is written. Laws come as packs, GDPR and the UAE PDPL today.",
   repo: "https://github.com/alkhatibdev/dpolens",
   repoName: "alkhatibdev/dpolens",
   contact: "hello@dpolens.com",
@@ -32,7 +32,7 @@ export interface Link {
 
 /** The site's sections in the header. A section is listed once its pages exist. */
 export const NAV: Link[] = [
-  { name: "Docs", href: "/docs/get-started", section: "/docs" },
+  { name: "Docs", href: "/docs/introduction", section: "/docs" },
   { name: "Laws", href: "/laws" },
   { name: "Community", href: "/community" },
 ];
