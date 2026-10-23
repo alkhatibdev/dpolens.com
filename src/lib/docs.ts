@@ -6,7 +6,7 @@ export const DOCS_VERSION = "0.1.0-rc.3";
 
 /** The docs' menu: each group's pages, by file name in src/content/docs, in reading order. */
 export const DOCS_NAV = [
-  { title: "Start", pages: ["get-started", "connect"] },
+  { title: "Start", pages: ["introduction", "get-started", "connect"] },
   { title: "Use", pages: ["policies", "laws"] },
   { title: "Run", pages: ["configuration", "releases"] },
   { title: "Reference", pages: ["mcp", "api"] },

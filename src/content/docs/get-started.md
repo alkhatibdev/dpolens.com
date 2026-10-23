@@ -3,9 +3,9 @@ title: "Get started"
 description: "Run DPOLens on your own machine with Docker, connect your AI assistant, and ask your first question."
 ---
 
-You need Git, Docker with Compose, and an AI assistant that speaks MCP (Claude Code, Cursor or
-VS Code). 0.1.0-rc.3 is a release candidate for 0.1.0, so the HTTP API, the pack format and the
-database schema can still change until 1.0.
+You need Git, Docker with Compose, and an AI assistant that speaks MCP (Claude Code, Codex, Cursor
+or GitHub Copilot in VS Code). 0.1.0-rc.3 is a release candidate for 0.1.0, so the HTTP API,
+the pack format and the database schema can still change until 1.0.
 
 ## 1. Get the code and start an instance
 
@@ -69,6 +69,16 @@ Then open Claude Code, run `/plugin configure dpolens@dpolens`, keep the default
 (`http://localhost:8765/mcp`) and paste the token. It is kept in your operating system's
 credential store, not in a file. Restart Claude Code, and `/mcp` lists `dpolens` as connected.
 
+#### Codex
+
+```bash
+codex mcp add dpolens --url http://localhost:8765/mcp --bearer-token-env-var DPOLENS_TOKEN
+export DPOLENS_TOKEN=dpol_...
+```
+
+Codex reads the token from `DPOLENS_TOKEN`, so no file holds it: set it where you start Codex.
+`codex mcp list` then shows `dpolens`, and the IDE extension uses the same setting.
+
 #### Cursor
 
 In `.cursor/mcp.json`:
@@ -90,7 +100,7 @@ The file reads your token from the environment, so it holds no credential and is
 commit. Set `DPOLENS_TOKEN` to your token before you open Cursor. The rule that tells Cursor
 when to search is in [Connect your AI assistant](/docs/connect#cursor).
 
-#### VS Code
+#### Copilot in VS Code
 
 In `.vscode/mcp.json`:
 

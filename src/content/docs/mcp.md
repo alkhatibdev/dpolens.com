@@ -44,16 +44,16 @@ Two prompts arrive as commands in the clients that show them:
 - **`policy_tour`** demonstrates the instance with a few real searches, which is the quickest
   way to see what it can cite.
 
-Claude Code shows them as `/dpolens:policy-check` and `/dpolens:policy-tour`, and VS Code as
-`/dpolens.policy_check` and `/dpolens.policy_tour`.
+Claude Code shows them as `/dpolens:policy-check` and `/dpolens:policy-tour`, and GitHub
+Copilot in VS Code as `/dpolens.policy_check` and `/dpolens.policy_tour`.
 
 The server also sends instructions when a client connects, saying when to search, that a
 remembered article number is not a citation, and that every call is recorded.
 
 ## Connecting
 
-[Connect your AI assistant](/docs/connect) has the configuration for Claude Code, Cursor and
-VS Code. The short version: the URL of a local instance is `http://localhost:8765/mcp`, and
+[Connect your AI assistant](/docs/connect) has the configuration for Claude Code, Codex, Cursor
+and GitHub Copilot in VS Code. The short version: the URL of a local instance is `http://localhost:8765/mcp`, and
 your own token goes in an `Authorization: Bearer` header.
 
 ## Who the instance thinks is asking

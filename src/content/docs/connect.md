@@ -1,6 +1,6 @@
 ---
 title: "Connect your AI assistant"
-description: "Connect Claude Code, Cursor, VS Code or any other MCP client to a DPOLens instance, with its URL and your personal access token."
+description: "Connect Claude Code, Codex, Cursor, GitHub Copilot in VS Code or any other MCP client to a DPOLens instance, with its URL and your personal access token."
 ---
 
 DPOLens speaks the Model Context Protocol over HTTP, so any client that can reach a URL and send
@@ -43,6 +43,33 @@ claude mcp add --transport http dpolens http://localhost:8765/mcp \
   --header "Authorization: Bearer dpol_..."
 ```
 
+## Codex
+
+Add the server with the Codex command line:
+
+```bash
+codex mcp add dpolens --url http://localhost:8765/mcp --bearer-token-env-var DPOLENS_TOKEN
+```
+
+Or copy [config.toml](https://github.com/alkhatibdev/dpolens/blob/main/clients/codex/config.toml)
+to `~/.codex/config.toml`, or to `.codex/config.toml` in a trusted project:
+
+```toml
+[mcp_servers.dpolens]
+url = "http://localhost:8765/mcp"
+bearer_token_env_var = "DPOLENS_TOKEN"
+```
+
+Codex reads your token from the environment, so the file holds no credential:
+
+```bash
+export DPOLENS_TOKEN=dpol_...
+```
+
+The Codex CLI, its IDE extension and the ChatGPT desktop app read the same file, so one setup
+serves all three, and `codex mcp list` shows `dpolens`. Codex reads the guidance the server
+sends when it connects, which tells it when to search.
+
 ## Cursor
 
 Copy [mcp.json](https://github.com/alkhatibdev/dpolens/blob/main/clients/cursor/mcp.json) to
@@ -73,7 +100,7 @@ export DPOLENS_TOKEN=dpol_...
 The rule is what tells Cursor when to search. Both files are safe to commit, and a team that
 shares one instance can commit them once for everybody.
 
-## VS Code
+## GitHub Copilot in VS Code
 
 Copy [mcp.json](https://github.com/alkhatibdev/dpolens/blob/main/clients/vscode/mcp.json) to
 `.vscode/mcp.json`. VS Code asks for the token the first time it connects and keeps it in its
