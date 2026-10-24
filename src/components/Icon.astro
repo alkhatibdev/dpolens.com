@@ -47,6 +47,11 @@ const STROKES = {
     '<path d="M10 2.5 4 5v4.5c0 3.8 2.6 6.6 6 8 3.4-1.4 6-4.2 6-8V5l-6-2.5Z"/><path d="m7.3 10.2 2 2 3.6-3.8"/>',
   ],
   right: [1.8, '<path d="m8 5 5 5-5 5"/>'],
+  back: [1.8, '<path d="M16 10H4m0 0 5-5m-5 5 5 5"/>'],
+  feed: [
+    1.8,
+    '<path d="M4 4a12 12 0 0 1 12 12M4 9a7 7 0 0 1 7 7"/><circle cx="4.8" cy="15.2" r="1.2" fill="currentColor" stroke="none"/>',
+  ],
 } as const;
 
 interface Props {

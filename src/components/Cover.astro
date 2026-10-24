@@ -1,0 +1,22 @@
+---
+// A post's cover: its own numbers as columns, the one that matters in green. Drawn in the list
+// of posts, and larger at the top of the post.
+import { bar, type Post } from "../lib/blog";
+
+interface Props {
+  columns: Post["data"]["cover"];
+  large?: boolean;
+}
+
+const { columns, large = false } = Astro.props;
+---
+
+<div class:list={["cover", { large }]} aria-hidden="true" data-grow>
+  {columns.map((column) => (
+    <div>
+      <b>{column.value.toFixed(2).replace(/^0/, "")}</b>
+      <Fragment set:html={bar(column.value, "up", column.best)} />
+      <small>{column.label}</small>
+    </div>
+  ))}
+</div>

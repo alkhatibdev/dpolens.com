@@ -1,0 +1,408 @@
+/* The blog: the list of posts, each with a cover drawn from its own numbers, and a post. */
+@import "./intro.css";
+
+/* Bars are drawn in SVG (src/lib/blog.ts). They stand at full size without the script; the
+   script sets them to nothing first, then grows them when they come into view. */
+.bar {
+  display: block;
+  overflow: visible;
+}
+.bar rect {
+  fill: var(--color-line-strong);
+  transform-box: fill-box;
+  transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.bar.best rect {
+  fill: var(--color-brand);
+}
+.grow .bar rect {
+  transform: scale(0, 1);
+  transform-origin: left;
+}
+.grow .cover .bar rect {
+  transform: scale(1, 0);
+  transform-origin: bottom;
+}
+.grow.on .bar rect {
+  transform: none;
+}
+
+/* The list of posts. */
+.posts {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.post {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 36px;
+  align-items: center;
+  padding: 30px 0;
+  border-top: 1px solid var(--color-line);
+  text-decoration: none;
+}
+.post:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.post:last-child {
+  padding-bottom: 0;
+}
+.intro .lede {
+  text-wrap: balance;
+}
+.when {
+  font: 13px var(--font-mono);
+  color: var(--color-muted);
+}
+.post h2 {
+  margin: 6px 0 8px;
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.022em;
+  transition: color 0.2s ease;
+}
+.post:hover h2 {
+  color: var(--color-brand);
+}
+.post p {
+  font-size: 16px;
+  color: var(--color-muted);
+  max-width: 34em;
+}
+
+/* A post's cover: its numbers as columns, the one that matters in green. */
+.cover {
+  height: 182px;
+  border-radius: 18px;
+  background: var(--color-panel);
+  box-shadow: inset 0 0 0 1px var(--color-line);
+  padding: 16px 20px 12px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.cover > div {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.cover b {
+  font: 500 12px var(--font-mono);
+  color: var(--color-ink-2);
+  white-space: nowrap;
+}
+.cover .bar {
+  width: 100%;
+  height: 104px;
+}
+.cover small {
+  font: 10.5px var(--font-mono);
+  color: var(--color-muted);
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cover > div:nth-child(2) rect {
+  transition-delay: 0.1s;
+}
+.cover > div:nth-child(3) rect {
+  transition-delay: 0.2s;
+}
+.cover > div:nth-child(4) rect {
+  transition-delay: 0.3s;
+}
+.cover > div:nth-child(5) rect {
+  transition-delay: 0.4s;
+}
+.cover > div:nth-child(6) rect {
+  transition-delay: 0.5s;
+}
+
+/* A post: its title beside its cover, then the words in a band. */
+.posthead {
+  padding-bottom: 64px;
+}
+.headgrid {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  align-items: center;
+  gap: 56px;
+}
+.headline {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 14.5px;
+  color: var(--color-muted);
+  text-decoration: none;
+}
+.back:hover {
+  color: var(--color-brand);
+}
+.posthead h1 {
+  font-size: 52px;
+  line-height: 1.04;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+.cover.large {
+  height: 248px;
+  padding: 22px 26px 16px;
+  gap: 12px;
+  border-radius: var(--radius-card);
+  background: var(--color-white);
+  box-shadow:
+    0 0 0 1px var(--color-line),
+    0 24px 50px -36px rgb(17 22 19 / 0.35);
+}
+.cover.large .bar {
+  height: 150px;
+}
+.cover.large b {
+  font-size: 13px;
+}
+.cover.large small {
+  font-size: 11.5px;
+}
+.by {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  text-decoration: none;
+}
+.by .face {
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border-radius: 999px;
+  background: var(--color-mint);
+  color: var(--color-brand-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+.by b {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+}
+.by small {
+  display: block;
+  font-size: 13.5px;
+  color: var(--color-muted);
+}
+a.by:hover b {
+  color: var(--color-brand);
+}
+.article {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.words {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.words > p:first-child {
+  font-size: 22px;
+  line-height: 1.55;
+  color: var(--color-ink);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.words p,
+.words li {
+  font-size: 18px;
+  line-height: 1.75;
+  color: var(--color-ink-2);
+}
+.words h2 {
+  margin-top: 22px;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.022em;
+  scroll-margin-top: 24px;
+}
+.words ul,
+.words ol {
+  margin: 0;
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.words a {
+  color: var(--color-brand);
+  text-underline-offset: 3px;
+}
+.words a:hover {
+  color: var(--color-brand-dark);
+}
+.words strong {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.words code {
+  font-size: 0.84em;
+  color: var(--color-ink);
+  background: var(--color-field);
+  border-radius: 6px;
+  padding: 1px 6px;
+  overflow-wrap: anywhere;
+}
+
+/* Tables scroll inside their own box. A table of bars reads as a chart and keeps its numbers. */
+.words .table {
+  margin: 6px 0;
+  overflow-x: auto;
+  border-radius: 20px;
+  background: var(--color-panel);
+  box-shadow: inset 0 0 0 1px var(--color-line);
+}
+.words table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.words th {
+  padding: 14px 18px 10px;
+  text-align: left;
+  font: 500 11.5px var(--font-mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+.words td {
+  padding: 10px 18px;
+  color: var(--color-ink-2);
+  border-top: 1px solid var(--color-line);
+}
+.words tbody tr:last-child td {
+  padding-bottom: 14px;
+}
+.words td:not(:first-child),
+.words th:not(:first-child) {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  white-space: nowrap;
+}
+.words .bars td.value {
+  width: 46%;
+}
+.words .bars th:nth-child(2) {
+  text-align: left;
+}
+.words td.value > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 3.4em;
+  align-items: center;
+  gap: 12px;
+}
+.words td.value .bar {
+  width: 100%;
+  min-width: 72px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--color-white);
+  box-shadow: inset 0 0 0 1px var(--color-line);
+}
+.words td.value span {
+  color: var(--color-ink);
+}
+
+.licence {
+  font-size: 13.5px;
+  color: var(--color-muted);
+}
+.licence a {
+  color: inherit;
+}
+
+@media (max-width: 1000px) {
+  .headgrid {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 36px;
+  }
+  .posthead h1 {
+    font-size: 44px;
+  }
+  .post {
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 24px;
+  }
+}
+@media (max-width: 760px) {
+  .posthead {
+    padding-bottom: 44px;
+  }
+  .headgrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+  .post {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  .post h2 {
+    font-size: 24px;
+  }
+}
+@media (max-width: 640px) {
+  .posthead h1 {
+    font-size: 36px;
+  }
+  .cover.large {
+    height: 210px;
+    padding: 18px 16px 12px;
+    gap: 8px;
+  }
+  .cover.large .bar {
+    height: 118px;
+  }
+  .words > p:first-child {
+    font-size: 19px;
+  }
+  .words p,
+  .words li {
+    font-size: 17px;
+  }
+  .words h2 {
+    font-size: 23px;
+  }
+  .words th,
+  .words td {
+    padding-inline: 12px;
+  }
+  .words .bars td.value {
+    width: 40%;
+  }
+}

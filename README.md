@@ -2,10 +2,7 @@
 
 The website of [DPOLens](https://github.com/alkhatibdev/dpolens), an open-source MCP server for
 privacy law and an organisation's own policies. It holds the product's pages, the user
-docs and a page for every article of every supported law. A blog is coming.
-
-dpolens.com is not open yet. Until it opens, every response asks search engines not to list it
-(`public/_headers`).
+docs, a page for every article of every supported law, and a blog.
 
 ## Run it
 
@@ -81,6 +78,24 @@ assistants at `/docs/<page>.md`. Two conventions:
 
 When a change to DPOLens touches a setting, a command, an API route, an MCP tool or a law
 pack, the page that describes it changes too, merged when that release ships.
+
+## The blog
+
+Each post is a Markdown file in `src/content/blog`, its name the post's address:
+`reranker-made-search-worse.md` is `/blog/reranker-made-search-worse`, with a copy in Markdown at
+`/blog/reranker-made-search-worse.md`. The posts are written by Alkhatib Adam, in his own voice;
+the rest of the site speaks as DPOLens.
+
+At the top of each file:
+
+- `title`, and `description`: the answer the post gives, which search results show
+- `summary`: the line under the title in the list of posts
+- `date`, the day it is published, and `tag`, one word for what it is about
+- `cover`: the post's own numbers, from 0 to 1, drawn as bars in the list of posts; `best: true`
+  marks the one in green
+
+A table after `<!-- bars -->` draws its second column as bars. The posts are listed in
+`/blog/rss.xml` and `llms.txt`.
 
 ## The Cloud waitlist
 

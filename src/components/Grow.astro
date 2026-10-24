@@ -1,0 +1,24 @@
+---
+// Grows the bars in each [data-grow] block when it comes into view. Without the script, or with
+// reduced motion, they stand at full size.
+---
+
+<script>
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const blocks = document.querySelectorAll("[data-grow]");
+    const watch = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.classList.add("on");
+          watch.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.35 },
+    );
+    blocks.forEach((block) => {
+      block.classList.add("grow");
+      watch.observe(block);
+    });
+  }
+</script>

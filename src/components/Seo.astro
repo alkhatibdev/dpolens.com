@@ -11,9 +11,11 @@ interface Props {
   canonical?: boolean;
   /** Structured data for search engines, as schema.org JSON-LD. */
   jsonLd?: Record<string, unknown>;
+  /** A blog post is an article, with the day it was published. */
+  published?: Date;
 }
 
-const { title, description, fullTitle = false, canonical = true, jsonLd } = Astro.props;
+const { title, description, fullTitle = false, canonical = true, jsonLd, published } = Astro.props;
 const pageTitle = fullTitle ? title : `${title} · ${SITE.name}`;
 const url = new URL(pagePath(Astro.url), SITE.origin).href;
 const image = new URL("/icon-512.png", SITE.origin).href;
@@ -22,7 +24,8 @@ const image = new URL("/icon-512.png", SITE.origin).href;
 <title>{pageTitle}</title>
 <meta name="description" content={description} />
 {canonical && <link rel="canonical" href={url} />}
-<meta property="og:type" content="website" />
+<meta property="og:type" content={published ? "article" : "website"} />
+{published && <meta property="article:published_time" content={published.toISOString()} />}
 <meta property="og:site_name" content={SITE.name} />
 <meta property="og:locale" content="en_US" />
 <meta property="og:title" content={pageTitle} />

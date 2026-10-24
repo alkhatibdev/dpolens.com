@@ -13,9 +13,10 @@ interface Props {
   fullTitle?: boolean;
   canonical?: boolean;
   jsonLd?: Record<string, unknown>;
+  published?: Date;
   /** Whether site search lists this page. */
   searchable?: boolean;
-  /** What search results call the part of the site the page is in: Docs, Laws. */
+  /** What search results call the part of the site the page is in: Docs, Laws, Blog. */
   section?: string;
   /** The language of the page's own content. The site's menus stay English. */
   lang?: string;
@@ -45,6 +46,7 @@ const { searchable = true, section, lang = "en", alternates = [], ...seo } = Ast
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="DPOLens blog" href="/blog/rss.xml" />
     <meta name="theme-color" content="#ffffff" />
     {alternates.map((alternate) => (
       <link rel="alternate" hreflang={alternate.lang} href={new URL(alternate.href, SITE.origin)} />

@@ -35,6 +35,7 @@ export const NAV: Link[] = [
   { name: "Docs", href: "/docs/introduction", section: "/docs" },
   { name: "Laws", href: "/laws" },
   { name: "Community", href: "/community" },
+  { name: "Blog", href: "/blog", section: "/blog" },
 ];
 
 /** The footer's columns. A link is listed once the page it leads to exists. */
@@ -59,6 +60,7 @@ export const FOOTER: { title: string; links: Link[] }[] = [
   {
     title: "Project",
     links: [
+      { name: "Blog", href: "/blog" },
       { name: "GitHub", href: SITE.repo },
       { name: "Releases", href: `${SITE.repo}/releases` },
       { name: "Contributing", href: `${SITE.repo}/blob/main/CONTRIBUTING.md` },
