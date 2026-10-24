@@ -1,43 +1,7 @@
 /* The laws: the list, a law, and an article read clause by clause. Global, because the clauses'
    words are written into the page as HTML, outside any component's scope. */
+@import "./intro.css";
 
-/* A page's opening: where it sits, its title, one line, and what it holds. */
-.intro {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 36px var(--gutter) 56px;
-}
-.intro::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(42% 90% at 88% 0%, rgb(201 242 221 / 0.5), rgb(201 242 221 / 0) 70%);
-}
-.intro.center {
-  align-items: center;
-  text-align: center;
-  padding-top: 56px;
-}
-.intro.center::before {
-  background: radial-gradient(
-    48% 75% at 50% 100%,
-    rgb(201 242 221 / 0.55),
-    rgb(201 242 221 / 0) 72%
-  );
-}
-.intro .h1 {
-  font-size: 56px;
-  max-width: 16ch;
-}
-.intro .lede {
-  max-width: 34em;
-}
 .titlerow {
   display: flex;
   flex-wrap: wrap;
@@ -942,9 +906,6 @@
   }
 }
 @media (max-width: 1000px) {
-  .intro .h1 {
-    font-size: 46px;
-  }
   .titlerow .h1 {
     font-size: 42px;
   }
@@ -996,14 +957,6 @@
   }
 }
 @media (max-width: 640px) {
-  .intro {
-    padding-top: 24px;
-    padding-bottom: 40px;
-  }
-  .intro.center {
-    padding-top: 32px;
-  }
-  .intro .h1,
   .titlerow .h1 {
     font-size: 36px;
   }

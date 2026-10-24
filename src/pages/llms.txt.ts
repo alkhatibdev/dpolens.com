@@ -1,12 +1,13 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
+import { getPosts } from "../lib/blog";
 import { DOCS_ORDER } from "../lib/docs";
 import { itemsOf } from "../lib/laws";
 import { getLaws } from "../lib/packs";
 import { LLMS, SITE } from "../lib/site";
 
 // https://llmstxt.org: a plain index of the site for AI assistants and answer engines. Each docs
-// page is listed by its Markdown copy, with its summary.
+// page and post is listed by its Markdown copy, with its summary.
 export const GET: APIRoute = async () => {
   const docs = (await getCollection("docs")).sort(
     (a, b) => DOCS_ORDER.indexOf(a.id) - DOCS_ORDER.indexOf(b.id),
@@ -40,6 +41,13 @@ export const GET: APIRoute = async () => {
         };
       }),
     ])}`,
+    `## Blog\n${list(
+      (await getPosts()).map((post) => ({
+        name: post.data.title,
+        href: `${SITE.origin}/blog/${post.id}.md`,
+        note: post.data.description,
+      })),
+    )}`,
     ...LLMS.map((section) => `## ${section.title}\n${list(section.links)}`),
   ];
   const body = [`# ${SITE.name}`, `> ${SITE.description}`, ...sections].join("\n\n");

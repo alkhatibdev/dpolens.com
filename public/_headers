@@ -1,9 +1,6 @@
 # Response headers for every file the site serves (Cloudflare Workers static assets).
 
 /*
-  # Until the site opens, search engines may read every page but list none of them.
-  # Remove this line on the day it opens.
-  X-Robots-Tag: noindex
   # The rest of the policy is a meta tag on each page, written by Astro (astro.config.mjs).
   Content-Security-Policy: frame-ancestors 'none'
   X-Content-Type-Options: nosniff

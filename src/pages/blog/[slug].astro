@@ -1,0 +1,109 @@
+---
+import "../../styles/blog.css";
+import Band from "../../components/Band.astro";
+import Cover from "../../components/Cover.astro";
+import Grow from "../../components/Grow.astro";
+import Icon from "../../components/Icon.astro";
+import Page from "../../layouts/Page.astro";
+import {
+  AUTHOR,
+  enhance,
+  getPosts,
+  longDate,
+  type Post,
+  postPath,
+  readingMinutes,
+} from "../../lib/blog";
+import { SITE } from "../../lib/site";
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post, at) => ({
+    params: { slug: post.id },
+    props: { post, newer: posts[at - 1], older: posts[at + 1] },
+  }));
+}
+
+interface Props {
+  post: Post;
+  newer?: Post;
+  older?: Post;
+}
+
+const { post, newer, older } = Astro.props;
+const { title, description, date } = post.data;
+const day = date.toISOString().slice(0, 10);
+const url = `${SITE.origin}${postPath(post)}`;
+const html = enhance(post.rendered?.html ?? "");
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: title,
+  description,
+  url,
+  datePublished: day,
+  inLanguage: "en",
+  author: { "@type": "Person", name: AUTHOR.name, url: AUTHOR.url },
+  publisher: { "@type": "Organization", name: SITE.name, url: SITE.origin },
+  license: "https://creativecommons.org/licenses/by/4.0/",
+  isPartOf: { "@type": "Blog", name: `${SITE.name} blog`, url: `${SITE.origin}/blog` },
+};
+---
+
+<Page title={title} description={description} jsonLd={jsonLd} published={date} section="Blog">
+  <article aria-labelledby="post-title">
+    <header class="intro posthead">
+      <div class="headgrid">
+        <div class="headline">
+          <a class="back" href="/blog">
+            <Icon name="back" size={16} />
+            All posts
+          </a>
+          <span class="label">
+            {post.data.tag} · <time datetime={day}>{longDate(date)}</time>
+          </span>
+          <h1 id="post-title">{title}</h1>
+          <a class="by" href={AUTHOR.url}>
+            <span class="face" aria-hidden="true">
+              {AUTHOR.initials}
+            </span>
+            <span>
+              <b>{AUTHOR.name}</b>
+              <small>
+                {AUTHOR.role} · {readingMinutes(post)} min read
+              </small>
+            </span>
+          </a>
+        </div>
+        <Cover columns={post.data.cover} large />
+      </div>
+    </header>
+    <Band>
+      <div class="article">
+        <div class="words" set:html={html} />
+        <p class="licence">
+          This post is under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>:
+          you may reuse it if you credit DPOLens and link here. A copy in Markdown is at{" "}
+          <a href={`${postPath(post)}.md`}>{postPath(post)}.md</a>.
+        </p>
+        {(older || newer) && (
+          <nav class="prevnext" aria-label="Posts">
+            {older && (
+              <a href={postPath(older)}>
+                <small>Earlier</small>
+                <b>{older.data.title}</b>
+              </a>
+            )}
+            {newer && (
+              <a class="next" href={postPath(newer)}>
+                <small>Later</small>
+                <b>{newer.data.title}</b>
+              </a>
+            )}
+          </nav>
+        )}
+      </div>
+    </Band>
+  </article>
+  <Grow />
+</Page>
