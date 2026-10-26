@@ -2,7 +2,7 @@
 title: A reranker made my legal search worse
 description: I added a cross-encoder reranker to DPOLens's hybrid search and measured it on 30 held-out GDPR questions. It brought recall@5 down from 0.77 to as low as 0.43, so DPOLens ships without one.
 summary: Keyword and meaning search together found the right clause far more often than either alone. Adding a reranker brought the score down, and the more it reordered, the lower it went.
-date: 2026-10-27
+date: 2026-10-24
 tag: Search
 cover:
   - { label: BM25, value: 0.30 }

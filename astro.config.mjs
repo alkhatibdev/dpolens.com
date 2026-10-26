@@ -1,13 +1,33 @@
 // @ts-check
+import { readdirSync, readFileSync } from "node:fs";
 import sitemap from "@astrojs/sitemap";
 import { defineConfig, fontProviders } from "astro/config";
+import { parse } from "yaml";
+
+// The day each post was published, as its date in the sitemap, and the newest one as the blog's.
+// Other pages carry no date: the build's would claim that every page changed every day.
+const BLOG = "src/content/blog";
+const posted = new Map(
+  readdirSync(BLOG)
+    .filter((file) => file.endsWith(".md"))
+    .map((file) => [
+      `https://dpolens.com/blog/${file.replace(/\.md$/, "")}`,
+      new Date(parse(readFileSync(`${BLOG}/${file}`, "utf8").split("---")[1]).date),
+    ]),
+);
+const newest = Math.max(...[...posted.values()].map((date) => date.getTime()));
+posted.set("https://dpolens.com/blog", new Date(newest));
 
 export default defineConfig({
   site: "https://dpolens.com",
   // Pages are written as about.html and served as /about, so every address has one form.
   trailingSlash: "never",
   build: { format: "file" },
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      serialize: (item) => ({ ...item, lastmod: posted.get(item.url)?.toISOString() }),
+    }),
+  ],
   markdown: {
     // Prism marks code with classes, which the Content Security Policy allows, where inline
     // styles would be blocked. Straight quotes stay straight, and two hyphens never become a dash.
