@@ -5,6 +5,8 @@
 // - every link from one page of the site to another leads to a file the site serves, and a link
 //   to a section of a page, to an id on that page;
 // - no id appears twice on a page (a heading's id can clash with the page's own);
+// - every Markdown copy has its page beside it, which public/_headers names as its canonical
+//   address: /laws/gdpr/art-17.md and /laws/gdpr/art-17;
 // - the search index is there;
 // - no text uses an em dash or an en dash. The site punctuates with commas, colons, full stops
 //   and parentheses, and a plain hyphen where a dash cannot be avoided.
@@ -89,6 +91,11 @@ for (const file of built.filter((file) => file.endsWith(".html"))) {
       }
     }
   }
+}
+
+for (const file of built.filter((file) => file.endsWith(".md"))) {
+  if (!existsSync(file.replace(/\.md$/, ".html")))
+    problems.push(`/${relative(DIST, file)}: no page for its canonical address`);
 }
 
 if (!existsSync(join(DIST, "pagefind", "pagefind.js")))

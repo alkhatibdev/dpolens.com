@@ -8,6 +8,11 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   Strict-Transport-Security: max-age=31536000
 
+# Each page's Markdown copy names the page as its canonical address, so search engines list the
+# page and AI assistants still read the copy.
+/*.md
+  Link: <https://dpolens.com/:splat>; rel="canonical"
+
 # Built files carry a hash of their content in their name, so they never change.
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable

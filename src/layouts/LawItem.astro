@@ -38,7 +38,7 @@ const siblings = item.doc.items;
 const at = siblings.indexOf(item);
 const previous = siblings[at - 1];
 const next = siblings[at + 1];
-const words = text.clauses[0] ? wordsOf(text.clauses[0]) : "";
+const words = text.clauses.map(wordsOf).join(" ");
 const hasParts = text.clauses.some((clause) => clause.key !== item.key);
 const paragraphs = text.clauses.filter((clause) => clause.key !== item.key);
 const markdown = `${itemPath(item, lang)}.md`;
@@ -61,9 +61,11 @@ const question = arabic
   ? `ماذا يتطلب ${item.key}؟ اقتبس البنود التي تعتمد عليها.`
   : `What does ${item.key} require? Quote the clauses you rely on.`;
 const title = `${law.short} ${name}${text.title ? `: ${text.title}` : ""}`;
-const description = `${name}${arabic ? "، " : " of the "}${law.short}${arabic ? "" : ","} ${
-  words.length > 140 ? `${words.slice(0, 140).replace(/\s+\S*$/, "")} ...` : words
-}`;
+// The item's opening words, quoted, so a search result shows what the law says.
+const opening = words.length > 140 ? `${words.slice(0, 140).replace(/\s+\S*$/, "")} ...` : words;
+const description = arabic
+  ? `${name} من ${law.short}: «${opening}»`
+  : `${name} of the ${law.short}: “${opening}”`;
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Legislation",

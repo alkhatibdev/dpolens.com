@@ -62,6 +62,10 @@ Each article and recital has its own page, in every language the pack has, with 
 clause and a Markdown copy beside it: `/laws/gdpr/art-17` and `/laws/gdpr/art-17.md`, and the
 text that prevails at `/ar/laws/uae-pdpl/art-15`.
 
+Every Markdown copy on the site, of a law page, a docs page or a post, is served with a
+`Link: rel="canonical"` header naming its page (`public/_headers`), so search engines list the
+page and AI assistants still read the copy.
+
 ## The docs
 
 The docs describe the newest release of DPOLens, which `DOCS_VERSION` in `src/lib/docs.ts`

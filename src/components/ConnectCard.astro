@@ -6,8 +6,8 @@ import Icon from "./Icon.astro";
 const url = `${COMMUNITY.url}/`;
 const clients = [
   { name: "Claude Code", prompt: "$ ", line: `claude mcp add --transport http dpolens ${url}` },
-  { name: "Claude.ai", line: "Settings › Connectors › Add custom connector, then paste the URL" },
-  { name: "ChatGPT", line: "Settings › Connectors › Create, then paste the URL" },
+  { name: "Claude.ai", line: "Customize › Connectors › +, find DPOLens, then Connect" },
+  { name: "ChatGPT", line: "Turn on Developer mode, then Plugins › +, and paste the URL" },
   { name: "Codex", prompt: "$ ", line: `codex mcp add dpolens --url ${url}` },
   { name: "Cursor", line: `{ "mcpServers": { "dpolens": { "url": "${url}" } } }` },
   {
