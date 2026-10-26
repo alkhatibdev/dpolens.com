@@ -91,8 +91,9 @@ At the top of each file:
 - `title`, and `description`: the answer the post gives, which search results show
 - `summary`: the line under the title in the list of posts
 - `date`, the day it is published, and `tag`, one word for what it is about
-- `cover`: the post's own numbers, from 0 to 1, drawn as bars in the list of posts; `best: true`
-  marks the one in green
+- `cover`: the post's own numbers, from 0 to 1, drawn as bars in the list of posts and over the
+  post; `text` shows something else over a bar, such as `36 of 36`, and `best: true` marks the
+  one in green
 
 A table after `<!-- bars -->` draws its second column as bars. The posts are listed in
 `/blog/rss.xml` and `llms.txt`.

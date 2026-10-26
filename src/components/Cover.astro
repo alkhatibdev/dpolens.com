@@ -14,7 +14,7 @@ const { columns, large = false } = Astro.props;
 <div class:list={["cover", { large }]} aria-hidden="true" data-grow>
   {columns.map((column) => (
     <div>
-      <b>{column.value.toFixed(2).replace(/^0/, "")}</b>
+      <b>{column.text ?? column.value.toFixed(2).replace(/^0/, "")}</b>
       <Fragment set:html={bar(column.value, "up", column.best)} />
       <small>{column.label}</small>
     </div>
