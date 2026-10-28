@@ -8,7 +8,7 @@ export const DOCS_VERSION = "0.1.0";
 export const DOCS_NAV = [
   { title: "Start", pages: ["introduction", "get-started", "connect"] },
   { title: "Use", pages: ["policies", "laws"] },
-  { title: "Run", pages: ["configuration", "releases"] },
+  { title: "Run", pages: ["configuration", "running", "releases"] },
   { title: "Reference", pages: ["mcp", "api"] },
 ];
 

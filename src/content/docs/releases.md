@@ -1,10 +1,10 @@
 ---
 title: "Releases and upgrades"
-description: "What a DPOLens release publishes, how to choose the version an instance runs, and how to check that an image was built from the DPOLens repository."
+description: "What a DPOLens release publishes, how to choose the version an instance runs, how to upgrade and go back, and how to check that an image was built from the DPOLens repository."
 ---
 
-What a release of DPOLens publishes, which version an instance runs, and how to check that an
-image was built by DPOLens's own release workflow. Each law has versions of its own:
+What a release of DPOLens publishes, which version an instance runs, how to upgrade it and go
+back, and how to check that an image was built by DPOLens's own release workflow. Each law has versions of its own:
 [Laws and their versions](/docs/laws) covers them.
 
 ## What a release publishes
@@ -46,6 +46,42 @@ docker compose up -d
 The version is 0.x until the HTTP API is stable, and the interfaces (the API, the pack format,
 the database schema) can change between releases until 1.0. Only the newest release gets
 fixes.
+
+## Upgrading
+
+A release's notes begin with what to do before upgrading, if anything, and say whether the
+release changes the database. Read them first. Then, in the checkout, with the instance running,
+take a backup, move the checkout to the release's tag and start it:
+
+```bash
+docker compose run --rm backup
+git fetch --tags
+git checkout v0.2.0
+docker compose pull
+docker compose up -d --wait
+docker compose exec api dpolens --version
+docker compose ps
+```
+
+`up` starts every service again on the release's images. Setup runs first and updates the
+database in one transaction before the API starts, so an update that fails changes nothing.
+`--wait` returns once every service is ready, and the last two commands show the release the
+instance runs and every service up, with setup exited with 0.
+
+### Going back
+
+If the release changed no table, as its notes say, check out the release you came from and run
+`docker compose up -d` again. If it did, the database has moved on, so restore the backup taken
+before upgrading, then check out the release you came from and start it:
+
+```bash
+docker compose down -v
+docker compose run --rm restore 2026-11-07T090000Z
+git checkout v0.1.0
+docker compose up -d
+```
+
+[Running an instance](/docs/running#restoring-a-backup) says what a restore brings back.
 
 ## Checking an image
 
