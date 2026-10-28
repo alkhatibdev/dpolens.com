@@ -135,3 +135,10 @@ The prompts arrive as `/dpolens.policy_check` and `/dpolens.policy_tour`.
 Point it at `http://localhost:8765/mcp` with `Authorization: Bearer dpol_...`. The transport is
 streamable HTTP, there is no standard input transport, and nothing else is needed.
 [The MCP server](/docs/mcp) describes the tools, the prompts and what each call records.
+
+## The community version
+
+The [community version](/community) is DPOLens hosted for anyone, with public privacy law only
+and no policies of your own. It needs no token, so it is a way to try DPOLens before running an
+instance: its page has the line for each AI assistant, and Claude lists it in its
+[connector directory](https://claude.ai/directory/dpolens).
