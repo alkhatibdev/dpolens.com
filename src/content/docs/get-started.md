@@ -4,8 +4,8 @@ description: "Run DPOLens on your own machine with Docker, connect your AI assis
 ---
 
 You need Git, Docker with Compose, and an AI assistant that speaks MCP (Claude Code, Codex, Cursor
-or GitHub Copilot in VS Code). 0.1.0-rc.3 is a release candidate for 0.1.0, so the HTTP API,
-the pack format and the database schema can still change until 1.0.
+or GitHub Copilot in VS Code). Until 1.0, a release can still change the HTTP API, the pack
+format and the database schema.
 
 ## 1. Get the code and start an instance
 
@@ -20,8 +20,8 @@ printf 'DPOLENS_OWNER_PASSWORD=%s\nDPOLENS_APP_PASSWORD=%s\n' \
 docker compose up -d
 ```
 
-The first `up` builds the images, or downloads them once the version has been released, and
-loads the law packs, which takes a few minutes. After that it takes seconds. When it
+The first `up` downloads the images and loads the law packs, which takes a few minutes. After
+that it takes seconds. When it
 returns, `docker compose ps` shows `db`, `api`, `dashboard` and `mcp` as healthy, and `worker`
 as running.
 
@@ -156,5 +156,6 @@ docker compose down -v
 docker compose up -d
 ```
 
-After pulling a newer version, start it with `docker compose up -d --build`. Without `--build`,
-Compose runs the images it built from the old code.
+After `git pull`, `docker compose up -d` downloads the images of the release the checkout
+names, and setup migrates the database before the API starts. `--build` builds them from the
+checkout's source instead.
