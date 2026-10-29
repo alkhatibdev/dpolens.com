@@ -364,7 +364,7 @@ removes those once a day, after a day's grace.
 What the reader found in the file is kept with each version too: every paragraph in order, what
 it looked like, and the clause it went to or why it was set aside. That is the file the review
 shows beside the clauses, and it stays the same for the life of the version.
-[configuration.md](/docs/configuration) says where the files are kept.
+[Configuration](/docs/configuration) says where the files are kept.
 
 ## The sample policy
 

@@ -734,7 +734,7 @@ Says how the instance is set up: how long a question is kept and what is taken o
 it is stored, when a dashboard session ends and how many wrong passwords mean a wait, the MCP
 server's URL and how many requests a token may make, the AI provider in use, which is none, and
 the instance's version, id and when it was set up. Each setting is fixed when the instance
-starts, so none of them changes through the API. [configuration.md](/docs/configuration) lists
+starts, so none of them changes through the API. [Configuration](/docs/configuration) lists
 them, with how to change each one.
 
 ## Health checks
