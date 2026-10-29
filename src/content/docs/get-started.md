@@ -4,8 +4,9 @@ description: "Run DPOLens on your own machine with Docker, connect your AI assis
 ---
 
 You need Git, Docker with Compose, and an AI assistant that speaks MCP (Claude Code, Codex, Cursor
-or GitHub Copilot in VS Code). Until 1.0, a release can still change the HTTP API, the pack
-format and the database schema.
+or GitHub Copilot in VS Code). An instance needs 2 processors and 4 GB of memory, as
+[Running an instance](/docs/running#what-an-instance-needs) says. Until 1.0, a release can
+still change the HTTP API, the pack format and the database schema.
 
 ## 1. Get the code and start an instance
 
@@ -156,6 +157,5 @@ docker compose down -v
 docker compose up -d
 ```
 
-After `git pull`, `docker compose up -d` downloads the images of the release the checkout
-names, and setup migrates the database before the API starts. `--build` builds them from the
-checkout's source instead.
+To move to a newer release, [Upgrading](/docs/releases#upgrading) says what to do, from the
+backup before it to the check that every service is up.
