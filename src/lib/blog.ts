@@ -53,27 +53,28 @@ export const bar = (value: number, direction: "across" | "up", best = false) => 
 
 /**
  * What the blog adds to a post's rendered Markdown. A table after `<!-- bars -->` draws its
- * second column, numbers from 0 to 1, as bars, the highest in the brand's green. Every table
- * scrolls inside its own box on a narrow screen.
+ * second column as bars, the highest in the brand's green: numbers from 0 to 1, or counts such as
+ * "36 of 36". Every table scrolls inside its own box on a narrow screen.
  */
 export function enhance(html: string): string {
+  const row = /(<tr>\s*<td>[\s\S]*?<\/td>\s*)<td>(\d+ of \d+|[\d.]+)<\/td>/g;
+  const valueOf = (cell: string) => {
+    const [part, whole] = cell.split(" of ").map(Number);
+    return whole === undefined ? part : part / whole;
+  };
   return html
     .replace(/<!-- bars -->\s*<table>([\s\S]*?)<\/table>/g, (_, table: string) => {
-      const values = [...table.matchAll(/<tr>\s*<td>[\s\S]*?<\/td>\s*<td>([\d.]+)<\/td>/g)].map(
-        (match) => parseFloat(match[1]),
-      );
-      const top = Math.max(...values);
-      const body = table.replace(
-        /(<tr>\s*<td>[\s\S]*?<\/td>\s*)<td>([\d.]+)<\/td>/g,
-        (_, start: string, number: string) => {
-          const value = parseFloat(number);
-          return `${start}<td class="value"><div>${bar(value, "across", value === top)}<span>${number}</span></div></td>`;
-        },
-      );
-      return `<table class="bars">${body}</table>`;
+      const top = Math.max(...[...table.matchAll(row)].map((match) => valueOf(match[2])));
+      const body = table.replace(row, (_, start: string, cell: string) => {
+        const value = valueOf(cell);
+        return `${start}<td class="value"><div>${bar(value, "across", value === top)}<span>${cell}</span></div></td>`;
+      });
+      // Counts such as "36 of 36" need a wider column for their numbers than shares do.
+      const counts = [...table.matchAll(row)].some((match) => match[2].includes(" of "));
+      return `<table class="bars${counts ? " counts" : ""}">${body}</table>`;
     })
     .replace(
-      /<table( class="bars")?>([\s\S]*?)<\/table>/g,
+      /<table( class="bars(?: counts)?")?>([\s\S]*?)<\/table>/g,
       '<div class="table"><table$1>$2</table></div>',
     );
 }

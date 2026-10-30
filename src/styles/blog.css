@@ -100,6 +100,7 @@
 }
 .cover .bar {
   width: 100%;
+  max-width: 64px;
   height: 104px;
 }
 .cover small {
@@ -174,6 +175,7 @@
     0 24px 50px -36px rgb(17 22 19 / 0.35);
 }
 .cover.large .bar {
+  max-width: 80px;
   height: 150px;
 }
 .cover.large b {
@@ -327,6 +329,9 @@ a.by:hover b {
   align-items: center;
   gap: 12px;
 }
+.words .counts td.value > div {
+  grid-template-columns: minmax(0, 1fr) 5em;
+}
 .words td.value .bar {
   width: 100%;
   min-width: 72px;
@@ -402,7 +407,17 @@ a.by:hover b {
   .words td {
     padding-inline: 12px;
   }
+  /* The value column takes only what its bar and number need, and the label the rest. */
   .words .bars td.value {
-    width: 40%;
+    width: 1%;
+  }
+  .words td.value > div {
+    grid-template-columns: 64px 3.4em;
+  }
+  .words .counts td.value > div {
+    grid-template-columns: 64px 5em;
+  }
+  .words td.value .bar {
+    min-width: 0;
   }
 }
