@@ -2,7 +2,7 @@ import type { CollectionEntry } from "astro:content";
 import { SITE } from "./site";
 
 /** The release the docs describe. It changes with each release of DPOLens. */
-export const DOCS_VERSION = "0.1.0";
+export const DOCS_VERSION = "0.2.0";
 
 /** The docs' menu: each group's pages, by file name in src/content/docs, in reading order. */
 export const DOCS_NAV = [
