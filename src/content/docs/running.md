@@ -1,11 +1,11 @@
 ---
 title: "Running an instance"
-description: "What machine a DPOLens instance needs, what it connects to, how to run it behind a proxy or with no internet, and how to back it up and restore it."
+description: "What machine a DPOLens instance needs, what it connects to, how to run it behind a proxy or with no internet, what it writes to its logs, and how to back it up and restore it."
 ---
 
 An instance runs on one machine with Docker: a server, a virtual machine or a laptop. This page
-says what that machine needs, what the instance connects to, and how to back it up and restore
-it.
+says what that machine needs, what the instance connects to and writes to its logs, and how to
+back it up and restore it.
 
 ## What an instance needs
 
@@ -88,6 +88,21 @@ docker compose up -d
 `up` finds every image it needs and downloads nothing. An upgrade works the same way, with the
 new release's tag and images, and a newer version of a law arrives as a file:
 [Laws and their versions](/docs/laws) says how to import one.
+
+## What it writes to its logs
+
+`docker compose logs` shows what each service prints:
+
+- The API prints one JSON line for each request, with the route it matched, such as
+  `/v1/clauses/{key}`, the status and the time it took, and never the address. A database
+  error names the statement that failed and none of its values.
+- The dashboard's server logs each path without its query string.
+- The MCP server prints its warnings and errors.
+
+A question is kept in the questions log alone, with personal data replaced, for as long as
+[`DPOLENS_QUERY_LOG_RETENTION_DAYS`](/docs/configuration) allows. A proxy in front of the
+instance keeps an access log of its own, and the search page and the questions log's filters
+carry what somebody asked in the query string, so set the proxy to leave query strings out.
 
 ## Backups
 

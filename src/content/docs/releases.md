@@ -18,8 +18,8 @@ Four images on GitHub's container registry, each built for amd64 and arm64:
 | `ghcr.io/alkhatibdev/dpolens-dashboard` | The dashboard, and the forward from `/v1` to the API                                                                |
 | `ghcr.io/alkhatibdev/dpolens-postgres`  | PostgreSQL 17 with pgvector and pg_textsearch                                                                       |
 
-Each image is tagged with its version, `0.1.0`, and with its minor version, `0.1`, which
-always points at the newest 0.1 release. The newest release is also `latest`. A pre-release,
+Each image is tagged with its version, `0.2.0`, and with its minor version, `0.2`, which
+always points at the newest 0.2 release. The newest release is also `latest`. A pre-release,
 such as `0.1.0-rc.1`, is tagged with its own version only.
 
 The release's page on GitHub holds its notes, which are the same as its section of
@@ -89,7 +89,7 @@ Every image is attested when it is published: GitHub signs a record of which wor
 it, from which commit. The GitHub CLI, version 2.49 or later, checks it:
 
 ```bash
-gh attestation verify oci://ghcr.io/alkhatibdev/dpolens:0.1.0 --repo alkhatibdev/dpolens
+gh attestation verify oci://ghcr.io/alkhatibdev/dpolens:0.2.0 --repo alkhatibdev/dpolens
 ```
 
 It succeeds only for an image that a workflow in the DPOLens repository built and attested, and it
