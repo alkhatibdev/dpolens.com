@@ -4,7 +4,7 @@ import Icon from "../../components/Icon.astro";
 import Page from "../../layouts/Page.astro";
 import { formatDate, itemName, itemPath, pageLanguage, textOf, wordsOf } from "../../lib/laws";
 import { clauseCount, getLaws, type Law } from "../../lib/packs";
-import { SITE } from "../../lib/site";
+import { breadcrumbList, type Crumb, SITE } from "../../lib/site";
 
 export async function getStaticPaths() {
   return (await getLaws()).map((law) => ({ params: { law: law.slug }, props: { law } }));
@@ -36,27 +36,38 @@ const exampleKey = firstItem?.texts.get(law.authoritative)?.clauses[0]?.key ?? f
 const description = `The ${law.name} (${law.short}), ${law.jurisdiction}, clause by clause from its official source: ${parts
   .map((part) => `${part.items.length} ${part.name.toLowerCase()}`)
   .join(" and ")}, version ${law.version}.`;
+const crumbs: Crumb[] = [{ name: "Laws", href: "/laws" }, { name: law.short }];
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "Legislation",
-  name: law.name,
-  alternateName: law.short,
-  legislationIdentifier: law.slug,
-  legislationJurisdiction: law.jurisdiction,
-  inLanguage: law.authoritative,
-  legislationDate: law.effectiveDate,
-  isBasedOn: law.sourceUrl,
-  url: `${SITE.origin}/laws/${law.slug}`,
+  "@graph": [
+    {
+      "@type": "Legislation",
+      name: law.name,
+      alternateName: law.short,
+      legislationIdentifier: law.slug,
+      legislationJurisdiction: law.jurisdiction,
+      inLanguage: law.authoritative,
+      legislationDate: law.effectiveDate,
+      isBasedOn: law.sourceUrl,
+      url: `${SITE.origin}/laws/${law.slug}`,
+    },
+    breadcrumbList(crumbs),
+  ],
 };
 ---
 
 <Page title={`${law.short}: ${law.name}`} description={description} jsonLd={jsonLd} section="Laws">
   <header class="intro">
     <ol class="crumbs" aria-label="Breadcrumb">
-      <li>
-        <a href="/laws">Laws</a>
-      </li>
-      <li aria-current="page">{law.short}</li>
+      {crumbs.map((crumb) =>
+        crumb.href ? (
+          <li>
+            <a href={crumb.href}>{crumb.name}</a>
+          </li>
+        ) : (
+          <li aria-current="page">{crumb.name}</li>
+        ),
+      )}
     </ol>
     <div class="titlerow">
       <h1 class="h1">{law.name}</h1>
