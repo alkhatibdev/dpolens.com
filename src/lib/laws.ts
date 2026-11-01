@@ -12,6 +12,14 @@ const LANGUAGES: Record<string, string> = { en: "English", ar: "Arabic" };
 
 export const languageName = (lang: string) => LANGUAGES[lang] ?? lang;
 
+/** A law's name where people searching in a language do not use its short English one. */
+const SHORT_NAMES: Record<string, Record<string, string>> = {
+  "uae-pdpl": { ar: "قانون حماية البيانات الشخصية الإماراتي" },
+};
+
+/** How people searching in a language name a law: GDPR, or the UAE PDPL's name in Arabic. */
+export const shortName = (law: Law, lang = "en") => SHORT_NAMES[law.slug]?.[lang] ?? law.short;
+
 /** The languages a law can be read in, the one that is the law first. */
 export const languagesOf = (law: Law) => [
   law.authoritative,

@@ -99,3 +99,20 @@ export const LLMS: { title: string; links: (Link & { note?: string })[] }[] = [
 
 /** A page's path as people use it: /about rather than the built file's /about.html. */
 export const pagePath = (url: URL) => url.pathname.replace(/(\/index)?\.html$/, "") || "/";
+
+/** A step in a page's breadcrumb trail. The page itself comes last, with no link. */
+export interface Crumb {
+  name: string;
+  href?: string;
+}
+
+/** A breadcrumb trail as schema.org data, which a search result can show in place of the address. */
+export const breadcrumbList = (crumbs: Crumb[]) => ({
+  "@type": "BreadcrumbList",
+  itemListElement: crumbs.map((crumb, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: crumb.name,
+    ...(crumb.href ? { item: new URL(crumb.href, SITE.origin).href } : {}),
+  })),
+});

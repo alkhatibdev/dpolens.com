@@ -701,8 +701,12 @@
   flex-direction: column;
   gap: 14px;
 }
+/* The label sits inside the heading, as far above the title as the article's parts are apart. */
 .artlabel {
+  display: block;
+  margin-bottom: 14px;
   font: 500 13px var(--font-mono);
+  letter-spacing: normal;
   color: var(--color-brand-dark);
 }
 .arttitle {
