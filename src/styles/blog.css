@@ -19,7 +19,7 @@
   transform: scale(0, 1);
   transform-origin: left;
 }
-.grow .cover .bar rect {
+.cover.grow .bar rect {
   transform: scale(1, 0);
   transform-origin: bottom;
 }
