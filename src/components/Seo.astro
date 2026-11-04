@@ -13,12 +13,26 @@ interface Props {
   jsonLd?: Record<string, unknown>;
   /** A blog post is an article, with the day it was published. */
   published?: Date;
+  /** The language the title and description are in. */
+  lang?: string;
 }
 
-const { title, description, fullTitle = false, canonical = true, jsonLd, published } = Astro.props;
+const {
+  title,
+  description,
+  fullTitle = false,
+  canonical = true,
+  jsonLd,
+  published,
+  lang = "en",
+} = Astro.props;
 const pageTitle = fullTitle ? title : `${title} · ${SITE.name}`;
 const url = new URL(pagePath(Astro.url), SITE.origin).href;
 const image = new URL("/icon-512.png", SITE.origin).href;
+// Open Graph writes a locale as language_TERRITORY. Arabic is ar_AR, Facebook's code for Arabic
+// as a whole; any other language takes the territory it is most used in, en_US for English.
+const { language, region } = new Intl.Locale(lang).maximize();
+const locale = language === "ar" ? "ar_AR" : `${language}_${region}`;
 ---
 
 <title>{pageTitle}</title>
@@ -27,7 +41,7 @@ const image = new URL("/icon-512.png", SITE.origin).href;
 <meta property="og:type" content={published ? "article" : "website"} />
 {published && <meta property="article:published_time" content={published.toISOString()} />}
 <meta property="og:site_name" content={SITE.name} />
-<meta property="og:locale" content="en_US" />
+<meta property="og:locale" content={locale} />
 <meta property="og:title" content={pageTitle} />
 <meta property="og:description" content={description} />
 {canonical && <meta property="og:url" content={url} />}

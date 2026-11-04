@@ -32,7 +32,7 @@ const { searchable = true, section, lang = "en", alternates = [], ...seo } = Ast
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <Seo {...seo} />
+    <Seo {...seo} lang={lang} />
     <Font
       cssVariable="--font-sans"
       preload={[
