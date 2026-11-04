@@ -24,16 +24,30 @@ const blog = defineCollection({
     date: z.coerce.date(),
     /** One word for what the post is about: Search, Measured, In use. */
     tag: z.string(),
-    /** The cover, in the list of posts and over the post: its own numbers, as bars from 0 to 1. */
-    cover: z.array(
+    /**
+     * The cover, in the list of posts and over the post, drawn from the post's own numbers: bars
+     * from 0 to 1, or one number on the brand's green.
+     */
+    cover: z.union([
+      z.array(
+        z.object({
+          label: z.string(),
+          value: z.number().min(0).max(1),
+          /** What the column shows over its bar, when not the value itself: 36 of 36. */
+          text: z.string().optional(),
+          best: z.boolean().optional(),
+        }),
+      ),
       z.object({
+        /** Over the number: what was measured. */
         label: z.string(),
-        value: z.number().min(0).max(1),
-        /** What the column shows over its bar, when not the value itself: 36 of 36. */
-        text: z.string().optional(),
-        best: z.boolean().optional(),
+        number: z.string(),
+        /** After the number, smaller: ×. */
+        unit: z.string().optional(),
+        /** Under the number: where it came from. */
+        line: z.string(),
       }),
-    ),
+    ]),
   }),
 });
 

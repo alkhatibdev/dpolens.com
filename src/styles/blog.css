@@ -127,6 +127,125 @@
   transition-delay: 0.5s;
 }
 
+/* A cover of one number: a thumbnail on the brand's green, with the number's trail behind it. */
+.cover.number {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: 16px 18px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  --thumbnail:
+    radial-gradient(
+      120% 110% at 100% 0%,
+      color-mix(in srgb, var(--color-brand-deep) 70%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(160deg, var(--color-brand) 0%, var(--color-brand-dark) 100%);
+  background: var(--thumbnail);
+  box-shadow: none;
+}
+.cover.number::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(rgb(255 255 255 / 0.16) 1px, transparent 1.6px);
+  background-size: 14px 14px;
+  mask-image: radial-gradient(80% 90% at 25% 65%, black, transparent 75%);
+}
+.cover.number small {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  font: 500 10.5px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-mint);
+}
+.cover.number .figure {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+.cover.number b {
+  font: 600 76px/0.9 var(--font-sans);
+  letter-spacing: -0.05em;
+  color: var(--color-white);
+}
+.cover.number em {
+  margin-left: 4px;
+  font-size: 0.6em;
+  font-style: normal;
+  font-weight: 500;
+  color: var(--color-mint);
+}
+.cover.number .line {
+  font: 500 12.5px var(--font-mono);
+  color: rgb(255 255 255 / 0.82);
+}
+.cover.number .trail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+}
+.cover.number .trail i {
+  display: block;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-mint);
+  transform-origin: right;
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.25s;
+}
+.cover.number .trail i:nth-child(1) {
+  width: 28px;
+  opacity: 0.35;
+}
+.cover.number .trail i:nth-child(2) {
+  width: 52px;
+  opacity: 0.65;
+  transition-delay: 0.32s;
+}
+.cover.number .trail i:nth-child(3) {
+  width: 40px;
+  opacity: 0.5;
+  transition-delay: 0.39s;
+}
+.cover.number .trail i:nth-child(4) {
+  width: 20px;
+  opacity: 0.3;
+  transition-delay: 0.46s;
+}
+.cover.number b,
+.cover.number .line {
+  transition:
+    opacity 0.7s ease,
+    transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.cover.number .line {
+  transition-delay: 0.15s;
+}
+.cover.number.grow b,
+.cover.number.grow .line {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.cover.number.grow .trail i {
+  transform: scaleX(0);
+}
+.cover.number.grow.on b,
+.cover.number.grow.on .line {
+  opacity: 1;
+  transform: none;
+}
+.cover.number.grow.on .trail i {
+  transform: none;
+}
+
 /* A post: its title beside its cover, then the words in a band. */
 .posthead {
   padding-bottom: 64px;
@@ -183,6 +302,40 @@
 }
 .cover.large small {
   font-size: 11.5px;
+}
+.cover.number.large {
+  padding: 22px 26px;
+  background: var(--thumbnail);
+  box-shadow: 0 24px 50px -30px rgb(11 74 48 / 0.6);
+}
+.cover.number.large small {
+  top: 20px;
+  left: 24px;
+  font-size: 11.5px;
+}
+.cover.number.large b {
+  font-size: 112px;
+}
+.cover.number.large .line {
+  font-size: 14.5px;
+}
+.cover.number.large .trail {
+  gap: 10px;
+}
+.cover.number.large .trail i {
+  height: 4px;
+}
+.cover.number.large .trail i:nth-child(1) {
+  width: 40px;
+}
+.cover.number.large .trail i:nth-child(2) {
+  width: 72px;
+}
+.cover.number.large .trail i:nth-child(3) {
+  width: 56px;
+}
+.cover.number.large .trail i:nth-child(4) {
+  width: 28px;
 }
 .by {
   display: flex;
@@ -277,6 +430,48 @@ a.by:hover b {
   border-radius: 6px;
   padding: 1px 6px;
   overflow-wrap: anywhere;
+}
+.words a code {
+  color: inherit;
+}
+
+/* Code blocks, coloured as in the docs. A long line scrolls inside its own box, and "->" stays
+   two characters, as it is typed. */
+.words pre {
+  margin: 6px 0;
+  padding: 16px 18px;
+  overflow-x: auto;
+  border-radius: 20px;
+  background: #1b211d;
+  font: 13.5px/1.65 var(--font-mono);
+  font-variant-ligatures: none;
+  color: #e4e9e5;
+}
+.words pre code {
+  padding: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  overflow-wrap: normal;
+}
+.words .token.comment {
+  color: #7f8c85;
+}
+.words .token.string {
+  color: #9be7c1;
+}
+.words .token.keyword,
+.words .token.function,
+.words .token.builtin {
+  color: #c9f2dd;
+}
+.words .token.number,
+.words .token.boolean {
+  color: #f2d49b;
+}
+.words .token.punctuation,
+.words .token.operator {
+  color: #9aa69f;
 }
 
 /* Tables scroll inside their own box. A table of bars reads as a chart and keeps its numbers. */
@@ -392,6 +587,9 @@ a.by:hover b {
   }
   .cover.large .bar {
     height: 118px;
+  }
+  .cover.number.large b {
+    font-size: 92px;
   }
   .words > p:first-child {
     font-size: 19px;
