@@ -61,6 +61,13 @@ export const cite = (key: string, item: Item, lang = "en") => {
   );
 };
 
+/** A part of an item as the law names it: Paragraph 1, or Point (a) in an article of points. */
+export const partName = (clause: Clause) => {
+  const [, kind, value] = /^(para|pt)-(.+)$/.exec(clause.anchor) ?? [];
+  if (kind === "pt") return `Point (${value})`;
+  return kind ? `Paragraph ${value}` : clause.label;
+};
+
 export const escape = (text: string) =>
   text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 

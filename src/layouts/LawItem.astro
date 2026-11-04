@@ -9,6 +9,7 @@ import {
   languageName,
   languagesOf,
   linkRefs,
+  partName,
   wordsOf,
 } from "../lib/laws";
 import { type Item, type Ref, referredBy } from "../lib/packs";
@@ -315,7 +316,7 @@ const jsonLd = {
         <nav class="toc">
           <h2>On this page</h2>
           {paragraphs.map((clause) => (
-            <a href={`#${clause.anchor}`}>Paragraph {clause.anchor.replace(/^para-/, "")}</a>
+            <a href={`#${clause.anchor}`}>{partName(clause)}</a>
           ))}
         </nav>
       )}
