@@ -130,7 +130,6 @@
 .v-as {
   display: grid;
   grid-template-columns: 240px minmax(0, 1fr);
-  min-height: 440px;
 }
 .v-flow {
   list-style: none;
@@ -160,7 +159,7 @@
   content: "";
   position: absolute;
   left: 26px;
-  top: 50px;
+  top: 60px;
   width: 2px;
   height: 22px;
   background: repeating-linear-gradient(
@@ -213,12 +212,13 @@
 .v-node .drip {
   position: absolute;
   left: 25px;
-  top: 52px;
+  top: 60px;
   width: 4px;
   height: 4px;
   border-radius: 999px;
   background: var(--color-brand);
   opacity: 0;
+  z-index: 1;
 }
 .v-node.active .drip {
   animation: v-drip 1s ease-in infinite;
@@ -242,6 +242,8 @@
   color: var(--color-ink-2);
   display: flex;
   flex-direction: column;
+  /* The steps spread over the flow's height, so the answer ends level with its last node. */
+  justify-content: space-between;
   gap: 10px;
   min-width: 0;
 }
@@ -266,7 +268,13 @@
   clip-path: inset(0 100% 0 0);
 }
 .v-ask.on .typed {
-  animation: v-type 1.4s steps(40, end) forwards;
+  animation: v-type 1.5s steps(55, end) forwards;
+}
+/* With motion off the typing never runs, so the question is shown whole. */
+@media (prefers-reduced-motion: reduce) {
+  .v-ask .typed {
+    clip-path: none;
+  }
 }
 @keyframes v-type {
   to {
@@ -307,6 +315,10 @@
   background: var(--color-brand-soft);
   border-radius: 6px;
   padding: 1px 6px;
+}
+/* A clause key keeps the punctuation after it on its line. */
+.v-answer .nw {
+  white-space: nowrap;
 }
 .v-answer small {
   display: block;
