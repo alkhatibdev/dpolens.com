@@ -25,13 +25,13 @@ const inForce = formatDate(gdpr.effectiveDate);
       </a>
       <a class="btn line" href={SITE.repo}>
         <Icon name="github" size={17} />
-        Self-host
+        Star on GitHub
       </a>
     </div>
   </div>
   <div class="v-scene-wrap" data-scene="home">
     <div class="v-scene">
-      <div class="v-panel" id="home-p-as" data-times="1700,1000,700,700,700,900,5200">
+      <div class="v-panel" id="home-p-as" data-times="3400,1600,1600,1300,1300,1500">
         <div class="v-bar" aria-hidden="true">
           <i></i>
           <i></i>
@@ -190,9 +190,18 @@ const inForce = formatDate(gdpr.effectiveDate);
             </div>
             <div class="v-answer" data-step="6">
               GDPR sets no fixed number of days. Once an account is deleted, its data is erased
-              “without undue delay” <span class="kc">gdpr:art-17:para-1</span>, except what an
-              exception covers <span class="kc">gdpr:art-17:para-3</span>, and is kept no longer
-              than necessary <span class="kc">gdpr:art-5:para-1:pt-e</span>.
+              “without undue delay”{" "}
+              <span class="nw">
+                <span class="kc">gdpr:art-17:para-1</span>,
+              </span>{" "}
+              except what an exception covers{" "}
+              <span class="nw">
+                <span class="kc">gdpr:art-17:para-3</span>,
+              </span>{" "}
+              and is kept no longer than necessary{" "}
+              <span class="nw">
+                <span class="kc">gdpr:art-5:para-1:pt-e</span>.
+              </span>
               <small>
                 Quotes from GDPR version {gdpr.version}, in force since {inForce}.
               </small>
@@ -205,9 +214,9 @@ const inForce = formatDate(gdpr.effectiveDate);
 </section>
 
 <script>
-  // Each scene plays its steps in turn, waiting as long as data-times says after each, then starts again.
+  // Each scene plays its steps once, waiting as long as data-times says after each, and stays on
+  // the last, so it can be read at any pace.
   const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const timers = new Map<HTMLElement, ReturnType<typeof setTimeout>>();
   const show = (panel: HTMLElement, step: number) => {
     panel
       .querySelectorAll<HTMLElement>("[data-step]")
@@ -219,29 +228,15 @@ const inForce = formatDate(gdpr.effectiveDate);
     });
   };
   const play = (panel: HTMLElement) => {
-    clearTimeout(timers.get(panel));
     const times = panel.dataset.times!.split(",").map(Number);
     if (still) return show(panel, times.length);
     let step = 0;
     const tick = () => {
       show(panel, step);
-      const wait = times[step];
-      step = step + 1 < times.length ? step + 1 : -1;
-      if (step === -1) {
-        timers.set(
-          panel,
-          setTimeout(() => {
-            show(panel, -1);
-            step = 0;
-            timers.set(panel, setTimeout(tick, 500));
-          }, wait),
-        );
-      } else {
-        timers.set(panel, setTimeout(tick, wait));
-      }
+      if (step < times.length) setTimeout(tick, times[step++]);
     };
     show(panel, -1);
-    timers.set(panel, setTimeout(tick, 300));
+    setTimeout(tick, 1);
   };
   // The scene plays when it comes into view.
   document.querySelectorAll<HTMLElement>("[data-scene]").forEach((scene) => {
