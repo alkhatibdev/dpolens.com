@@ -81,6 +81,8 @@ The difference comes down to a few words. The skill's description said to use DP
 
 "Personal data", not "data". One word was the difference between three unneeded searches and none.
 
+**Update, 18 November 2026:** readers' comments made me look closer, and the word wasn't the only way in. In one of the Segment task's three runs, Claude Code got to DPOLens through the plugin's `/policy-check` command, which it chose to run on its own. I changed the skill to say "when sending personal data to another service" and ran the plugin's 90 runs again. The Segment task didn't search in any of them, `/policy-check` never ran on its own, and no task without personal data searched at all: 0 of 45, down from 3, and still 36 of 36 where it should. An earlier rerun of the same change had one, in a task about how long sessions last, so read it as rarely rather than never.
+
 ## What I took from it
 
 - **The instructions an MCP server sends when it connects do most of the work.** They're a few sentences, and easy to leave empty. Write them like the most important prompt you own, because they are.
