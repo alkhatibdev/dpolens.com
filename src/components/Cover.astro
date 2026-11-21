@@ -1,8 +1,9 @@
 ---
-// A post's cover, drawn from its own numbers: columns with the one that matters in green, or one
-// number on the brand's green, its trail growing behind it. Drawn in the list of posts, and larger
-// at the top of the post.
-import { bar, type Post } from "../lib/blog";
+// A post's cover, drawn from its own numbers: columns with the one that matters in green; one
+// number on the brand's green, its trail growing behind it; or one number as a slice of a whole,
+// framed at the end of the whole and opened in a panel to show what it holds. Drawn in the list of
+// posts, and larger at the top of the post.
+import { bar, split, strip, type Post } from "../lib/blog";
 
 interface Props {
   cover: Post["data"]["cover"];
@@ -10,6 +11,7 @@ interface Props {
 }
 
 const { cover, large = false } = Astro.props;
+const count = (value: number) => value.toLocaleString("en-US");
 ---
 
 {Array.isArray(cover) ? (
@@ -21,6 +23,33 @@ const { cover, large = false } = Astro.props;
         <small>{column.label}</small>
       </div>
     ))}
+  </div>
+) : "slice" in cover ? (
+  <div class:list={["cover", "slice", { large }]} aria-hidden="true" data-grow>
+    <small>{cover.label}</small>
+    <span class="top">
+      <span class="figure">
+        <b>{count(cover.slice.value)}</b>
+        <span class="line">{cover.slice.line}</span>
+      </span>
+      <span class="inside">
+        <span class="title">{cover.slice.title}</span>
+        <Fragment set:html={split(cover.slice.parts.map((part) => part.value))} />
+        <span class="parts">
+          {cover.slice.parts.map((part) => (
+            <span>
+              <i />
+              {part.label}
+              <b>{count(part.value)}</b>
+            </span>
+          ))}
+        </span>
+      </span>
+    </span>
+    <Fragment set:html={strip(cover.slice.value / cover.whole.value, large)} />
+    <span class="whole">
+      {count(cover.whole.value)} {cover.whole.line}
+    </span>
   </div>
 ) : (
   <div class:list={["cover", "number", { large }]} aria-hidden="true" data-grow>

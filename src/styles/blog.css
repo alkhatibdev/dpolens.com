@@ -246,6 +246,176 @@
   transform: none;
 }
 
+/* A cover of a slice: one number as part of a whole. The whole is a strip of bars, the slice in
+   green at its end and framed by the logo's viewfinder, and a panel over it opens the slice, its
+   tail running down to the viewfinder. The strip is drawn in src/lib/blog.ts; the space over it
+   here is what its viewfinder and tail take, 5px and 16px (7px and 25px on a large cover). */
+.cover.slice {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 14px 18px 12px;
+}
+.cover.slice small {
+  font: 500 10px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.cover.slice .top {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+.cover.slice .figure {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.cover.slice .figure b {
+  font: 600 50px/0.9 var(--font-sans);
+  letter-spacing: -0.04em;
+  color: var(--color-ink);
+}
+.cover.slice .line,
+.cover.slice .whole {
+  font: 9.5px var(--font-mono);
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+.cover.slice .inside {
+  flex: none;
+  width: 46%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 9px 10px 10px;
+  border-radius: 9px;
+  background: var(--color-brand-soft);
+}
+.cover.slice .title {
+  font: 500 7.5px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-brand);
+}
+.cover.slice .split {
+  display: block;
+  width: 100%;
+  height: 8px;
+  margin-bottom: 2px;
+  clip-path: inset(0 round 3px);
+}
+.cover.slice .parts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.cover.slice .parts span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font: 9px var(--font-mono);
+  color: var(--color-brand-dark);
+  white-space: nowrap;
+}
+.cover.slice .parts i {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 1.5px;
+}
+.cover.slice .parts b {
+  margin-left: auto;
+  font: 700 9px var(--font-mono);
+  color: inherit;
+}
+/* The parts in the logo's greens, and the viewfinder in its four corners. */
+.cover.slice .split rect:nth-child(1),
+.cover.slice .parts span:nth-child(1) i {
+  fill: var(--color-brand-dark);
+  background: var(--color-brand-dark);
+}
+.cover.slice .split rect:nth-child(2),
+.cover.slice .parts span:nth-child(2) i {
+  fill: #5bc08e;
+  background: #5bc08e;
+}
+.cover.slice .split rect:nth-child(3),
+.cover.slice .parts span:nth-child(3) i {
+  fill: var(--color-brand-mid);
+  background: var(--color-brand-mid);
+}
+.cover.slice .strip {
+  display: block;
+  width: 100%;
+  height: 12px;
+  margin-top: 21px;
+  overflow: visible;
+}
+.cover.slice .strip rect {
+  fill: var(--color-line-strong);
+}
+.cover.slice .strip rect.lit {
+  fill: var(--color-brand);
+}
+.cover.slice .strip .tail {
+  fill: var(--color-brand-soft);
+}
+.cover.slice .corner {
+  fill: none;
+  stroke-width: 2px;
+  stroke-linecap: round;
+}
+.cover.slice .c1 {
+  stroke: #12784e;
+}
+.cover.slice .c2 {
+  stroke: #5bc08e;
+}
+.cover.slice .c3 {
+  stroke: #0b4f33;
+}
+.cover.slice .c4 {
+  stroke: #2e9e6b;
+}
+.cover.slice .whole {
+  margin-top: 13px;
+}
+.cover.slice .figure b,
+.cover.slice .line {
+  transition:
+    opacity 0.7s ease,
+    transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.cover.slice .line {
+  transition-delay: 0.15s;
+}
+.cover.slice .split rect {
+  transform-box: fill-box;
+  transform-origin: left;
+  transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s;
+}
+.cover.slice .split rect + rect {
+  transition-delay: 0.45s;
+}
+.cover.slice.grow .figure b,
+.cover.slice.grow .line {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.cover.slice.grow .split rect {
+  transform: scaleX(0);
+}
+.cover.slice.grow.on .figure b,
+.cover.slice.grow.on .line,
+.cover.slice.grow.on .split rect {
+  opacity: 1;
+  transform: none;
+}
+
 /* A post: its title beside its cover, then the words in a band. */
 .posthead {
   padding-bottom: 64px;
@@ -336,6 +506,54 @@
 }
 .cover.number.large .trail i:nth-child(4) {
   width: 28px;
+}
+.cover.slice.large {
+  padding: 24px 26px 18px;
+  gap: 0;
+}
+.cover.slice.large small {
+  font-size: 11px;
+}
+.cover.slice.large .figure b {
+  font-size: 68px;
+}
+.cover.slice.large .line,
+.cover.slice.large .whole {
+  font-size: 11px;
+}
+.cover.slice.large .inside {
+  padding: 12px 14px 13px;
+  border-radius: 12px;
+}
+.cover.slice.large .title {
+  font-size: 8.5px;
+}
+.cover.slice.large .split {
+  height: 13px;
+  margin-bottom: 4px;
+  clip-path: inset(0 round 4px);
+}
+.cover.slice.large .parts {
+  gap: 3px;
+}
+.cover.slice.large .parts span,
+.cover.slice.large .parts b {
+  font-size: 9.5px;
+}
+.cover.slice.large .parts i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+.cover.slice.large .strip {
+  height: 16px;
+  margin-top: 32px;
+}
+.cover.slice.large .corner {
+  stroke-width: 2.6px;
+}
+.cover.slice.large .whole {
+  margin-top: 18px;
 }
 .by {
   display: flex;
@@ -590,6 +808,20 @@ a.by:hover b {
   }
   .cover.number.large b {
     font-size: 92px;
+  }
+  /* A slice holds more than one number, so its cover keeps more of its height. */
+  .cover.slice.large {
+    height: 236px;
+    padding: 18px 16px 14px;
+  }
+  .cover.slice.large .figure b {
+    font-size: 58px;
+  }
+  .cover.slice.large .inside {
+    padding: 10px 12px 12px;
+  }
+  .cover.slice.large .whole {
+    margin-top: 15px;
   }
   .words > p:first-child {
     font-size: 19px;
