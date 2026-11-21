@@ -26,7 +26,7 @@ const blog = defineCollection({
     tag: z.string(),
     /**
      * The cover, in the list of posts and over the post, drawn from the post's own numbers: bars
-     * from 0 to 1, or one number on the brand's green.
+     * from 0 to 1, one number on the brand's green, or one number as a slice of a whole.
      */
     cover: z.union([
       z.array(
@@ -38,6 +38,34 @@ const blog = defineCollection({
           best: z.boolean().optional(),
         }),
       ),
+      z
+        .object({
+          /** Over the number: what was measured. */
+          label: z.string(),
+          /** The number, framed at the end of the whole and opened in a panel. */
+          slice: z.object({
+            value: z.number().int().positive(),
+            /** Under the number: what it is. */
+            line: z.string(),
+            /** Over the parts, in the panel. */
+            title: z.string(),
+            /** What the slice holds, adding up to it. */
+            parts: z
+              .array(z.object({ label: z.string(), value: z.number().int().positive() }))
+              .min(2)
+              .max(3),
+          }),
+          /** The whole, drawn as a strip of bars, its number and line under it. */
+          whole: z.object({ value: z.number().int().positive(), line: z.string() }),
+        })
+        .refine(
+          ({ slice }) => slice.parts.reduce((sum, part) => sum + part.value, 0) === slice.value,
+          "The parts of a slice add up to the slice.",
+        )
+        .refine(
+          ({ slice, whole }) => slice.value < whole.value,
+          "A slice is smaller than the whole.",
+        ),
       z.object({
         /** Over the number: what was measured. */
         label: z.string(),
