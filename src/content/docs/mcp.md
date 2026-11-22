@@ -23,12 +23,14 @@ in `prevailing_text`, and its citation says which language that is.
 
 `search_policies` searches the laws the organisation has selected and its own policies, and
 nothing else. It takes `query`, `limit`, `lang`, `as_of`, `include_explanatory` and `laws`.
-`lang` can be left out: a question in Arabic letters is searched in Arabic, and any other in
-English. A date in `as_of` reads the documents as they stood then, which is how to answer a
-question about code written two years ago. `laws` keeps a search to some of the selected laws,
-by slug. A law outside the selection is refused with a message saying an administrator can add
-it in Selected laws, and so is every search until somebody has chosen. `get_clause` and the
-document tools keep to the same laws.
+`query` is one question, saying what the code does and with which data: a question that asks
+two things at once is a weaker match for the clause that answers either. `lang` can be left
+out: a question in Arabic letters is searched in Arabic, and any other in English. A date in
+`as_of` reads the documents as they stood then, which is how to answer a question about code
+written two years ago. `laws` keeps a search to some of the selected laws, by slug. A law
+outside the selection is refused with a message saying an administrator can add it in Selected
+laws, and so is every search until somebody has chosen. `get_clause` and the document tools
+keep to the same laws.
 
 A policy's keys follow the numbers printed in it, so a new version that inserts a clause gives
 the clauses after it new keys. A citation names its version, which keeps it exact. `get_clause`,
