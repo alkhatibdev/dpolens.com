@@ -183,7 +183,7 @@ string, so it does not reach the access log of a proxy in front of the instance.
 | Field                 | Default           | What it does                                                                                                 |
 | --------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------ |
 | `query`               | required          | The question, in words. At most 1000 characters                                                              |
-| `limit`               | 10                | How many clauses to return, at most 50                                                                       |
+| `limit`               | 10                | How many results to return, each a whole rule, at most 50                                                    |
 | `lang`                | from the question | The language of the question, `en` or `ar`. Left out, it is read from the letters the question is written in |
 | `laws`                | the selected laws | Only these of the selected laws, by slug, such as `gdpr` or `uae-pdpl`                                       |
 | `expand`              | `none`            | Also return each hit's `siblings` or its `parent`                                                            |
@@ -191,7 +191,14 @@ string, so it does not reach the access log of a proxy in front of the instance.
 | `include_explanatory` | false             | Include text that explains without obliging, such as a recital                                               |
 | `explain`             | false             | Include each retriever's ranking, for debugging                                                              |
 
-Every result carries what it takes to check it: the clause verbatim, its canonical
+Each result is a whole rule. `clause` is the clause whose own words introduce what matched,
+such as the paragraph a point belongs to, and `beneath` holds the clauses under it, in reading
+order, each with its own key to cite it by. A rule of 2,500 characters or fewer comes whole. A
+longer one, such as a list of definitions, comes with the two clauses beneath it the search
+ranked highest, and `whole` is false: `GET /v1/clauses/{key}/subtree` reads the rest.
+`cross_references` holds the links stated by everything a result shows.
+
+Every clause carries what it takes to check it: the clause verbatim, its canonical
 key, its breadcrumb, whether it obliges anyone, the document title and version, the
 date that version took effect, the language and whether that language is
 authoritative, and for a law the pack, the jurisdiction, the trust tier, the source
@@ -650,7 +657,8 @@ the page after.
 
 Each question comes as it was stored, with personal data replaced by placeholders such as
 `[redacted:email]`, how many items were taken out, when the instance deletes it (null while
-questions are kept), and every clause it returned, named as a citation names it.
+questions are kept), and every clause it returned, named as a citation names it, with the keys
+shown beneath it when it was a whole rule.
 
 `identities=true` adds who asked, and `asked_by` then narrows by their name or email address. It
 needs `queries.read_identities`, and every such answer is written to the governance log
@@ -714,7 +722,8 @@ name appears in it.
 
 Needs `queries.read_all`.
 
-Counts one clause the same way, day by day.
+Counts one clause the same way, day by day. A search whose first result is a whole rule counts
+for the clauses shown beneath it too.
 
 ## The instance
 

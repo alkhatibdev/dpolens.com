@@ -11,12 +11,18 @@ four tools and two prompts, it answers over HTTP, and it reads the corpus throug
 
 | Tool              | What it does                                                       |
 | ----------------- | ------------------------------------------------------------------ |
-| `search_policies` | A question in ordinary words, and the clauses that answer it       |
+| `search_policies` | A question in ordinary words, and the rules that answer it         |
 | `get_clause`      | One clause by its key, with where it sits and what sits beneath it |
 | `list_documents`  | What this instance can cite, with the version of each              |
 | `get_document`    | One document's top level, so a key can be found by looking         |
 
-Every result carries the clause word for word, a citation line, the document, the version, the
+Each result is a whole rule: the clause whose words introduce what matched, such as the
+paragraph a point belongs to, with the clauses under it in `beneath`, in reading order, each
+with its own key to cite it by. A rule too long to show whole, such as a list of definitions,
+comes with the two clauses beneath it the search ranked highest, and `whole` is false:
+`get_clause` with `whole_subtree` reads the rest. `limit` counts results.
+
+Every result carries the rule word for word, a citation line, the document, the version, the
 date that version took effect, and for a law the jurisdiction, the trust tier and the source
 the text was taken from. A clause shown in translation also carries the text that prevails,
 in `prevailing_text`, and its citation says which language that is.
