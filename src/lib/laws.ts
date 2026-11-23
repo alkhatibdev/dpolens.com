@@ -61,10 +61,16 @@ export const cite = (key: string, item: Item, lang = "en") => {
   );
 };
 
-/** A part of an item as the law names it: Paragraph 1, or Point (a) in an article of points. */
+/**
+ * A part of an item as the law names it: Paragraph 1, Point (a) in an article of points, or a
+ * definition the law gives no number by the term its words open with: Personal Data.
+ */
 export const partName = (clause: Clause) => {
-  const [, kind, value] = /^(para|pt)-(.+)$/.exec(clause.anchor) ?? [];
+  const [, kind, value] = /^(para|pt|def)-(.+)$/.exec(clause.anchor) ?? [];
   if (kind === "pt") return `Point (${value})`;
+  if (kind === "def") {
+    return /^([^:]{1,80}):/.exec(clause.paragraphs[0] ?? "")?.[1] ?? value.replace(/-/g, " ");
+  }
   return kind ? `Paragraph ${value}` : clause.label;
 };
 

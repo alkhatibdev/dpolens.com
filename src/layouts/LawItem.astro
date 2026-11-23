@@ -74,7 +74,9 @@ const source = translation
   : "from its official source";
 const unit = paragraphs.every((clause) => clause.anchor.startsWith("pt-"))
   ? "points"
-  : "paragraphs";
+  : paragraphs.every((clause) => clause.anchor.startsWith("def-"))
+    ? "definitions"
+    : "paragraphs";
 const description = arabic
   ? `${name} من ${law.short}: «${opening}»`
   : item.kind === "article" && paragraphs.length > 1
@@ -223,7 +225,9 @@ const jsonLd = {
             <>
               {name} of the {law.short}, as in force since {date}. Its key is{" "}
               <span class="kc">{item.key}</span>
-              {hasParts ? ", and each paragraph and point has its own." : "."}
+              {hasParts
+                ? `, and each ${unit === "definitions" ? "definition" : "paragraph and point"} has its own.`
+                : "."}
             </>
           )}
         </p>
