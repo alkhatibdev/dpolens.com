@@ -86,7 +86,8 @@ kbd {
 /*
  * A band is one section of a page after its opening. Each starts under a rule and a seam of dots
  * that fades. Every other band, from the first, is framed by a lens's four corners, set outside
- * it: the opening pair over the rule above it, the closing pair under the rule below it.
+ * it: the opening pair over the rule above it, the closing pair under the rule below it. As the
+ * logo is split, the left corners are its stem's green and the right ones its bowl's.
  */
 .band {
   position: relative;
@@ -140,6 +141,7 @@ kbd {
 .corners::before {
   left: var(--cx);
   border-right: 0;
+  border-color: var(--color-stem);
 }
 .corners::after {
   right: var(--cx);

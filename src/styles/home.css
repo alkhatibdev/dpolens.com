@@ -1160,7 +1160,7 @@
   font-weight: 500;
 }
 
-/* DPOLens Cloud: the waitlist, rounded outlines moving behind it. */
+/* DPOLens Cloud: the waitlist, the logo's hexagon rippling behind it. */
 .v-cloud {
   position: relative;
   overflow: hidden;
@@ -2638,7 +2638,7 @@
 
 /* The number cells light up one after another. */
 
-/* Rounded outlines behind Cloud, rippling out from its open corner. */
+/* The logo's hexagon behind Cloud, rippling out from its open corner. */
 .v-rings {
   position: absolute;
   inset: 0;

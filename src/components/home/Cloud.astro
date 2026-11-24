@@ -1,9 +1,11 @@
 ---
 // DPOLens Cloud: what it will be, and its waitlist.
+import { hexagon } from "../../lib/shapes";
 import { WAITLIST } from "../../lib/site";
 import Icon from "../Icon.astro";
 
-// The rings' sizes, from the middle out: each ripples outwards in turn.
+// The rings' sizes, from the middle out: each ripples outwards in turn. Each is the logo's
+// hexagon, its radius a little more than half its size, so it reads as large as a square would.
 const rings = [153, 314, 475, 637, 798, 959];
 ---
 
@@ -21,13 +23,9 @@ const rings = [153, 314, 475, 637, 798, 959];
         stroke-width="1.5"
       >
         {rings.map((size) => (
-          <rect
+          <path
             class="dpl-ring"
-            x={(1040 - size) / 2}
-            y={(1040 - size) / 2}
-            width={size}
-            height={size}
-            rx={size * 0.22}
+            d={hexagon(520, 520, 0.53 * size)}
             vector-effect="non-scaling-stroke"
           />
         ))}
