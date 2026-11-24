@@ -261,7 +261,7 @@
 .prose .anchor:hover {
   color: var(--color-brand);
 }
-/* A numbered step: its number in a tile with a lens's corners. */
+/* A numbered step: its number in a tile with a lens's corners, in the logo's two greens. */
 .prose h2.numbered {
   display: flex;
   align-items: center;
@@ -294,6 +294,7 @@
 .prose .step::before {
   top: -3px;
   left: -3px;
+  border-color: var(--color-stem);
   border-right: 0;
   border-bottom: 0;
   border-radius: 4px 0 0 0;

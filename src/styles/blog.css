@@ -332,7 +332,8 @@
   font: 700 9px var(--font-mono);
   color: inherit;
 }
-/* The parts in the brand's greens, and each of the viewfinder's four corners in a green of its own. */
+/* The parts in the brand's greens, and the viewfinder in the logo's two: the stem's on the left,
+   the bowl's on the right. */
 .cover.slice .split rect:nth-child(1),
 .cover.slice .parts span:nth-child(1) i {
   fill: var(--color-brand-dark);
@@ -370,16 +371,16 @@
   stroke-linecap: round;
 }
 .cover.slice .c1 {
-  stroke: #12784e;
+  stroke: var(--color-stem);
 }
 .cover.slice .c2 {
-  stroke: #5bc08e;
+  stroke: var(--color-brand);
 }
 .cover.slice .c3 {
-  stroke: #0b4f33;
+  stroke: var(--color-brand);
 }
 .cover.slice .c4 {
-  stroke: #2e9e6b;
+  stroke: var(--color-stem);
 }
 .cover.slice .whole {
   margin-top: 13px;
