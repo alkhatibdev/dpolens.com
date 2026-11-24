@@ -80,7 +80,7 @@ const STRIP = {
 
 /**
  * A slice of a whole, in SVG: the whole as a strip of bars, the slice's share of them in green at
- * its end, framed by the logo's viewfinder. The panel above opens the slice, and its tail runs
+ * its end, framed by a viewfinder. The panel above opens the slice, and its tail runs
  * down to the viewfinder as wide as the slice, whatever the width of the cover.
  */
 export const strip = (share: number, large: boolean) => {

@@ -247,7 +247,7 @@
 }
 
 /* A cover of a slice: one number as part of a whole. The whole is a strip of bars, the slice in
-   green at its end and framed by the logo's viewfinder, and a panel over it opens the slice, its
+   green at its end and framed by a viewfinder, and a panel over it opens the slice, its
    tail running down to the viewfinder. The strip is drawn in src/lib/blog.ts; the space over it
    here is what its viewfinder and tail take, 5px and 16px (7px and 25px on a large cover). */
 .cover.slice {
@@ -332,7 +332,7 @@
   font: 700 9px var(--font-mono);
   color: inherit;
 }
-/* The parts in the logo's greens, and the viewfinder in its four corners. */
+/* The parts in the brand's greens, and each of the viewfinder's four corners in a green of its own. */
 .cover.slice .split rect:nth-child(1),
 .cover.slice .parts span:nth-child(1) i {
   fill: var(--color-brand-dark);
