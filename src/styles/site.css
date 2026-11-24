@@ -85,7 +85,7 @@ kbd {
 
 /*
  * A band is one section of a page after its opening. Each starts under a rule and a seam of dots
- * that fades. Every other band, from the first, is framed by the logo's lens corners, set outside
+ * that fades. Every other band, from the first, is framed by a lens's four corners, set outside
  * it: the opening pair over the rule above it, the closing pair under the rule below it.
  */
 .band {

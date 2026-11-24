@@ -261,7 +261,7 @@
 .prose .anchor:hover {
   color: var(--color-brand);
 }
-/* A numbered step: its number in a tile with the logo's corners. */
+/* A numbered step: its number in a tile with a lens's corners. */
 .prose h2.numbered {
   display: flex;
   align-items: center;
