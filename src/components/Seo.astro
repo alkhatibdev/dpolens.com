@@ -28,7 +28,8 @@ const {
 } = Astro.props;
 const pageTitle = fullTitle ? title : `${title} · ${SITE.name}`;
 const url = new URL(pagePath(Astro.url), SITE.origin).href;
-const image = new URL("/icon-512.png", SITE.origin).href;
+// The link card takes the icon on its white tile: some apps fill a clear ground with black.
+const image = new URL("/icon-maskable-512.png", SITE.origin).href;
 // Open Graph writes a locale as language_TERRITORY. Arabic is ar_AR, Facebook's code for Arabic
 // as a whole; any other language takes the territory it is most used in, en_US for English.
 const { language, region } = new Intl.Locale(lang).maximize();
