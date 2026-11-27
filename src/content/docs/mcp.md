@@ -148,7 +148,8 @@ everybody together. claude.ai, Claude Desktop and ChatGPT call from their platfo
 servers, so every person using one of them arrives from the same few IP addresses: name those
 ranges in `DPOLENS_MCP_SHARED_RANGES`, from what each platform publishes. A refused call gets
 `429` and `Retry-After`. The AI assistant is told, in the server's instructions and the search
-tool's description, how long questions are kept.
+tool's description, how long questions are kept, and asked to put each question in general
+terms, leaving out names, people's details, secrets and anything internal to its project.
 
 | Variable                             | Read by            | Default                  | What it does                                                                                                |
 | ------------------------------------ | ------------------ | ------------------------ | ----------------------------------------------------------------------------------------------------------- |
