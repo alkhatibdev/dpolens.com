@@ -14,7 +14,7 @@
     </p>
     <div class="v-nums">
       <div>
-        <b>30</b>
+        <b>60</b>
         <span>calls a minute from each IP address</span>
       </div>
       <div>
@@ -43,7 +43,7 @@
           <i></i>
         </span>
         <span class="n">
-          <b>30</b> / 30 a minute
+          <b>60</b> / 60 a minute
         </span>
       </div>
       <div class="v-gauge" data-g="range" hidden>
@@ -84,8 +84,8 @@
   // calls keep the shared ones a little below full.
   const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   document.querySelectorAll<HTMLElement>("[data-meter]").forEach((meter) => {
-    const sizes = { address: 30, range: 120, all: 300 };
-    const left = { address: 30, range: 108, all: 284 };
+    const sizes = { address: 60, range: 120, all: 300 };
+    const left = { address: 60, range: 108, all: 284 };
     type Bucket = keyof typeof sizes;
     const gauges = new Map<Bucket, HTMLElement>();
     meter
