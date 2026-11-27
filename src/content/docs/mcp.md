@@ -158,7 +158,7 @@ tool's description, how long questions are kept.
 | `DPOLENS_MCP_COMMUNITY_FILE`         | MCP server         | `/run/dpolens/community` | Where the server reads the account's ids                                                                    |
 | `DPOLENS_MCP_CLIENT_ADDRESS_HEADER`  | MCP server         | none                     | A header carrying the caller's IP address, such as `CF-Connecting-IP`, when a proxy in front always sets it |
 | `DPOLENS_MCP_SHARED_RANGES`          | MCP server         | `[]`                     | IP address ranges that share one allowance, as a JSON list                                                  |
-| `DPOLENS_MCP_PER_ADDRESS_PER_MINUTE` | MCP server         | `30`                     | Calls one IP address may make a minute                                                                      |
+| `DPOLENS_MCP_PER_ADDRESS_PER_MINUTE` | MCP server         | `60`                     | Calls one IP address may make a minute                                                                      |
 | `DPOLENS_MCP_PER_RANGE_PER_MINUTE`   | MCP server         | `120`                    | Calls one shared range may make a minute                                                                    |
 | `DPOLENS_MCP_OVERALL_PER_MINUTE`     | MCP server         | `300`                    | Calls everybody together may make a minute                                                                  |
 | `DPOLENS_QUERY_LOG_RETENTION_DAYS`   | API and MCP server | none                     | How long questions are kept. The server reads the same variable, to tell the AI assistant                   |
