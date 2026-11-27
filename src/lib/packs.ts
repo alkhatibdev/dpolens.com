@@ -128,7 +128,10 @@ const newer = (a: string, b: string) => {
   return false;
 };
 
-/** Each pack's newest published release: its tag is pack/<slug>/<version>. */
+/**
+ * Each pack's newest published release, tagged packs/<slug>/<version>, or pack/<slug>/<version>
+ * for the packs written for DPOLens 0.2.0.
+ */
 const newestReleases = async () => {
   const releases: Release[] = [];
   for (let page = 1; ; page++) {
@@ -140,7 +143,7 @@ const newestReleases = async () => {
   }
   const newest = new Map<string, { version: string; release: Release }>();
   for (const release of releases) {
-    const match = /^pack\/([a-z0-9-]+)\/([\d.]+)$/.exec(release.tag_name);
+    const match = /^packs?\/([a-z0-9-]+)\/([\d.]+)$/.exec(release.tag_name);
     if (!match || release.draft || release.prerelease) continue;
     const [, slug, version] = match;
     const known = newest.get(slug);
@@ -250,6 +253,13 @@ const read = (source: string) => {
 
 const short = (slug: string) => slug.toUpperCase().replace(/-/g, " ");
 
+/**
+ * A name as a pack gives it: one string in the packs written for DPOLens 0.2.0, and one for
+ * each language since. The pages show the English one, as they always have.
+ */
+const english = (value: string | Record<string, string>) =>
+  typeof value === "string" ? value : (value.en ?? Object.values(value)[0] ?? "");
+
 const readLaw = (files: Map<string, string>, slug: string, archive: Law["archive"]): Law => {
   const pack = parse(files.get(`${slug}/pack.yaml`) ?? "") as Record<string, any>;
   if (!pack) throw new Error(`The ${slug} archive has no ${slug}/pack.yaml`);
@@ -263,9 +273,9 @@ const readLaw = (files: Map<string, string>, slug: string, archive: Law["archive
   );
   const law: Law = {
     slug,
-    short: short(slug),
-    name: pack.name,
-    jurisdiction: pack.jurisdiction,
+    short: pack.short_name ? english(pack.short_name) : short(slug),
+    name: english(pack.name),
+    jurisdiction: english(pack.jurisdiction),
     version: String(pack.version),
     effectiveDate: String(pack.effective_date),
     trustTier: pack.trust_tier,
@@ -279,7 +289,7 @@ const readLaw = (files: Map<string, string>, slug: string, archive: Law["archive
   for (const document of pack.documents as Record<string, any>[]) {
     const doc: Doc = {
       slug: document.slug,
-      title: document.title,
+      title: english(document.title),
       normative: document.normative !== false,
       sourceUrl: document.source_url,
       sourceSha256: document.source_sha256,

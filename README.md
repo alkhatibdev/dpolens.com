@@ -52,7 +52,8 @@ changes in the same release, with a new date at the top.
 ## The law pages
 
 Every page under `/laws` is built from the newest release of each law pack in the DPOLens
-repository, `pack/<slug>/<version>`, the archive an instance's `dpolens pack update` would load.
+repository, `packs/<slug>/<version>` (`pack/<slug>/<version>` for the packs written for
+DPOLens 0.2.0), the archive an instance's `dpolens pack update` would load.
 The build downloads it, checks it against its SHA-256, and reads it (`src/lib/packs.ts`). A
 new pack release reaches the site with the next daily deploy. Archives are kept in `.cache/packs`
 between builds, and `DPOLENS_PACKS_REPOSITORY` names another repository to read them from, as it

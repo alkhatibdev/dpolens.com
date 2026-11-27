@@ -4,11 +4,15 @@ description: "How each law in DPOLens is a versioned pack, how to load a newer v
 ---
 
 A law is amended on its legislature's schedule, so a law pack has versions and releases of its
-own, apart from the app's. A pack's release is tagged `pack/<slug>/<version>`, for example
-`pack/gdpr/2026.2`, and publishes one file, its pack archive,
+own, apart from the app's. A pack's release is tagged `packs/<slug>/<version>`, for example
+`packs/gdpr/2026.2`, and publishes one file, its pack archive,
 `dpolens-pack-gdpr-2026.2.tar.gz`: the pack's folder as it is in the repository, beside the
 licence that covers every pack. The archive's SHA-256 is in a file beside it,
 `dpolens-pack-gdpr-2026.2.tar.gz.sha256`, in the format `sha256sum` writes.
+
+DPOLens 0.2.0 reads only the packs released for it, tagged `pack/<slug>/<version>`, and is
+never offered one released since: it would read their names wrongly. Upgrade DPOLens before
+updating a law.
 
 ## A newer version of a law
 
